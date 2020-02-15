@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:extend>
+	<p class="text-danger" wicket:id="error"><wicket:message key="error.message"><a href="#" wicket:id="homePageLink"><wicket:message key="homePageLink.text"/></a></wicket:message></p>
+	<p class="text-danger" wicket:id="pageExpired"><wicket:message key="pageExpired.message"><a href="#" wicket:id="homePageLink"><wicket:message key="homePageLink.text"/></a></wicket:message></p>
+	<p class="text-danger" wicket:id="unauthorizedAction"><wicket:message key="unauthorizedAction.message"><a href="#" wicket:id="homePageLink"><wicket:message key="homePageLink.text"/></a></wicket:message></p>
+	<p><wicket:container wicket:id="stackTrace"/></p>
+</wicket:extend>
+</body>
+</html>

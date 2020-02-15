@@ -1,0 +1,32 @@
+body {
+  padding-top: 70px;
+}
+h4 {
+	color: graytext;
+	font-variant: small-caps;
+}
+h5 {
+	color: graytext;
+	font-variant: small-caps;
+}
+a.arrow {
+	text-decoration: none;
+	color: black;
+	font-size: large;
+}
+div.viewport {
+  width: 100%;
+  margin-bottom: 15px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+div.viewport > .table {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+table.pager > tbody > tr > td {
+	border: none;
+}
+select.auto-width {
+	width: auto !important;
+}

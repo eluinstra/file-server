@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="a1ed7ee0-0934-4560-933f-0e11376b5f23" activeEnvironment="Default" name="fs-service" resourceRoot="" soapui-version="5.1.3" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="c2f93372-0008-467b-ba1d-f5cad0dccedd" wsaVersion="NONE" name="FSAdminServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.eluinstra.bitbucket.org/}FSAdminServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/admin?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/admin?wsdl"><con:part><con:url>http://localhost:8080/service/admin?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSAdminServiceImplService" targetNamespace="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+  <wsdl:import location="http://localhost:8080/service/admin?wsdl=FSAdminService.wsdl" namespace="http://bitbucket.org/eluinstra/fs/core/1.0.0"></wsdl:import>
+  <wsdl:binding name="FSAdminServiceImplServiceSoapBinding" type="ns1:FSAdminService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="deleteClient">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="deleteClient">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="deleteClientResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateClient">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="updateClient">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateClientResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClient">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getClient">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getClientResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClients">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getClients">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getClientsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createClient">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="createClient">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="createClientResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FSAdminServiceImplService">
+    <wsdl:port binding="tns:FSAdminServiceImplServiceSoapBinding" name="FSAdminServiceImplPort">
+      <soap:address location="http://localhost:8080/service/admin"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/admin?wsdl=FSAdminService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSAdminService" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+      <xs:element name="client" type="tns:client"/>
+      <xs:element name="createClient" type="tns:createClient"/>
+      <xs:element name="createClientResponse" type="tns:createClientResponse"/>
+      <xs:element name="deleteClient" type="tns:deleteClient"/>
+      <xs:element name="deleteClientResponse" type="tns:deleteClientResponse"/>
+      <xs:element name="getClient" type="tns:getClient"/>
+      <xs:element name="getClientResponse" type="tns:getClientResponse"/>
+      <xs:element name="getClients" type="tns:getClients"/>
+      <xs:element name="getClientsResponse" type="tns:getClientsResponse"/>
+      <xs:element name="updateClient" type="tns:updateClient"/>
+      <xs:element name="updateClientResponse" type="tns:updateClientResponse"/>
+      <xs:complexType name="deleteClient">
+        <xs:sequence>
+          <xs:element name="arg0" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="deleteClientResponse">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="updateClient">
+        <xs:sequence>
+          <xs:element name="arg0" type="tns:client"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="client">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element name="certificate" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="updateClientResponse">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="getClient">
+        <xs:sequence>
+          <xs:element name="arg0" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getClientResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="client" type="tns:client"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getClients">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="getClientsResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="clients" type="tns:client"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createClient">
+        <xs:sequence>
+          <xs:element name="arg0" type="tns:client"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createClientResponse">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:element name="FSServiceException" type="tns:FSServiceException"/>
+      <xs:complexType name="FSServiceException">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getClientResponse">
+    <wsdl:part element="ns1:getClientResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getClientsResponse">
+    <wsdl:part element="ns1:getClientsResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createClientResponse">
+    <wsdl:part element="ns1:createClientResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getClient">
+    <wsdl:part element="ns1:getClient" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getClients">
+    <wsdl:part element="ns1:getClients" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteClient">
+    <wsdl:part element="ns1:deleteClient" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateClient">
+    <wsdl:part element="ns1:updateClient" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateClientResponse">
+    <wsdl:part element="ns1:updateClientResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="FSServiceException">
+    <wsdl:part element="ns1:FSServiceException" name="FSServiceException"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteClientResponse">
+    <wsdl:part element="ns1:deleteClientResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createClient">
+    <wsdl:part element="ns1:createClient" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="FSAdminService">
+    <wsdl:operation name="deleteClient">
+      <wsdl:input message="ns1:deleteClient" name="deleteClient"></wsdl:input>
+      <wsdl:output message="ns1:deleteClientResponse" name="deleteClientResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateClient">
+      <wsdl:input message="ns1:updateClient" name="updateClient"></wsdl:input>
+      <wsdl:output message="ns1:updateClientResponse" name="updateClientResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClient">
+      <wsdl:input message="ns1:getClient" name="getClient"></wsdl:input>
+      <wsdl:output message="ns1:getClientResponse" name="getClientResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClients">
+      <wsdl:input message="ns1:getClients" name="getClients"></wsdl:input>
+      <wsdl:output message="ns1:getClientsResponse" name="getClientsResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createClient">
+      <wsdl:input message="ns1:createClient" name="createClient"></wsdl:input>
+      <wsdl:output message="ns1:createClientResponse" name="createClientResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/service/admin</con:endpoint></con:endpoints><con:operation id="4e290967-e991-4b3b-86e6-da88058408a8" isOneWay="false" action="" name="createClient" bindingOperationName="createClient" type="Request-Response" outputName="createClientResponse" inputName="createClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="220f9e26-c83b-4cd0-a4f2-869ef68e62d8" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:createClient>
+         <arg0>
+            <!--Optional:-->
+            <id>?</id>
+            <name>?</name>
+            <certificate>cid:515450414594</certificate>
+         </arg0>
+      </ns:createClient>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/createClient"/></con:call></con:operation><con:operation id="afabc62e-4de6-4c7a-99a7-ad3817f6ca31" isOneWay="false" action="" name="deleteClient" bindingOperationName="deleteClient" type="Request-Response" outputName="deleteClientResponse" inputName="deleteClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="19880531-ec7c-4b38-b92f-ebcc8bda00a9" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:deleteClient>
+         <arg0>?</arg0>
+      </ns:deleteClient>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/deleteClient"/></con:call></con:operation><con:operation id="a0a0ad5c-0d7b-4277-9133-4207a8fcfcc7" isOneWay="false" action="" name="getClient" bindingOperationName="getClient" type="Request-Response" outputName="getClientResponse" inputName="getClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="fae2ed18-99eb-4289-87ce-ef34711e8378" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:getClient>
+         <arg0>?</arg0>
+      </ns:getClient>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/getClient"/></con:call></con:operation><con:operation id="bd62c2ee-988a-4e77-99d1-aba7219ea98f" isOneWay="false" action="" name="getClients" bindingOperationName="getClients" type="Request-Response" outputName="getClientsResponse" inputName="getClients" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="db188fa9-8bc8-4881-a12f-f309c18e779d" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:getClients/>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/getClients"/></con:call></con:operation><con:operation id="27036033-290d-4a18-b3b6-b73e7825dd27" isOneWay="false" action="" name="updateClient" bindingOperationName="updateClient" type="Request-Response" outputName="updateClientResponse" inputName="updateClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="34796f46-5d61-4f22-bc18-fe7f776a7852" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:updateClient>
+         <arg0>
+            <!--Optional:-->
+            <id>?</id>
+            <name>?</name>
+            <certificate>cid:711798072403</certificate>
+         </arg0>
+      </ns:updateClient>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/updateClient"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="e3dcf5e8-34d3-4f9a-b33c-2d46de8d9d76" wsaVersion="NONE" name="FSServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.eluinstra.bitbucket.org/}FSServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/file?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/file?wsdl"><con:part><con:url>http://localhost:8080/service/file?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSServiceImplService" targetNamespace="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+  <wsdl:import location="http://localhost:8080/service/file?wsdl=FSService.wsdl" namespace="http://bitbucket.org/eluinstra/fs/core/1.0.0"></wsdl:import>
+  <wsdl:binding name="FSServiceImplServiceSoapBinding" type="ns1:FSService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="uploadFile">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="uploadFile">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="uploadFileResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteFile">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="deleteFile">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="deleteFileResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FSServiceImplService">
+    <wsdl:port binding="tns:FSServiceImplServiceSoapBinding" name="FSServiceImplPort">
+      <soap:address location="http://localhost:8080/service/file"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/file?wsdl=FSService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSService" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+      <xs:element name="deleteFile" type="tns:deleteFile"/>
+      <xs:element name="deleteFileResponse" type="tns:deleteFileResponse"/>
+      <xs:element name="file" type="tns:file"/>
+      <xs:element name="uploadFile" type="tns:uploadFile"/>
+      <xs:element name="uploadFileResponse" type="tns:uploadFileResponse"/>
+      <xs:complexType name="uploadFile">
+        <xs:sequence>
+          <xs:element name="arg0" type="xs:string"/>
+          <xs:element name="arg1" type="tns:file"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="file">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="path" type="xs:string"/>
+          <xs:element name="contentType" type="xs:string"/>
+          <xs:element minOccurs="0" name="checksum" type="xs:string"/>
+          <xs:element name="startDate" type="xs:dateTime"/>
+          <xs:element name="endDate" type="xs:dateTime"/>
+          <xs:element name="file" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="uploadFileResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="fsFile" type="tns:fsFile"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="fsFile">
+        <xs:sequence>
+          <xs:element name="virtualPath" type="xs:string"/>
+          <xs:element name="contentType" type="xs:string"/>
+          <xs:element name="checksum" type="xs:string"/>
+          <xs:element name="period" type="tns:period"/>
+          <xs:element name="clientId" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="period">
+        <xs:sequence>
+          <xs:element name="startDate" type="xs:dateTime"/>
+          <xs:element name="endDate" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="deleteFile">
+        <xs:sequence>
+          <xs:element name="arg0" type="xs:string"/>
+          <xs:element minOccurs="0" name="arg1" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="deleteFileResponse">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:element name="FSServiceException" type="tns:FSServiceException"/>
+      <xs:complexType name="FSServiceException">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="FSServiceException">
+    <wsdl:part element="ns1:FSServiceException" name="FSServiceException"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="uploadFile">
+    <wsdl:part element="ns1:uploadFile" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="uploadFileResponse">
+    <wsdl:part element="ns1:uploadFileResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteFileResponse">
+    <wsdl:part element="ns1:deleteFileResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteFile">
+    <wsdl:part element="ns1:deleteFile" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="FSService">
+    <wsdl:operation name="uploadFile">
+      <wsdl:input message="ns1:uploadFile" name="uploadFile"></wsdl:input>
+      <wsdl:output message="ns1:uploadFileResponse" name="uploadFileResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteFile">
+      <wsdl:input message="ns1:deleteFile" name="deleteFile"></wsdl:input>
+      <wsdl:output message="ns1:deleteFileResponse" name="deleteFileResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/service/file</con:endpoint></con:endpoints><con:operation id="6e3a3fab-1b73-4e88-95d8-d4d5f63f3856" isOneWay="false" action="" name="deleteFile" bindingOperationName="deleteFile" type="Request-Response" outputName="deleteFileResponse" inputName="deleteFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="dc048517-f2b3-4ac6-a68a-b1bb2964871d" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:deleteFile>
+         <arg0>?</arg0>
+         <!--Optional:-->
+         <arg1>?</arg1>
+      </ns:deleteFile>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/deleteFile"/></con:call></con:operation><con:operation id="d5030ae0-20ad-4127-a7e1-0741751405ed" isOneWay="false" action="" name="uploadFile" bindingOperationName="uploadFile" type="Request-Response" outputName="uploadFileResponse" inputName="uploadFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="52c5bc8c-73a0-43a7-9a21-ac80045ff643" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:uploadFile>
+         <arg0>?</arg0>
+         <arg1>
+            <!--Optional:-->
+            <path>?</path>
+            <contentType>?</contentType>
+            <!--Optional:-->
+            <checksum>?</checksum>
+            <startDate>?</startDate>
+            <endDate>?</endDate>
+            <file>cid:1165913935155</file>
+         </arg1>
+      </ns:uploadFile>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/uploadFile"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>

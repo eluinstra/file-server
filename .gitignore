@@ -1,0 +1,21 @@
+# ignore hidden files/directories
+
+hooks
+.DS_Store
+*~
+\#*
+.#*
+*.jar
+*.log
+*.vgc
+/.settings
+/.classpath
+/.project
+/target
+/findbugs
+dependency-reduced-pom.xml
+/hsqldb
+
+# IntelliJ IDEA
+.idea
+*.iml
