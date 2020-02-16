@@ -565,8 +565,7 @@ public class Start
 	{
 		SslContextFactory result = new SslContextFactory();
 		addFSKeyStore(properties,result);
-		if ("true".equals(properties.get("https.requireClientAuthentication")))
-			addFSTrustStore(properties,result);
+		addFSTrustStore(properties,result);
 		return result;
 	}
 
@@ -624,11 +623,9 @@ public class Start
 
 		result.setContextPath("/");
 
-		String clientCertificateAuthentication = properties.get("https.clientCertificateAuthentication");
-		if (clientCertificateAuthentication != null && "true".equals(clientCertificateAuthentication.toLowerCase()))
-			result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
+		result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
 
-		result.addServlet(org.bitbucket.eluinstra.fs.core.server.servlet.FSServlet.class,properties.get("fs.path"));
+		result.addServlet(org.bitbucket.eluinstra.fs.core.server.servlet.FSServlet.class,properties.get("fs.path") + "/*");
 
 		result.addEventListener(contextLoaderListener);
 		
