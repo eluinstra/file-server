@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -72,71 +71,70 @@ import org.hsqldb.server.FSServiceProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
-import org.hsqldb.server.ServerProperties;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level=AccessLevel.PROTECTED, makeFinal=true)
 public class Start
 {
-	protected final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
-	protected final String DEFAULT_KEYSTORE_FILE = "keystore.p12";
-	protected final String DEFAULT_KEYSTORE_PASSWORD = "password";
-	protected final String REALM = "Realm";
-	protected final String REALM_FILE = "realm.properties";
-	protected Options options;
-	protected CommandLine cmd;
-	protected Server server = new Server();
-	protected ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
-	protected Map<String,String> properties;
+	String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
+	String DEFAULT_KEYSTORE_FILE = "keystore.p12";
+	String DEFAULT_KEYSTORE_PASSWORD = "password";
+	String REALM = "Realm";
+	String REALM_FILE = "realm.properties";
 
 	public static void main(String[] args) throws Exception
 	{
-		Start app = new Start();
-		app.options = app.createOptions();
-		app.cmd = new DefaultParser().parse(app.options,args);
+		val app = new Start();
+		Options options = app.createOptions();
+		CommandLine cmd = new DefaultParser().parse(options,args);
 
-		if (app.cmd.hasOption("h"))
-			app.printUsage();
+		if (cmd.hasOption("h"))
+			app.printUsage(options);
 
-		app.init(app.cmd);
+		app.init(cmd);
 		
-		app.server.setHandler(app.handlerCollection);
+		Server server = new Server();
+		ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+		server.setHandler(handlerCollection);
 
-		app.properties = app.getProperties("org/bitbucket/eluinstra/fs/service/applicationConfig.xml");
+		Map<String,String> properties = app.getProperties("org/bitbucket/eluinstra/fs/service/applicationConfig.xml");
+		app.startHSQLDB(cmd,properties);
+		app.initWebServer(cmd,server);
+		app.initFSServer(properties,server);
+		app.initJMX(cmd,server);
 
-		app.startHSQLDB(app.cmd,app.properties);
-		app.initWebServer(app.cmd,app.server);
-		app.initFSServer(app.properties,app.server);
-		app.initJMX(app.cmd,app.server);
-
-		XmlWebApplicationContext context = new XmlWebApplicationContext();
+		val context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml"));
-		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
-		if (app.cmd.hasOption("soap") || !app.cmd.hasOption("headless"))
-			app.handlerCollection.addHandler(app.createWebContextHandler(app.cmd,contextLoaderListener));
-		app.handlerCollection.addHandler(app.createFSContextHandler(app.properties,contextLoaderListener));
+		val contextLoaderListener = new ContextLoaderListener(context);
+		if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
+			handlerCollection.addHandler(app.createWebContextHandler(cmd,contextLoaderListener));
+		handlerCollection.addHandler(app.createFSContextHandler(properties,contextLoaderListener));
 
 		System.out.println("Starting web server...");
 
 		try
 		{
-			app.server.start();
+			server.start();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			app.server.stop();
+			server.stop();
 			System.exit(1);
 		}
 		System.out.println("Web server started.");
-		app.server.join();
+		server.join();
 	}
 
 	protected Options createOptions()
 	{
-		Options result = new Options();
+		val result = new Options();
 		result.addOption("h",false,"print this message");
 		result.addOption("host",true,"set host");
 		result.addOption("port",true,"set port");
@@ -163,36 +161,36 @@ public class Start
 		return result;
 	}
 	
-	protected void printUsage()
+	protected void printUsage(Options options)
 	{
-		HelpFormatter formatter = new HelpFormatter();
+		val formatter = new HelpFormatter();
 		formatter.printHelp("Start",options,true);
 		System.exit(0);
 	}
 
 	protected void init(CommandLine cmd)
 	{
-		String propertiesFilesDir = cmd.getOptionValue("propertiesFilesDir","");
+		val propertiesFilesDir = cmd.getOptionValue("propertiesFilesDir","");
 		System.setProperty("fs.propertiesFilesDir",propertiesFilesDir);
 		System.out.println("Using properties files directory: " + propertiesFilesDir);
 	}
 
 	private Map<String,String> getProperties(String...files)
 	{
-		try (AbstractApplicationContext applicationContext = new ClassPathXmlApplicationContext(files))
+		try (val applicationContext = new ClassPathXmlApplicationContext(files))
 		{
-			PropertyPlaceholderConfigurer properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
+			val properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
 			return properties.getProperties();
 		}
 	}
 
 	private void startHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
 	{
-		Optional<JdbcURL> jdbcURL = initHSQLDB(cmd,properties);
+		val jdbcURL = initHSQLDB(cmd,properties);
 		if (jdbcURL.isPresent())
 		{
 			System.out.println("Starting hsqldb...");
-			org.hsqldb.server.Server server = startHSQLDBServer(cmd,jdbcURL.get());
+			val server = startHSQLDBServer(cmd,jdbcURL.get());
 			initDatabase(server);
 		}
 	}
@@ -201,7 +199,7 @@ public class Start
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("fs.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
-			JdbcURL jdbcURL = org.bitbucket.eluinstra.fs.service.web.configuration.Utils.parseJdbcURL(properties.get("fs.jdbc.url"),new JdbcURL());
+			val jdbcURL = org.bitbucket.eluinstra.fs.service.web.configuration.Utils.parseJdbcURL(properties.get("fs.jdbc.url"),new JdbcURL());
 			if (!jdbcURL.getHost().matches("(localhost|127.0.0.1)"))
 			{
 				System.out.println("Cannot start server on " + jdbcURL.getHost());
@@ -214,7 +212,7 @@ public class Start
 
 	public org.hsqldb.server.Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
-		List<String> options = new ArrayList<>();
+		val options = new ArrayList<>();
 		options.add("-database.0");
 		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getDatabase());
 		options.add("-dbname.0");
@@ -224,13 +222,13 @@ public class Start
 			options.add("-port");
 			options.add(jdbcURL.getPort().toString());
 		}
-		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
-		ServerProperties props = new FSServiceProperties(ServerConstants.SC_PROTOCOL_HSQL);
+		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
+		val props = new FSServiceProperties(ServerConstants.SC_PROTOCOL_HSQL);
 		props.addProperties(argProps);
 		ServerConfiguration.translateDefaultDatabaseProperty(props);
 		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
 		ServerConfiguration.translateAddressProperty(props);
-		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
+		val server = new org.hsqldb.server.Server();
 		server.setProperties(props);
 		server.start();
 		return server;
@@ -238,7 +236,7 @@ public class Start
 
 	private void initDatabase(org.hsqldb.server.Server server)
 	{
-    try (Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", ""))
+    try (val c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", ""))
 		{
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'fs_client'").next())
 			{
@@ -278,18 +276,18 @@ public class Start
 		if (cmd.hasOption("jmx"))
 		{
 			System.out.println("Starting mbean server...");
-			MBeanContainer mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+			val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 			server.addBean(mBeanContainer);
 			server.addBean(Log.getLog());
-			JMXServiceURL jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
-			ConnectorServer jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
+			val jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
+			val jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
 			server.addBean(jmxServer);
 		}
 	}
 
 	protected static String[] getConfigLocations(String configLocation)
 	{
-		List<String> result = new ArrayList<>();
+		val result = new ArrayList<>();
 		result.add(0,configLocation);
 		return result.toArray(new String[]{});
 	}
@@ -297,19 +295,17 @@ public class Start
 	private void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
 	{
 		if (!cmd.hasOption("ssl"))
-		{
-			server.addConnector(createHttpConnector(cmd));
-		}
+			server.addConnector(createHttpConnector(cmd,server));
 		else
 		{
-			SslContextFactory factory = createSslContextFactory(cmd);
-			server.addConnector(createHttpsConnector(cmd,factory));
+			val factory = createSslContextFactory(cmd);
+			server.addConnector(createHttpsConnector(cmd,server,factory));
 		}
 	}
 
-	private ServerConnector createHttpConnector(CommandLine cmd)
+	private ServerConnector createHttpConnector(CommandLine cmd, Server server)
 	{
-		ServerConnector result = new ServerConnector(this.server);
+		val result = new ServerConnector(server);
 		result.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 		result.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 		result.setName("web");
@@ -322,19 +318,19 @@ public class Start
 
 	private SslContextFactory createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
 	{
-		SslContextFactory result = new SslContextFactory();
-		addKeyStore(result);
+		val result = new SslContextFactory();
+		addKeyStore(cmd,result);
 		if (cmd.hasOption("clientAuthentication"))
-			addTrustStore(result);
+			addTrustStore(cmd,result);
 		return result;
 	}
 
-	private void addKeyStore(SslContextFactory result) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory result) throws MalformedURLException, IOException
 	{
-		String keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
-		String keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
-		String keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
-		Resource keyStore = getResource(keyStorePath);
+		val keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
+		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
+		val keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
+		val keyStore = getResource(keyStorePath);
 		System.out.println("Using keyStore " + keyStore.getURI());
 		if (keyStore != null && keyStore.exists())
 		{
@@ -349,12 +345,12 @@ public class Start
 		}
 	}
 
-	private void addTrustStore(SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(CommandLine cmd,SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
-		String trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
-		String trustStorePath = cmd.getOptionValue("trustStorePath");
-		String trustStorePassword = cmd.getOptionValue("trustStorePassword");
-		Resource trustStore = getResource(trustStorePath);
+		val trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
+		val trustStorePath = cmd.getOptionValue("trustStorePath");
+		val trustStorePassword = cmd.getOptionValue("trustStorePassword");
+		val trustStore = getResource(trustStorePath);
 		System.out.println("Using trustStore " + trustStore.getURI());
 		if (trustStore != null && trustStore.exists())
 		{
@@ -370,9 +366,9 @@ public class Start
 		}
 	}
 
-	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory factory)
+	private ServerConnector createHttpsConnector(CommandLine cmd, Server server, SslContextFactory factory)
 	{
-		ServerConnector connector = new ServerConnector(this.server,factory);
+		val connector = new ServerConnector(server,factory);
 		connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 		connector.setPort(cmd.getOptionValue("port") == null ? 8443 : Integer.parseInt(cmd.getOptionValue("port")));
 		connector.setName("web");
@@ -390,18 +386,16 @@ public class Start
 
 	private Handler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws NoSuchAlgorithmException, IOException
 	{
-		ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@web"});
-
 		result.setInitParameter("configuration","deployment");
-
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption("authentication"))
 		{
 			if (!cmd.hasOption("clientAuthentication"))
 			{
 				System.out.println("Configuring web server basic authentication:");
-				File file = new File(REALM_FILE);
+				val file = new File(REALM_FILE);
 				if (file.exists())
 					System.out.println("Using file " + file.getAbsoluteFile());
 				else
@@ -411,100 +405,95 @@ public class Start
 			else if (cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
 			{
 				result.addFilter(createClientCertificateManagerFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-				result.addFilter(createClientCertificateAuthenticationFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 			}
 		}
-
 		if (cmd.hasOption("soap"))
 			result.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
-
 		if (!cmd.hasOption("headless"))
 		{
-			ServletHolder servletHolder = new ServletHolder(org.bitbucket.eluinstra.fs.service.web.ResourceServlet.class);
+			val servletHolder = new ServletHolder(org.bitbucket.eluinstra.fs.service.web.ResourceServlet.class);
 			result.addServlet(servletHolder,"/css/*");
 			result.addServlet(servletHolder,"/fonts/*");
 			result.addServlet(servletHolder,"/images/*");
 			result.addServlet(servletHolder,"/js/*");
-
 			result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		}
 		result.setErrorHandler(createErrorHandler());
-
 		result.addEventListener(contextLoaderListener);
-		
 		return result;
 	}
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
 	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		String username = readLine("enter username: ",reader);
-		String password = readPassword(reader);
+		val reader = new BufferedReader(new InputStreamReader(System.in));
+		val username = readLine("enter username: ",reader);
+		val password = readPassword(reader);
 		System.out.println("Writing to file: " + file.getAbsoluteFile());
 		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
 	}
 
 	private String readLine(String prompt, BufferedReader reader) throws IOException
 	{
-		String result = null;
-		while (StringUtils.isBlank(result))
-		{
-			System.out.print(prompt);
-			result = reader.readLine();
-		}
-		return result;
+		return reader.lines().filter(l -> StringUtils.isNotBlank(l)).findFirst().orElse(null);
 	}
 
 	private String readPassword(BufferedReader reader) throws IOException, NoSuchAlgorithmException
 	{
-		String result = null;
 		while (true)
 		{
-			result = SecurityUtils.toMD5(readLine("enter password: ",reader));
+			val result = SecurityUtils.toMD5(readLine("enter password: ",reader));
 			String password = SecurityUtils.toMD5(readLine("re-enter password: ",reader));
 			if (!result.equals(password))
 				System.out.println("Passwords do not match! Try again.");
 			else
-				break;
+				return result;
 		}
-		return result;
 	}
 	
 	protected SecurityHandler getSecurityHandler()
 	{
-		ConstraintSecurityHandler result = new ConstraintSecurityHandler();
-
-		Constraint constraint = new Constraint();
-		constraint.setName("auth");
-		constraint.setAuthenticate(true);
-		constraint.setRoles(new String[]{"user","admin"});
-
-		ConstraintMapping mapping = new ConstraintMapping();
-		mapping.setPathSpec("/*");
-		mapping.setConstraint(constraint);
-
+		val result = new ConstraintSecurityHandler();
+		val constraint = createSecurityConstraint();
+		val mapping = createSecurityConstraintMapping(constraint);
 		result.setConstraintMappings(Collections.singletonList(mapping));
 		result.setAuthenticator(new BasicAuthenticator());
 		result.setLoginService(new HashLoginService(REALM,REALM_FILE));
-
 		return result;
+	}
+
+	private Constraint createSecurityConstraint()
+	{
+		val constraint = new Constraint();
+		constraint.setName("auth");
+		constraint.setAuthenticate(true);
+		constraint.setRoles(new String[]{"user","admin"});
+		return constraint;
+	}
+
+	private ConstraintMapping createSecurityConstraintMapping(final Constraint constraint)
+	{
+		val mapping = new ConstraintMapping();
+		mapping.setPathSpec("/*");
+		mapping.setConstraint(constraint);
+		return mapping;
 	}
 
 	private FilterHolder createClientCertificateManagerFilterHolder(CommandLine cmd)
 	{
-		FilterHolder result = new FilterHolder(org.bitbucket.eluinstra.fs.core.server.servlet.ClientCertificateManagerFilter.class); 
+		val result = new FilterHolder(org.bitbucket.eluinstra.fs.core.server.servlet.ClientCertificateManagerFilter.class); 
 		result.setInitParameter("x509CertificateHeader",cmd.getOptionValue("clientCertificateHeader"));
 		return result;
 	}
 
-	private FilterHolder createClientCertificateAuthenticationFilterHolder() throws MalformedURLException, IOException
+	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
 	{
 		System.out.println("Configuring web server client certificate authentication:");
-		FilterHolder result = new FilterHolder(org.bitbucket.eluinstra.fs.core.service.servlet.ClientCertificateAuthenticationFilter.class); 
-		String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
-		String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
-		String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
-		Resource trustStore = getResource(clientTrustStorePath);
+		val result = new FilterHolder(org.bitbucket.eluinstra.fs.core.service.servlet.ClientCertificateAuthenticationFilter.class); 
+		val clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
+		val clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
+		val clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
+		val trustStore = getResource(clientTrustStorePath);
 		System.out.println("Using clientTrustStore " + trustStore.getURI());
 		if (trustStore != null && trustStore.exists())
 		{
@@ -523,7 +512,7 @@ public class Start
 
 	private FilterHolder createWicketFilterHolder()
 	{
-		FilterHolder result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
+		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		result.setInitParameter("applicationClassName","org.bitbucket.eluinstra.fs.service.web.WicketApplication");
 		result.setInitParameter("filterMappingUrlPattern","/*");
 		return result;
@@ -531,8 +520,8 @@ public class Start
 
 	private ErrorPageErrorHandler createErrorHandler()
 	{
-		ErrorPageErrorHandler result = new ErrorPageErrorHandler();
-		Map<String,String> errorPages = new HashMap<>();
+		val result = new ErrorPageErrorHandler();
+		val errorPages = new HashMap<String,String>();
 		errorPages.put("404","/404");
 		result.setErrorPages(errorPages);
 		return result;
@@ -542,18 +531,18 @@ public class Start
 	{
 		if (!"true".equals(properties.get("fs.ssl")))
 		{
-			server.addConnector(createFSHttpConnector(properties));
+			server.addConnector(createFSHttpConnector(properties,server));
 		}
 		else
 		{
-			SslContextFactory factory = createFSSslContextFactory(properties);
-			server.addConnector(createFSHttpsConnector(properties,factory));
+			val factory = createFSSslContextFactory(properties);
+			server.addConnector(createFSHttpsConnector(properties,server,factory));
 		}
 	}
 
-	private ServerConnector createFSHttpConnector(Map<String,String> properties)
+	private ServerConnector createFSHttpConnector(Map<String,String> properties, Server server)
 	{
-		ServerConnector result = new ServerConnector(this.server);
+		val result = new ServerConnector(server);
 		result.setHost(StringUtils.isEmpty(properties.get("fs.host")) ? "0.0.0.0" : properties.get("fs.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("fs.port"))  ? 8888 : Integer.parseInt(properties.get("fs.port")));
 		result.setName("fs");
@@ -563,7 +552,7 @@ public class Start
 
 	private SslContextFactory createFSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
 	{
-		SslContextFactory result = new SslContextFactory();
+		val result = new SslContextFactory();
 		addFSKeyStore(properties,result);
 		addFSTrustStore(properties,result);
 		return result;
@@ -571,7 +560,7 @@ public class Start
 
 	private void addFSKeyStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
-		Resource keyStore = getResource(properties.get("keystore.path"));
+		val keyStore = getResource(properties.get("keystore.path"));
 		if (keyStore != null && keyStore.exists())
 		{
 			if (!StringUtils.isEmpty(properties.get("https.protocols")))
@@ -591,7 +580,7 @@ public class Start
 
 	private void addFSTrustStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
-		Resource trustStore = getResource(properties.get("truststore.path"));
+		val trustStore = getResource(properties.get("truststore.path"));
 		if (trustStore != null && trustStore.exists())
 		{
 			sslContextFactory.setNeedClientAuth(true);
@@ -606,42 +595,37 @@ public class Start
 		}
 	}
 
-	private ServerConnector createFSHttpsConnector(Map<String,String> properties, SslContextFactory factory)
+	private ServerConnector createFSHttpsConnector(Map<String,String> properties, Server server, SslContextFactory factory)
 	{
-		ServerConnector result = new ServerConnector(this.server,factory);
+		val result = new ServerConnector(server,factory);
 		result.setHost(StringUtils.isEmpty(properties.get("fs.host")) ? "0.0.0.0" : properties.get("fs.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("fs.port"))  ? 8888 : Integer.parseInt(properties.get("fs.port")));
 		result.setName("fs");
-		System.out.println("FS Service configured on https://" + result.getHost() + ":" + result.getPort() + properties.get("fs.path"));
+		System.out.println("FS Service configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + properties.get("fs.path"));
 		return result;
 	}
 
 	private Handler createFSContextHandler(Map<String,String> properties, ContextLoaderListener contextLoaderListener)
 	{
-		ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@fs"});
-
 		result.setContextPath("/");
-
 		result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-
 		result.addServlet(org.bitbucket.eluinstra.fs.core.server.servlet.FSServlet.class,properties.get("fs.path") + "/*");
-
 		result.addEventListener(contextLoaderListener);
-		
 		return result;
 	}
 
 	private FilterHolder createClientCertificateManagerFilterHolder(Map<String,String> properties)
 	{
-		FilterHolder result = new FilterHolder(org.bitbucket.eluinstra.fs.core.server.servlet.ClientCertificateManagerFilter.class); 
+		val result = new FilterHolder(org.bitbucket.eluinstra.fs.core.server.servlet.ClientCertificateManagerFilter.class); 
 		result.setInitParameter("x509CertificateHeader",properties.get("https.clientCertificateHeader"));
 		return result;
 	}
 
 	protected Resource getResource(String path) throws MalformedURLException, IOException
 	{
-		Resource result = Resource.newResource(path);
+		val result = Resource.newResource(path);
 		return result.exists() ? result : Resource.newClassPathResource(path);
 	}
 
