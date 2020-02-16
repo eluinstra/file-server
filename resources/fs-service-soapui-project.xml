@@ -85,7 +85,7 @@
       <xs:element name="updateClientResponse" type="tns:updateClientResponse"/>
       <xs:complexType name="deleteClient">
         <xs:sequence>
-          <xs:element name="name" type="xs:string"/>
+          <xs:element name="id" type="xs:long"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="deleteClientResponse">
@@ -108,7 +108,7 @@
       </xs:complexType>
       <xs:complexType name="getClient">
         <xs:sequence>
-          <xs:element name="name" type="xs:string"/>
+          <xs:element name="id" type="xs:long"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="getClientResponse">
@@ -214,14 +214,14 @@
    <soapenv:Header/>
    <soapenv:Body>
       <ns:deleteClient>
-         <name>Ordina</name>
+         <id>0</id>
       </ns:deleteClient>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/deleteClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="a0a0ad5c-0d7b-4277-9133-4207a8fcfcc7" isOneWay="false" action="" name="getClient" bindingOperationName="getClient" type="Request-Response" outputName="getClientResponse" inputName="getClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="fae2ed18-99eb-4289-87ce-ef34711e8378" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getClient>
-         <name>Ordina</name>
+         <id>0</id>
       </ns:getClient>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/getClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="bd62c2ee-988a-4e77-99d1-aba7219ea98f" isOneWay="false" action="" name="getClients" bindingOperationName="getClients" type="Request-Response" outputName="getClientsResponse" inputName="getClients" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="4e21c9fb-e963-4868-8264-831a62f39707" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
@@ -234,10 +234,9 @@
    <soapenv:Body>
       <ns:updateClient>
          <client>
-            <!--Optional:-->
-            <id>?</id>
-            <name>?</name>
-            <certificate>cid:847883774974</certificate>
+            <id>0</id>
+            <name>Ordina</name>
+            <certificate>MIIDkTCCAnmgAwIBAgIEAk8r7zANBgkqhkiG9w0BAQsFADBuMRAwDgYDVQQGEwdVbmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYDVQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRIwEAYDVQQDEwlsb2NhbGhvc3QwHhcNMjAwMjE2MTkzMzEyWhcNMzAwMjEzMTkzMzEyWjBuMRAwDgYDVQQGEwdVbmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYDVQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRIwEAYDVQQDEwlsb2NhbGhvc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCeV3TTrK6b3QRi3o+dwENEL8K2kIMgUE3H25mVCdgT9+vDqOTLlRjhBWgTx/LEQRR+wYG72Qou+J72QNjMk6l5u+bAk+I50Yb0y92gHC/SQ6xQLgX9Do839bRX6eU8V2mO7lMb5z3om1bI5lSNXO+7onvCQK26DpApRpCKkQL9NPl+4dnZEGy7eG21uQPVysuI8PJNvc5HD73KcfDrPQfUpLCSBfN4ZyOsBUnSzzU7NaqEm0+vfgG2diIImEsbub//FPFMMJrmA3eXSBa0I7nO/Lx2kdqmJa4PR9Lc63Mo9h9siZEWI+vi8AVh7d8gqTTiXkgTFrC+GFV42lY4XrzxAgMBAAGjNzA1MBQGA1UdEQQNMAuCCWxvY2FsaG9zdDAdBgNVHQ4EFgQU/UYjAsSd5ZpoGdeFEE3HvZaJ07wwDQYJKoZIhvcNAQELBQADggEBAEJOfXifv2H6HzHHX4erDmSFC4mvDbgw9FY0GeKU5R6MQKNSc7lpCCXf6/RJ5KipraAbs+e1Y9CTvhvS4K2cvEDxi+wn5yFkPH72RnRvDsACHKvYPIbV1q3S9SG91QMaCFPcHb1TpEldHRD8AX/C9ERr5dlZactEyBQVmS8WN8rTXU6hlDqAMkVEGRXUHCeVKAKlgNqgKMOPGLZ6HR9EW7W/98jI6qObZk5ATNlbXdi8KtB4542Igdb8XKp/pRCR5mt+oq77ogbS+SN5p8e31Tu4FoD4N+kUW/WCmYXHEuE3bOs2Pq8oK2t5GLNVQRfdumucbk7AhrJx0bcWu63jr0I=</certificate>
          </client>
       </ns:updateClient>
    </soapenv:Body>
