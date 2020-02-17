@@ -1,8 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="a1ed7ee0-0934-4560-933f-0e11376b5f23" activeEnvironment="Default" name="fs-service" resourceRoot="" soapui-version="5.1.3" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="c2f93372-0008-467b-ba1d-f5cad0dccedd" wsaVersion="NONE" name="FSAdminServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.eluinstra.bitbucket.org/}FSAdminServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/admin?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/admin?wsdl"><con:part><con:url>http://localhost:8080/service/admin?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSAdminServiceImplService" targetNamespace="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
-  <wsdl:import location="http://localhost:8080/service/admin?wsdl=FSAdminService.wsdl" namespace="http://bitbucket.org/eluinstra/fs/core/1.0.0"></wsdl:import>
+<con:soapui-project id="a1ed7ee0-0934-4560-933f-0e11376b5f23" activeEnvironment="Default" name="fs-service" resourceRoot="" soapui-version="5.1.3" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="c2f93372-0008-467b-ba1d-f5cad0dccedd" wsaVersion="NONE" name="FSAdminServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.eluinstra.bitbucket.org/}FSAdminServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/admin?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/admin?wsdl"><con:part><con:url>http://localhost:8080/service/admin?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSAdminServiceImplService" targetNamespace="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0">
+  <wsdl:import location="http://localhost:8080/service/admin?wsdl=FSAdminService.wsdl" namespace="http://bitbucket.org/eluinstra/fs/core/1.0"></wsdl:import>
   <wsdl:binding name="FSAdminServiceImplServiceSoapBinding" type="ns1:FSAdminService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="createClient">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="createClient">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="createClientResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClients">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getClients">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getClientsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClient">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getClient">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getClientResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="FSServiceException">
+        <soap:fault name="FSServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
     <wsdl:operation name="deleteClient">
       <soap:operation soapAction="" style="document"/>
       <wsdl:input name="deleteClient">
@@ -27,51 +63,15 @@
         <soap:fault name="FSServiceException" use="literal"/>
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="getClient">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getClient">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getClientResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="FSServiceException">
-        <soap:fault name="FSServiceException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="getClients">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getClients">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getClientsResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="FSServiceException">
-        <soap:fault name="FSServiceException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="createClient">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="createClient">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="createClientResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="FSServiceException">
-        <soap:fault name="FSServiceException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="FSAdminServiceImplService">
     <wsdl:port binding="tns:FSAdminServiceImplServiceSoapBinding" name="FSAdminServiceImplPort">
       <soap:address location="http://localhost:8080/service/admin"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/admin?wsdl=FSAdminService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSAdminService" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/admin?wsdl=FSAdminService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSAdminService" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0">
   <wsdl:types>
-    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bitbucket.org/eluinstra/fs/core/1.0">
       <xs:element name="client" type="tns:client"/>
       <xs:element name="createClient" type="tns:createClient"/>
       <xs:element name="createClientResponse" type="tns:createClientResponse"/>
@@ -83,6 +83,39 @@
       <xs:element name="getClientsResponse" type="tns:getClientsResponse"/>
       <xs:element name="updateClient" type="tns:updateClient"/>
       <xs:element name="updateClientResponse" type="tns:updateClientResponse"/>
+      <xs:complexType name="createClient">
+        <xs:sequence>
+          <xs:element name="client" type="tns:client"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="client">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element name="certificate" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createClientResponse">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="getClients">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="getClientsResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="clients" type="tns:client"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getClient">
+        <xs:sequence>
+          <xs:element name="id" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getClientResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="client" type="tns:client"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="deleteClient">
         <xs:sequence>
           <xs:element name="id" type="xs:long"/>
@@ -96,40 +129,7 @@
           <xs:element name="client" type="tns:client"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="client">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="id" type="xs:long"/>
-          <xs:element name="name" type="xs:string"/>
-          <xs:element name="certificate" type="xs:base64Binary"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="updateClientResponse">
-        <xs:sequence/>
-      </xs:complexType>
-      <xs:complexType name="getClient">
-        <xs:sequence>
-          <xs:element name="id" type="xs:long"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getClientResponse">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="client" type="tns:client"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getClients">
-        <xs:sequence/>
-      </xs:complexType>
-      <xs:complexType name="getClientsResponse">
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="clients" type="tns:client"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="createClient">
-        <xs:sequence>
-          <xs:element name="client" type="tns:client"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="createClientResponse">
         <xs:sequence/>
       </xs:complexType>
       <xs:element name="FSServiceException" type="tns:FSServiceException"/>
@@ -140,20 +140,32 @@
       </xs:complexType>
     </xs:schema>
   </wsdl:types>
-  <wsdl:message name="getClientResponse">
-    <wsdl:part element="ns1:getClientResponse" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getClientsResponse">
-    <wsdl:part element="ns1:getClientsResponse" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="createClientResponse">
-    <wsdl:part element="ns1:createClientResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="getClients">
+    <wsdl:part element="ns1:getClients" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="getClient">
     <wsdl:part element="ns1:getClient" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getClients">
-    <wsdl:part element="ns1:getClients" name="parameters"></wsdl:part>
+  <wsdl:message name="createClientResponse">
+    <wsdl:part element="ns1:createClientResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getClientsResponse">
+    <wsdl:part element="ns1:getClientsResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getClientResponse">
+    <wsdl:part element="ns1:getClientResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createClient">
+    <wsdl:part element="ns1:createClient" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteClientResponse">
+    <wsdl:part element="ns1:deleteClientResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="FSServiceException">
+    <wsdl:part element="ns1:FSServiceException" name="FSServiceException"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateClientResponse">
+    <wsdl:part element="ns1:updateClientResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="deleteClient">
     <wsdl:part element="ns1:deleteClient" name="parameters"></wsdl:part>
@@ -161,19 +173,22 @@
   <wsdl:message name="updateClient">
     <wsdl:part element="ns1:updateClient" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="updateClientResponse">
-    <wsdl:part element="ns1:updateClientResponse" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="FSServiceException">
-    <wsdl:part element="ns1:FSServiceException" name="FSServiceException"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="deleteClientResponse">
-    <wsdl:part element="ns1:deleteClientResponse" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="createClient">
-    <wsdl:part element="ns1:createClient" name="parameters"></wsdl:part>
-  </wsdl:message>
   <wsdl:portType name="FSAdminService">
+    <wsdl:operation name="createClient">
+      <wsdl:input message="ns1:createClient" name="createClient"></wsdl:input>
+      <wsdl:output message="ns1:createClientResponse" name="createClientResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClients">
+      <wsdl:input message="ns1:getClients" name="getClients"></wsdl:input>
+      <wsdl:output message="ns1:getClientsResponse" name="getClientsResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClient">
+      <wsdl:input message="ns1:getClient" name="getClient"></wsdl:input>
+      <wsdl:output message="ns1:getClientResponse" name="getClientResponse"></wsdl:output>
+      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
+    </wsdl:operation>
     <wsdl:operation name="deleteClient">
       <wsdl:input message="ns1:deleteClient" name="deleteClient"></wsdl:input>
       <wsdl:output message="ns1:deleteClientResponse" name="deleteClientResponse"></wsdl:output>
@@ -184,23 +199,8 @@
       <wsdl:output message="ns1:updateClientResponse" name="updateClientResponse"></wsdl:output>
       <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="getClient">
-      <wsdl:input message="ns1:getClient" name="getClient"></wsdl:input>
-      <wsdl:output message="ns1:getClientResponse" name="getClientResponse"></wsdl:output>
-      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="getClients">
-      <wsdl:input message="ns1:getClients" name="getClients"></wsdl:input>
-      <wsdl:output message="ns1:getClientsResponse" name="getClientsResponse"></wsdl:output>
-      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="createClient">
-      <wsdl:input message="ns1:createClient" name="createClient"></wsdl:input>
-      <wsdl:output message="ns1:createClientResponse" name="createClientResponse"></wsdl:output>
-      <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
-    </wsdl:operation>
   </wsdl:portType>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/service/admin</con:endpoint></con:endpoints><con:operation id="4e290967-e991-4b3b-86e6-da88058408a8" isOneWay="false" action="" name="createClient" bindingOperationName="createClient" type="Request-Response" outputName="createClientResponse" inputName="createClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="220f9e26-c83b-4cd0-a4f2-869ef68e62d8" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/service/admin</con:endpoint></con:endpoints><con:operation id="4e290967-e991-4b3b-86e6-da88058408a8" isOneWay="false" action="" name="createClient" bindingOperationName="createClient" type="Request-Response" outputName="createClientResponse" inputName="createClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="220f9e26-c83b-4cd0-a4f2-869ef68e62d8" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:createClient>
@@ -210,26 +210,26 @@
          </client>
       </ns:createClient>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/createClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="afabc62e-4de6-4c7a-99a7-ad3817f6ca31" isOneWay="false" action="" name="deleteClient" bindingOperationName="deleteClient" type="Request-Response" outputName="deleteClientResponse" inputName="deleteClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="19880531-ec7c-4b38-b92f-ebcc8bda00a9" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/createClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="afabc62e-4de6-4c7a-99a7-ad3817f6ca31" isOneWay="false" action="" name="deleteClient" bindingOperationName="deleteClient" type="Request-Response" outputName="deleteClientResponse" inputName="deleteClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="19880531-ec7c-4b38-b92f-ebcc8bda00a9" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:deleteClient>
          <id>0</id>
       </ns:deleteClient>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/deleteClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="a0a0ad5c-0d7b-4277-9133-4207a8fcfcc7" isOneWay="false" action="" name="getClient" bindingOperationName="getClient" type="Request-Response" outputName="getClientResponse" inputName="getClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="fae2ed18-99eb-4289-87ce-ef34711e8378" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/deleteClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="a0a0ad5c-0d7b-4277-9133-4207a8fcfcc7" isOneWay="false" action="" name="getClient" bindingOperationName="getClient" type="Request-Response" outputName="getClientResponse" inputName="getClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="fae2ed18-99eb-4289-87ce-ef34711e8378" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getClient>
          <id>0</id>
       </ns:getClient>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/getClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="bd62c2ee-988a-4e77-99d1-aba7219ea98f" isOneWay="false" action="" name="getClients" bindingOperationName="getClients" type="Request-Response" outputName="getClientsResponse" inputName="getClients" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="4e21c9fb-e963-4868-8264-831a62f39707" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/getClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="bd62c2ee-988a-4e77-99d1-aba7219ea98f" isOneWay="false" action="" name="getClients" bindingOperationName="getClients" type="Request-Response" outputName="getClientsResponse" inputName="getClients" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="4e21c9fb-e963-4868-8264-831a62f39707" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getClients/>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/getClients"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="27036033-290d-4a18-b3b6-b73e7825dd27" isOneWay="false" action="" name="updateClient" bindingOperationName="updateClient" type="Request-Response" outputName="updateClientResponse" inputName="updateClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="34796f46-5d61-4f22-bc18-fe7f776a7852" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/getClients"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="27036033-290d-4a18-b3b6-b73e7825dd27" isOneWay="false" action="" name="updateClient" bindingOperationName="updateClient" type="Request-Response" outputName="updateClientResponse" inputName="updateClient" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="34796f46-5d61-4f22-bc18-fe7f776a7852" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/admin</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:updateClient>
@@ -240,16 +240,16 @@
          </client>
       </ns:updateClient>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/updateClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="e3dcf5e8-34d3-4f9a-b33c-2d46de8d9d76" wsaVersion="NONE" name="FSServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.eluinstra.bitbucket.org/}FSServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/file?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/file?wsdl"><con:part><con:url>http://localhost:8080/service/file?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSServiceImplService" targetNamespace="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
-  <wsdl:import location="http://localhost:8080/service/file?wsdl=FSService.wsdl" namespace="http://bitbucket.org/eluinstra/fs/core/1.0.0"></wsdl:import>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/updateClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="e3dcf5e8-34d3-4f9a-b33c-2d46de8d9d76" wsaVersion="NONE" name="FSServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.eluinstra.bitbucket.org/}FSServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/file?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/file?wsdl"><con:part><con:url>http://localhost:8080/service/file?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSServiceImplService" targetNamespace="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0">
+  <wsdl:import location="http://localhost:8080/service/file?wsdl=FSService.wsdl" namespace="http://bitbucket.org/eluinstra/fs/core/1.0"></wsdl:import>
   <wsdl:binding name="FSServiceImplServiceSoapBinding" type="ns1:FSService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="getFile">
+    <wsdl:operation name="deleteFile">
       <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getFile">
+      <wsdl:input name="deleteFile">
         <soap:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="getFileResponse">
+      <wsdl:output name="deleteFileResponse">
         <soap:body use="literal"/>
       </wsdl:output>
       <wsdl:fault name="FSServiceException">
@@ -268,12 +268,12 @@
         <soap:fault name="FSServiceException" use="literal"/>
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="deleteFile">
+    <wsdl:operation name="getFile">
       <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="deleteFile">
+      <wsdl:input name="getFile">
         <soap:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="deleteFileResponse">
+      <wsdl:output name="getFileResponse">
         <soap:body use="literal"/>
       </wsdl:output>
       <wsdl:fault name="FSServiceException">
@@ -286,9 +286,9 @@
       <soap:address location="http://localhost:8080/service/file"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/file?wsdl=FSService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSService" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/file?wsdl=FSService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FSService" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://bitbucket.org/eluinstra/fs/core/1.0">
   <wsdl:types>
-    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bitbucket.org/eluinstra/fs/core/1.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bitbucket.org/eluinstra/fs/core/1.0">
       <xs:element name="deleteFile" type="tns:deleteFile"/>
       <xs:element name="deleteFileResponse" type="tns:deleteFileResponse"/>
       <xs:element name="file" type="tns:file"/>
@@ -296,32 +296,14 @@
       <xs:element name="getFileResponse" type="tns:getFileResponse"/>
       <xs:element name="uploadFile" type="tns:uploadFile"/>
       <xs:element name="uploadFileResponse" type="tns:uploadFileResponse"/>
-      <xs:complexType name="getFile">
+      <xs:complexType name="deleteFile">
         <xs:sequence>
           <xs:element name="url" type="xs:string"/>
+          <xs:element minOccurs="0" name="force" type="xs:boolean"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getFileResponse">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="return" type="tns:fsFile"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="fsFile">
-        <xs:sequence>
-          <xs:element name="virtualPath" type="xs:string"/>
-          <xs:element name="filename" type="xs:string"/>
-          <xs:element name="contentType" type="xs:string"/>
-          <xs:element name="md5checksum" type="xs:string"/>
-          <xs:element name="sha256checksum" type="xs:string"/>
-          <xs:element name="period" type="tns:period"/>
-          <xs:element name="clientId" type="xs:long"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="period">
-        <xs:sequence>
-          <xs:element name="startDate" type="xs:dateTime"/>
-          <xs:element name="endDate" type="xs:dateTime"/>
-        </xs:sequence>
+      <xs:complexType name="deleteFileResponse">
+        <xs:sequence/>
       </xs:complexType>
       <xs:complexType name="uploadFile">
         <xs:sequence>
@@ -344,14 +326,32 @@
           <xs:element minOccurs="0" name="fsFile" type="tns:fsFile"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="deleteFile">
+      <xs:complexType name="fsFile">
         <xs:sequence>
-          <xs:element name="url" type="xs:string"/>
-          <xs:element minOccurs="0" name="force" type="xs:boolean"/>
+          <xs:element name="virtualPath" type="xs:string"/>
+          <xs:element name="filename" type="xs:string"/>
+          <xs:element name="contentType" type="xs:string"/>
+          <xs:element name="md5checksum" type="xs:string"/>
+          <xs:element name="sha256checksum" type="xs:string"/>
+          <xs:element name="period" type="tns:period"/>
+          <xs:element name="clientId" type="xs:long"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="deleteFileResponse">
-        <xs:sequence/>
+      <xs:complexType name="period">
+        <xs:sequence>
+          <xs:element name="startDate" type="xs:dateTime"/>
+          <xs:element name="endDate" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getFile">
+        <xs:sequence>
+          <xs:element name="url" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getFileResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="tns:fsFile"/>
+        </xs:sequence>
       </xs:complexType>
       <xs:element name="FSServiceException" type="tns:FSServiceException"/>
       <xs:complexType name="FSServiceException">
@@ -364,11 +364,11 @@
   <wsdl:message name="getFile">
     <wsdl:part element="ns1:getFile" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getFileResponse">
-    <wsdl:part element="ns1:getFileResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="deleteFile">
+    <wsdl:part element="ns1:deleteFile" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="FSServiceException">
-    <wsdl:part element="ns1:FSServiceException" name="FSServiceException"></wsdl:part>
+  <wsdl:message name="deleteFileResponse">
+    <wsdl:part element="ns1:deleteFileResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="uploadFile">
     <wsdl:part element="ns1:uploadFile" name="parameters"></wsdl:part>
@@ -376,16 +376,16 @@
   <wsdl:message name="uploadFileResponse">
     <wsdl:part element="ns1:uploadFileResponse" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="deleteFileResponse">
-    <wsdl:part element="ns1:deleteFileResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="FSServiceException">
+    <wsdl:part element="ns1:FSServiceException" name="FSServiceException"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="deleteFile">
-    <wsdl:part element="ns1:deleteFile" name="parameters"></wsdl:part>
+  <wsdl:message name="getFileResponse">
+    <wsdl:part element="ns1:getFileResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:portType name="FSService">
-    <wsdl:operation name="getFile">
-      <wsdl:input message="ns1:getFile" name="getFile"></wsdl:input>
-      <wsdl:output message="ns1:getFileResponse" name="getFileResponse"></wsdl:output>
+    <wsdl:operation name="deleteFile">
+      <wsdl:input message="ns1:deleteFile" name="deleteFile"></wsdl:input>
+      <wsdl:output message="ns1:deleteFileResponse" name="deleteFileResponse"></wsdl:output>
       <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="uploadFile">
@@ -393,20 +393,20 @@
       <wsdl:output message="ns1:uploadFileResponse" name="uploadFileResponse"></wsdl:output>
       <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="deleteFile">
-      <wsdl:input message="ns1:deleteFile" name="deleteFile"></wsdl:input>
-      <wsdl:output message="ns1:deleteFileResponse" name="deleteFileResponse"></wsdl:output>
+    <wsdl:operation name="getFile">
+      <wsdl:input message="ns1:getFile" name="getFile"></wsdl:input>
+      <wsdl:output message="ns1:getFileResponse" name="getFileResponse"></wsdl:output>
       <wsdl:fault message="ns1:FSServiceException" name="FSServiceException"></wsdl:fault>
     </wsdl:operation>
   </wsdl:portType>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/service/file</con:endpoint></con:endpoints><con:operation id="6e3a3fab-1b73-4e88-95d8-d4d5f63f3856" isOneWay="false" action="" name="deleteFile" bindingOperationName="deleteFile" type="Request-Response" outputName="deleteFileResponse" inputName="deleteFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="dc048517-f2b3-4ac6-a68a-b1bb2964871d" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/service/file</con:endpoint></con:endpoints><con:operation id="6e3a3fab-1b73-4e88-95d8-d4d5f63f3856" isOneWay="false" action="" name="deleteFile" bindingOperationName="deleteFile" type="Request-Response" outputName="deleteFileResponse" inputName="deleteFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="dc048517-f2b3-4ac6-a68a-b1bb2964871d" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:deleteFile>
          <url>/test.xml</url>
       </ns:deleteFile>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/deleteFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="d5030ae0-20ad-4127-a7e1-0741751405ed" isOneWay="false" action="" name="uploadFile" bindingOperationName="uploadFile" type="Request-Response" outputName="uploadFileResponse" inputName="uploadFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="52c5bc8c-73a0-43a7-9a21-ac80045ff643" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/deleteFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="d5030ae0-20ad-4127-a7e1-0741751405ed" isOneWay="false" action="" name="uploadFile" bindingOperationName="uploadFile" type="Request-Response" outputName="uploadFileResponse" inputName="uploadFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="52c5bc8c-73a0-43a7-9a21-ac80045ff643" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:uploadFile>
@@ -420,12 +420,12 @@
          <clientId>0</clientId>
       </ns:uploadFile>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:attachment><con:name>cpaStubEBF.rm.https.signed.xml</con:name><con:contentType>text/xml</con:contentType><con:size>34833</con:size><con:contentId>1165913935155</con:contentId><con:part>1165913935155</con:part><con:data>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</con:data><con:id>7592c446-c909-4a2e-be93-c8e3f647d7a1</con:id></con:attachment><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/uploadFile"/><con:wsrmConfig version="1.2"/></con:call><con:call id="6e0d9cc1-fdce-49ab-87c8-8f47eb5fd9fa" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:attachment><con:name>cpaStubEBF.rm.https.signed.xml</con:name><con:contentType>text/xml</con:contentType><con:size>34833</con:size><con:contentId>1165913935155</con:contentId><con:part>1165913935155</con:part><con:data>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</con:data><con:id>7592c446-c909-4a2e-be93-c8e3f647d7a1</con:id></con:attachment><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/uploadFile"/><con:wsrmConfig version="1.2"/></con:call><con:call id="6e0d9cc1-fdce-49ab-87c8-8f47eb5fd9fa" name="Request 2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:uploadFile>
          <file>
-            <path>/test.xml</path>
+            <filename>test.xml</filename>
             <contentType>text/xml</contentType>
             <startDate>2020-01-01T00:00:00+01:00</startDate>
             <endDate>2020-01-01T00:00:00+01:00</endDate>
@@ -434,7 +434,7 @@
          <clientId>0</clientId>
       </ns:uploadFile>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:attachment><con:name>realm.properties</con:name><con:contentType>application/octet-stream</con:contentType><con:size>720</con:size><con:contentId>realm.properties</con:contentId><con:data>UEsDBBQACAgIALyrUFAAAAAAAAAAAAAAAAAQAAAAcmVhbG0ucHJvcGVydGllc12STW/bMAyG7/4VBHL1hMjxRyIUA7Z1Hz0MK7r0MBQ7yBIda7GtTZKX5t+XUuB02M0UyeclX3OVrWDfGw+dGRA0dmZCD7NH5+G39P5knfYgJw3ODpTprAMJX6TvH6nmAeUwZqvEwJgbZQDjKYabyJjkiG8FPOXAGPuZCu+v0FGeoUVQA0oHAZ9DDrbtZq9kQA2ko3pURz+PI2oGSUEN1A1Ese7ARutCK89sDmZgCxZ8b+dBRzANoCFYOOCEjpj/0InwuhwpLcFV0qdZ7zq4vfv88fse3s2hxykY6jZ2ohUTPQd6fW0eZx+isJnIIofK/iXddkAiXazJAQ11kN4gqSjuHNW/vf8kGAn+whDOAr7eVoLXpdpu2826qIsCebOu1rKrCrXd7cpKl2Ue3c2kHs0k4MPDj/u9kJofPWNHxfjjIac0qb9JFcYH2t+6XNkp0Bb/vaYos3EwkWbhz+ORn4qazzvHT1xR/CdLI4vL5FlUF9fFs+WGiO3O0Zx4JdockPyQ5Nzy9xzqaKIcYo2Mi0JPlwS2g+VahIsnlb6u+AvpYkyNvFg35UbqupFt16rNtmpV0bZNVWKxa14AUEsHCPK12wu7AQAA0AIAAFBLAQIUABQACAgIALyrUFDytdsLuwEAANACAAAQAAAAAAAAAAAAAAAAAAAAAAByZWFsbS5wcm9wZXJ0aWVzUEsFBgAAAAABAAEAPgAAAPkBAAAAAA==</con:data><con:id>44a0d81f-d7c6-4684-87ea-e103cfa5aa7a</con:id></con:attachment><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/uploadFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="720a8887-2313-4e99-ab70-45a7d5112ea7" isOneWay="false" action="" name="getFile" bindingOperationName="getFile" type="Request-Response" outputName="getFileResponse" inputName="getFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="498119a8-c078-49de-854f-bcd774ed2183" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:attachment><con:name>realm.properties</con:name><con:contentType>application/octet-stream</con:contentType><con:size>720</con:size><con:contentId>realm.properties</con:contentId><con:data>UEsDBBQACAgIALyrUFAAAAAAAAAAAAAAAAAQAAAAcmVhbG0ucHJvcGVydGllc12STW/bMAyG7/4VBHL1hMjxRyIUA7Z1Hz0MK7r0MBQ7yBIda7GtTZKX5t+XUuB02M0UyeclX3OVrWDfGw+dGRA0dmZCD7NH5+G39P5knfYgJw3ODpTprAMJX6TvH6nmAeUwZqvEwJgbZQDjKYabyJjkiG8FPOXAGPuZCu+v0FGeoUVQA0oHAZ9DDrbtZq9kQA2ko3pURz+PI2oGSUEN1A1Ese7ARutCK89sDmZgCxZ8b+dBRzANoCFYOOCEjpj/0InwuhwpLcFV0qdZ7zq4vfv88fse3s2hxykY6jZ2ohUTPQd6fW0eZx+isJnIIofK/iXddkAiXazJAQ11kN4gqSjuHNW/vf8kGAn+whDOAr7eVoLXpdpu2826qIsCebOu1rKrCrXd7cpKl2Ue3c2kHs0k4MPDj/u9kJofPWNHxfjjIac0qb9JFcYH2t+6XNkp0Bb/vaYos3EwkWbhz+ORn4qazzvHT1xR/CdLI4vL5FlUF9fFs+WGiO3O0Zx4JdockPyQ5Nzy9xzqaKIcYo2Mi0JPlwS2g+VahIsnlb6u+AvpYkyNvFg35UbqupFt16rNtmpV0bZNVWKxa14AUEsHCPK12wu7AQAA0AIAAFBLAQIUABQACAgIALyrUFDytdsLuwEAANACAAAQAAAAAAAAAAAAAAAAAAAAAAByZWFsbS5wcm9wZXJ0aWVzUEsFBgAAAAABAAEAPgAAAPkBAAAAAA==</con:data><con:id>44a0d81f-d7c6-4684-87ea-e103cfa5aa7a</con:id></con:attachment><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/uploadFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="720a8887-2313-4e99-ab70-45a7d5112ea7" isOneWay="false" action="" name="getFile" bindingOperationName="getFile" type="Request-Response" outputName="getFileResponse" inputName="getFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="498119a8-c078-49de-854f-bcd774ed2183" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getFile>
