@@ -110,7 +110,7 @@ public class Start
 		app.initJMX(cmd,server);
 
 		val context = new XmlWebApplicationContext();
-		context.setConfigLocations(getConfigLocations("classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml"));
+		context.setConfigLocations("classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml","classpath:org/bitbucket/eluinstra/digikoppeling/gb/processor.xml");
 		val contextLoaderListener = new ContextLoaderListener(context);
 		if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
 			handlerCollection.addHandler(app.createWebContextHandler(cmd,contextLoaderListener));
@@ -283,13 +283,6 @@ public class Start
 			val jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
 			server.addBean(jmxServer);
 		}
-	}
-
-	protected static String[] getConfigLocations(String configLocation)
-	{
-		val result = new ArrayList<>();
-		result.add(0,configLocation);
-		return result.toArray(new String[]{});
 	}
 
 	private void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
