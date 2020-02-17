@@ -438,7 +438,156 @@
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getFile>
-         <url>/8eIN4PR7y9B4CTFXmod3x6rq26ScoEHHdmzfSM4oJoGTj5IGxVOWggE0rvPaU8fghlv8SNL0rrQskgaWRigWlnlsHftodSotEIecLzGIjuPAiN0ZnLP6nQrBi6CS9Ijc</url>
+         <url>/fRbMct1pzyaNTZu6UO9k0I4SDyvf8OUMFRHHg0AACdIAYTYRxTQ5W7ZeambVA5xiAJPtT14iButvkPzS3Zm9KWNhf7EUWl4zvbQ6H2JYtk2GADfmoEzaUop80tFDzlUC</url>
       </ns:getFile>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/findFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/findFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="b9a62073-85b1-4db1-bdcd-fab418dcc08a" wsaVersion="NONE" name="GBServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.gb.digikoppeling.eluinstra.bitbucket.org/}GBServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/gb?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/gb?wsdl"><con:part><con:url>http://localhost:8080/service/gb?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="GBServiceImplService" targetNamespace="http://service.gb.digikoppeling.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.gb.digikoppeling.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0">
+  <wsdl:import location="http://localhost:8080/service/gb?wsdl=GBService.wsdl" namespace="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0"></wsdl:import>
+  <wsdl:binding name="GBServiceImplServiceSoapBinding" type="ns1:GBService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getExternalDataReference">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getExternalDataReference">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getExternalDataReferenceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="GBServiceException">
+        <soap:fault name="GBServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GBServiceImplService">
+    <wsdl:port binding="tns:GBServiceImplServiceSoapBinding" name="GBServiceImplPort">
+      <soap:address location="http://localhost:8080/service/gb"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/gb?wsdl=GBService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="GBService" targetNamespace="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://www.logius.nl/digikoppeling/gb/2010/10" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.logius.nl/digikoppeling/gb/2010/10">
+      <xs:element name="digikoppeling-external-data-references" type="tns:external-data-reference"/>
+      <xs:complexType name="external-data-reference">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" name="data-reference" type="tns:data-reference"/>
+        </xs:sequence>
+        <xs:attribute name="profile" type="tns:gb-profile"/>
+      </xs:complexType>
+      <xs:complexType name="data-reference">
+        <xs:sequence>
+          <xs:element name="lifetime">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" name="creationTime" type="tns:datetimeType"/>
+                <xs:element minOccurs="0" name="expirationTime" type="tns:datetimeType"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="content">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="filename" type="xs:NCName"/>
+                <xs:element name="checksum" type="tns:checksumType"/>
+                <xs:element name="size" type="xs:unsignedLong"/>
+              </xs:sequence>
+              <xs:attribute name="contentType" type="xs:string" use="required"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="transport">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="location">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element minOccurs="0" name="senderUrl" type="tns:urlType"/>
+                      <xs:element minOccurs="0" name="receiverUrl" type="tns:urlType"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="contextId" type="xs:anySimpleType"/>
+      </xs:complexType>
+      <xs:complexType name="datetimeType">
+        <xs:simpleContent>
+          <xs:extension base="xs:anySimpleType">
+            <xs:attribute name="type" type="xs:string" use="required"/>
+          </xs:extension>
+        </xs:simpleContent>
+      </xs:complexType>
+      <xs:complexType name="checksumType">
+        <xs:simpleContent>
+          <xs:extension base="tns:md5String">
+            <xs:attribute name="type" type="xs:string" use="required"/>
+          </xs:extension>
+        </xs:simpleContent>
+      </xs:complexType>
+      <xs:complexType name="md5String">
+        <xs:simpleContent>
+          <xs:extension base="tns:anyString"/>
+        </xs:simpleContent>
+      </xs:complexType>
+      <xs:simpleType name="anyString">
+        <xs:restriction base="xs:string"/>
+      </xs:simpleType>
+      <xs:complexType name="urlType">
+        <xs:simpleContent>
+          <xs:extension base="tns:anyString">
+            <xs:attribute name="type" type="xs:anySimpleType" use="required"/>
+          </xs:extension>
+        </xs:simpleContent>
+      </xs:complexType>
+      <xs:simpleType name="gb-profile">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="digikoppeling-gb-1.0"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0" xmlns:ns1="http://www.logius.nl/digikoppeling/gb/2010/10">
+      <xs:import namespace="http://www.logius.nl/digikoppeling/gb/2010/10"/>
+      <xs:element name="getExternalDataReference" type="tns:getExternalDataReference"/>
+      <xs:element name="getExternalDataReferenceResponse" type="tns:getExternalDataReferenceResponse"/>
+      <xs:complexType name="getExternalDataReference">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" name="virtualPath" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getExternalDataReferenceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="external-data-reference" type="ns1:external-data-reference"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="GBServiceException" type="tns:GBServiceException"/>
+      <xs:complexType name="GBServiceException">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="GBServiceException">
+    <wsdl:part element="ns1:GBServiceException" name="GBServiceException"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getExternalDataReference">
+    <wsdl:part element="ns1:getExternalDataReference" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getExternalDataReferenceResponse">
+    <wsdl:part element="ns1:getExternalDataReferenceResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GBService">
+    <wsdl:operation name="getExternalDataReference">
+      <wsdl:input message="ns1:getExternalDataReference" name="getExternalDataReference"></wsdl:input>
+      <wsdl:output message="ns1:getExternalDataReferenceResponse" name="getExternalDataReferenceResponse"></wsdl:output>
+      <wsdl:fault message="ns1:GBServiceException" name="GBServiceException"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/service/gb</con:endpoint></con:endpoints><con:operation id="f806be11-5b89-4392-914c-33ee83d08843" isOneWay="false" action="" name="getExternalDataReference" bindingOperationName="getExternalDataReference" type="Request-Response" outputName="getExternalDataReferenceResponse" inputName="getExternalDataReference" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="c670be37-63dd-4451-948f-1b7db9852e29" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/gb</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns:getExternalDataReference>
+         <virtualPath>/fRbMct1pzyaNTZu6UO9k0I4SDyvf8OUMFRHHg0AACdIAYTYRxTQ5W7ZeambVA5xiAJPtT14iButvkPzS3Zm9KWNhf7EUWl4zvbQ6H2JYtk2GADfmoEzaUop80tFDzlUC</virtualPath>
+      </ns:getExternalDataReference>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.gb.digikoppeling.eluinstra.bitbucket.org/GBService/getExternalDataReference"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>
