@@ -17,11 +17,13 @@ package org.bitbucket.eluinstra.fs.service.web.menu;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
+import lombok.NonNull;
+
 public class MenuDividerPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public MenuDividerPanel(String id)
+	public MenuDividerPanel(@NonNull final String id)
 	{
 		super(id,null);
 	}

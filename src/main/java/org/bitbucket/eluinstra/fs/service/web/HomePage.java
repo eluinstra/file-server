@@ -23,20 +23,31 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer;
-import org.springframework.core.io.Resource;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HomePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	@NonFinal
+	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
 
 	public HomePage(final PageParameters parameters) throws IOException
 	{
 		super(parameters);
-		Resource file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
-		add(new WebMarkupContainer("configurationFile.found").add(new Label("configurationFile",file.getFile().getAbsolutePath())).setVisible(file.exists()));
-		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configurationFile",file.getFile().getAbsolutePath()),new BookmarkablePageLink<Void>("configurationPageLink",/*FSServicePropertiesPage*/HomePage.class)).setVisible(!file.exists()));
+		val file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
+		add(new WebMarkupContainer("configurationFile.found")
+				.add(new Label("configurationFile",file.getFile().getAbsolutePath()))
+				.setVisible(file.exists()));
+		add(new WebMarkupContainer("configurationFile.notFound")
+				.add(new Label("configurationFile",file.getFile().getAbsolutePath()),
+						new BookmarkablePageLink<Void>("configurationPageLink",/*FSServicePropertiesPage*/HomePage.class))
+				.setVisible(!file.exists()));
 	}
 
 	@Override

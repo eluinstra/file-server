@@ -31,40 +31,46 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.bitbucket.eluinstra.fs.service.web.menu.MenuItem;
 import org.bitbucket.eluinstra.fs.service.web.menu.MenuLinkItem;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Getter
 public class WicketApplication extends WebApplication
 {
-	public List<MenuItem> menuItems = new ArrayList<>();
+	List<MenuItem> menuItems = new ArrayList<>();
 	
 	public WicketApplication()
 	{
-		MenuItem home = new MenuLinkItem("0","home",getHomePage());
+		val home = new MenuLinkItem("0","home",getHomePage());
 		menuItems.add(home);
 		
-		MenuItem client = new MenuItem("1","clientService");
+		val client = new MenuItem("1","clientService");
 		menuItems.add(client);
 
-		MenuItem file = new MenuItem("2","fileService");
+		val file = new MenuItem("2","fileService");
 		menuItems.add(file);
 
-		MenuItem configuration = new MenuItem("3","configuration");
+		val configuration = new MenuItem("3","configuration");
 		//new MenuLinkItem(configuration,"1","fsServiceProperties",org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.class);
 		menuItems.add(configuration);
 
-		List<ExtensionProvider> extensionProviders = ExtensionProvider.get();
+		val extensionProviders = ExtensionProvider.get();
 		if (extensionProviders.size() > 0)
 		{
-			MenuItem extensions = new MenuItem("5","extensions");
+			val extensions = new MenuItem("5","extensions");
 			menuItems.add(extensions);
-			AtomicInteger i = new AtomicInteger(1);
+			val i = new AtomicInteger(1);
 			extensionProviders.forEach(p ->
 			{
-				MenuItem epmi = new MenuItem("" + i.getAndIncrement(),p.getName());
-				extensions.addChild(epmi);
-				p.getMenuItems().forEach(m -> epmi.addChild(m));
+				val epmi = new MenuItem(extensions,"" + i.getAndIncrement(),p.getName());
+				p.getMenuItems(epmi);
 			});
 		}
 
-		MenuItem about = new MenuLinkItem("6","about",org.bitbucket.eluinstra.fs.service.web.AboutPage.class);
+		val about = new MenuLinkItem("6","about",org.bitbucket.eluinstra.fs.service.web.AboutPage.class);
 		menuItems.add(about);
 	}
 	
@@ -98,11 +104,6 @@ public class WicketApplication extends WebApplication
 		mountPage("/404",PageNotFoundPage.class); 
 	}
 	
-	public List<MenuItem> getMenuItems()
-	{
-		return menuItems;
-	}
-
 	public static WicketApplication get()
 	{
 		return (WicketApplication)WebApplication.get();

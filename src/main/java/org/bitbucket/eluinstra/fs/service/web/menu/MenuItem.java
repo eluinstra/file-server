@@ -21,19 +21,26 @@ import java.util.List;
 
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Getter
 public class MenuItem implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
-	private String id;
-	private String name;
-	private MenuItem parent;
-	private List<MenuItem> children = new ArrayList<>();
-
-	public MenuItem(String id, String name)
-	{
-		this.id = id;
-		this.name = name;
-	}
+	@NonNull
+	String id;
+	@NonNull
+	String name;
+	@NonFinal
+	MenuItem parent;
+	List<MenuItem> children = new ArrayList<>();
 
 	public MenuItem(MenuItem parent, String id, String name)
 	{
@@ -43,31 +50,9 @@ public class MenuItem implements IClusterable
 		this.parent.children.add(this);
 	}
 
-	public String getId()
-	{
-		return id;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public MenuItem getParent()
-	{
-		return parent;
-	}
-
 	public List<MenuItem> getChildren()
 	{
 		return Collections.unmodifiableList(children);
-	}
-
-	public void addChild(MenuItem child)
-	{
-		child.id = this.id + "." + children.size();
-		child.parent = this;
-		children.add(child);
 	}
 
 	@Override

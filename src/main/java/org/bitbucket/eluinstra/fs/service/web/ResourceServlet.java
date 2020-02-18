@@ -16,7 +16,6 @@
 package org.bitbucket.eluinstra.fs.service.web;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -26,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.util.io.IOUtils;
+
+import lombok.val;
 
 public class ResourceServlet extends GenericServlet
 {
@@ -40,7 +41,7 @@ public class ResourceServlet extends GenericServlet
 	@Override
 	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException
 	{
-		InputStream input = this.getClass().getResourceAsStream(((HttpServletRequest)request).getServletPath() + ((HttpServletRequest)request).getPathInfo());
+		val input = this.getClass().getResourceAsStream(((HttpServletRequest)request).getServletPath() + ((HttpServletRequest)request).getPathInfo());
 		if (input == null)
 			((HttpServletResponse)response).setStatus(204);
 		else
@@ -53,21 +54,21 @@ public class ResourceServlet extends GenericServlet
 
 	private String getContentType(String pathInfo)
 	{
-		String result = null;
 		if (pathInfo.endsWith(".css"))
 			return "text/css";
-		if (pathInfo.endsWith(".js"))
+		else if (pathInfo.endsWith(".js"))
 			return "text/javascript";
-		if (pathInfo.endsWith(".gif"))
+		else if (pathInfo.endsWith(".gif"))
 			return "image/gif";
-		if (pathInfo.endsWith(".eot"))
+		else if (pathInfo.endsWith(".eot"))
 			return "application/vnd.ms-fontobject";
-		if (pathInfo.endsWith(".svg"))
+		else if (pathInfo.endsWith(".svg"))
 			return "image/svg+xml";
-		if (pathInfo.endsWith(".ttf"))
+		else if (pathInfo.endsWith(".ttf"))
 			return "font/ttf";
-		if (pathInfo.endsWith(".woff"))
+		else if (pathInfo.endsWith(".woff"))
 			return "application/font-woff";
-		return result;
+		else
+			return null;
 	}
 }

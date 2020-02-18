@@ -18,7 +18,6 @@ package org.bitbucket.eluinstra.fs.service.web;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Map;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -28,19 +27,28 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer;
 import org.bitbucket.eluinstra.fs.service.Utils;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AboutPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	@NonFinal
+	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
 
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
 	{
 		super(parameters);
-		add(new WebMarkupContainer("fs-service.version").add(new Label("version",Utils.readVersion("/META-INF/maven/org.bitbucket.eluinstra.fs.service/fs-service/pom.properties"))));
-		add(new WebMarkupContainer("fs-core.version").add(new Label("version",Utils.readVersion("/META-INF/maven/org.bitbucket.eluinstra.fs.core/fs-core/pom.properties"))));
-		Map<String,String> properties = propertyPlaceholderConfigurer.getProperties();
-		StringWriter writer = new StringWriter();
+		add(new WebMarkupContainer("fs-service.version")
+				.add(new Label("version",Utils.readVersion("/META-INF/maven/org.bitbucket.eluinstra.fs.service/fs-service/pom.properties"))));
+		add(new WebMarkupContainer("fs-core.version")
+				.add(new Label("version",Utils.readVersion("/META-INF/maven/org.bitbucket.eluinstra.fs.core/fs-core/pom.properties"))));
+		val properties = propertyPlaceholderConfigurer.getProperties();
+		val writer = new StringWriter();
 		Utils.writeProperties(properties,writer);
 		add(new MultiLineLabel("properties",writer.toString()));
 	}

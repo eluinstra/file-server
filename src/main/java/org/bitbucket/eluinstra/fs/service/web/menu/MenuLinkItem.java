@@ -17,18 +17,24 @@ package org.bitbucket.eluinstra.fs.service.web.menu;
 
 import org.apache.wicket.Page;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MenuLinkItem extends MenuItem
 {
 	private static final long serialVersionUID = 1L;
-	private Class<? extends Page> pageClass;
+	@NonNull
+	Class<? extends Page> pageClass;
 	
-	public MenuLinkItem(String id, String name, Class<? extends Page> pageClass)
+	public MenuLinkItem(final String id, final String name, final Class<? extends Page> pageClass)
 	{
 		super(id,name);
 		this.pageClass = pageClass;
 	}
 
-	public MenuLinkItem(MenuItem parent, String id, String name, Class<? extends Page> pageClass)
+	public MenuLinkItem(final MenuItem parent, final String id, final String name, final Class<? extends Page> pageClass)
 	{
 		super(parent,id,name);
 		this.pageClass = pageClass;

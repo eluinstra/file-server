@@ -15,11 +15,13 @@
  */
 package org.bitbucket.eluinstra.fs.service.web.menu;
 
+import lombok.NonNull;
+
 public class MenuDivider extends MenuItem
 {
 	private static final long serialVersionUID = 1L;
 	
-	public MenuDivider(MenuItem parent, String id)
+	public MenuDivider(@NonNull final MenuItem parent, @NonNull final String id)
 	{
 		super(parent,id,"");
 	}

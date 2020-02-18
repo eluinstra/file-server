@@ -21,13 +21,15 @@ import java.util.ServiceLoader;
 
 import org.bitbucket.eluinstra.fs.service.web.menu.MenuItem;
 
+import lombok.val;
+
 public abstract class ExtensionProvider
 {
 	public static List<ExtensionProvider> get()
 	{
-		ServiceLoader<ExtensionProvider> providers = ServiceLoader.load(ExtensionProvider.class);
-		List<ExtensionProvider> result = new ArrayList<>();
-		for (ExtensionProvider provider : providers)
+		val providers = ServiceLoader.load(ExtensionProvider.class);
+		val result = new ArrayList<ExtensionProvider>();
+		for (val provider : providers)
 			result.add(provider);
 		return result;
 	}
@@ -35,6 +37,6 @@ public abstract class ExtensionProvider
 	public abstract String getSpringConfigurationFile();
 	public abstract String getHSQLDBFile();
 	public abstract String getName();
-	public abstract List<MenuItem> getMenuItems();
+	public abstract List<MenuItem> getMenuItems(MenuItem parent);
 
 }

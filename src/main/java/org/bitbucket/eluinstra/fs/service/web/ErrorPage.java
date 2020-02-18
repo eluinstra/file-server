@@ -26,6 +26,11 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.http.PageExpiredException;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ErrorPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
@@ -35,7 +40,7 @@ public class ErrorPage extends BasePage
 		
 		private String title;
 
-		private ErrorType(String title)
+		private ErrorType(final String title)
 		{
 			this.title = title;
 		}
@@ -43,7 +48,7 @@ public class ErrorPage extends BasePage
 		{
 			return title;
 		}
-		public static ErrorType get(Exception exception)
+		public static ErrorType get(final Exception exception)
 		{
 			if (exception instanceof PageExpiredException)
 				return PAGE_EXPIRED;
@@ -54,24 +59,36 @@ public class ErrorPage extends BasePage
 		}
 	}
 	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private ErrorType errorType;
+	ErrorType errorType;
 
-	public ErrorPage(Exception exception)
+	public ErrorPage(final Exception exception)
 	{
 		logger.error("",exception);
 		errorType = ErrorType.get(exception);
-		add(new WebMarkupContainer("error").add(new HomePageLink("homePageLink")).setVisible(ErrorType.ERROR.equals(errorType)));
-		add(new WebMarkupContainer("pageExpired").add(new HomePageLink("homePageLink")).setVisible(ErrorType.PAGE_EXPIRED.equals(errorType)));
-		add(new WebMarkupContainer("unauthorizedAction").add(new HomePageLink("homePageLink")).setVisible(ErrorType.UNAUTHORIZED_ACTION.equals(errorType)));
-		boolean showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
-		String stackTrace = null;
+		add(new WebMarkupContainer("error")
+				.add(new HomePageLink("homePageLink"))
+				.setVisible(ErrorType.ERROR.equals(errorType)));
+		add(new WebMarkupContainer("pageExpired")
+				.add(new HomePageLink("homePageLink"))
+				.setVisible(ErrorType.PAGE_EXPIRED.equals(errorType)));
+		add(new WebMarkupContainer("unauthorizedAction")
+				.add(new HomePageLink("homePageLink"))
+				.setVisible(ErrorType.UNAUTHORIZED_ACTION.equals(errorType)));
+		val showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
+		add(new Label("stackTrace",getStackTrace(exception,showStackTrace))
+				.setVisible(showStackTrace));
+	}
+
+	private String getStackTrace(final Exception exception, final boolean showStackTrace)
+	{
 		if (showStackTrace)
 		{
-			StringWriter sw = new StringWriter();
+			val sw = new StringWriter();
 			exception.printStackTrace(new PrintWriter(sw));
-			stackTrace = sw.getBuffer().toString();
+			return sw.getBuffer().toString();
 		}
-		add(new Label("stackTrace",stackTrace).setVisible(showStackTrace));
+		else
+			return null;
 	}
 
 	@Override
