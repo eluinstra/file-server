@@ -15,23 +15,23 @@
  */
 package org.bitbucket.eluinstra.fs.service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-
+import lombok.AccessLevel;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 
-public class Log4j2Configurer
+@FieldDefaults(level=AccessLevel.PROTECTED, makeFinal=true)
+public class StartGB extends Start
 {
-	public static void initLogging(final String uri) throws URISyntaxException
+	public static void main(String[] args) throws Exception
 	{
-		if (StringUtils.isNotEmpty(uri))
-		{
-			val context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-			context.setConfigLocation(new URI(uri));
-		}
+		val app = new StartGB();
+		app.startService(args);
+	}
+	
+	@Override
+	protected String[] getConfigLocations()
+	{
+		return new String[]{"classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml","classpath:org/bitbucket/eluinstra/digikoppeling/gb/processor.xml"};
 	}
 
 }

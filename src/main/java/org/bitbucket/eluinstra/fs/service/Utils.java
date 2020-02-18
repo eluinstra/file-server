@@ -23,16 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TreeSet;
+
+import lombok.NonNull;
+import lombok.val;
 
 public class Utils
 {
-	public static String readVersion(String propertiesFile)
+	public static String readVersion(@NonNull final String propertiesFile)
 	{
 		try
 		{
-			Properties properties = Utils.readProperties(Utils.class.getResourceAsStream(propertiesFile));
+			val properties = Utils.readProperties(Utils.class.getResourceAsStream(propertiesFile));
 			return properties.getProperty("artifactId") + "-" + properties.getProperty("version");
 		}
 		catch (Exception e)
@@ -41,21 +43,21 @@ public class Utils
 		}
 	}
 	
-	public static Properties readProperties(InputStream inputStream) throws IOException
+	public static Properties readProperties(@NonNull final InputStream inputStream) throws IOException
 	{
-		Properties properties = new Properties();
+		val properties = new Properties();
 		properties.load(inputStream);
 		return properties;
 	}
 	
-	public static void writeProperties(Properties properties, Writer writer)
+	public static void writeProperties(@NonNull final Properties properties, @NonNull final Writer writer)
 	{
 		properties.list(new PrintWriter(writer,true));
 	}
 	
-	public static void writeProperties(Map<String,String> properties, Writer writer) throws IOException
+	public static void writeProperties(@NonNull final Map<String,String> properties, @NonNull final Writer writer) throws IOException
 	{
-		Set<String> keySet = new TreeSet<String>(properties.keySet());
+		val keySet = new TreeSet<String>(properties.keySet());
 		for (String key : keySet)
 		{
 			writer.write(key);
@@ -65,7 +67,7 @@ public class Utils
 		}
 	}
 
-	public static <T> List<T> toList(List<T> list)
+	public static <T> List<T> toList(final List<T> list)
 	{
 		return list == null ? new ArrayList<>() : list;
 	}
