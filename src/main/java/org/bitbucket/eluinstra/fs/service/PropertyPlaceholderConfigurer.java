@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
+@SuppressWarnings("deprecation")
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
 public class PropertyPlaceholderConfigurer extends org.springframework.beans.factory.config.PropertyPlaceholderConfigurer

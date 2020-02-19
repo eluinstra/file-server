@@ -327,7 +327,7 @@ public class Start
 
 	protected SslContextFactory createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
 	{
-		val result = new SslContextFactory();
+		val result = new SslContextFactory.Server();
 		addKeyStore(cmd,result);
 		if (cmd.hasOption("clientAuthentication"))
 			addTrustStore(cmd,result);
@@ -354,7 +354,7 @@ public class Start
 		}
 	}
 
-	protected void addTrustStore(CommandLine cmd,SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	protected void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
 		val trustStorePath = cmd.getOptionValue("trustStorePath");
@@ -561,13 +561,13 @@ public class Start
 
 	protected SslContextFactory createFSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
 	{
-		val result = new SslContextFactory();
+		val result = new SslContextFactory.Server();
 		addFSKeyStore(properties,result);
 		addFSTrustStore(properties,result);
 		return result;
 	}
 
-	protected void addFSKeyStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	protected void addFSKeyStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStore = getResource(properties.get("keystore.path"));
 		if (keyStore != null && keyStore.exists())
@@ -587,7 +587,7 @@ public class Start
 		}
 	}
 
-	protected void addFSTrustStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	protected void addFSTrustStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStore = getResource(properties.get("truststore.path"));
 		if (trustStore != null && trustStore.exists())
