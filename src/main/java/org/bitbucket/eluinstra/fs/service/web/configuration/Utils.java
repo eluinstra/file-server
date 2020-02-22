@@ -24,10 +24,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -38,6 +36,8 @@ import org.bitbucket.eluinstra.fs.core.KeyStoreManager.KeyStoreType;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+
+import lombok.val;
 
 public class Utils
 {
@@ -79,15 +79,15 @@ public class Utils
 	{
 		try (Scanner scanner = new Scanner(jdbcURL))
 		{
-			String protocol = scanner.findInLine("(://|@|:@//)");
+			val protocol = scanner.findInLine("(://|@|:@//)");
 			if (protocol != null)
 			{
-				String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
+				val urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
 				scanner.findInLine("(/|:|;databaseName=)");
-				String database = scanner.findInLine("[^;]*");
+				val database = scanner.findInLine("[^;]*");
 				if (urlString != null)
 				{
-					URL url = new URL("http://" + urlString);
+					val url = new URL("http://" + urlString);
 					model.setHost(url.getHost());
 					model.setPort(url.getPort() == -1 ? null : url.getPort());
 					model.setDatabase(database);
@@ -99,19 +99,19 @@ public class Utils
 
 	public static Resource getResource(String path) throws MalformedURLException, IOException
 	{
-		Resource result = new FileSystemResource(path);
+		val result = new FileSystemResource(path);
 		return result.exists() ? result : new ClassPathResource(path);
 	}
   
 	public static void testKeystore(KeyStoreType type, String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
-		Resource resource = getResource(path);
-		KeyStore keyStore = KeyStore.getInstance(type.name());
+		val resource = getResource(path);
+		val keyStore = KeyStore.getInstance(type.name());
 		keyStore.load(resource.getInputStream(),password.toCharArray());
-		Enumeration<String> aliases = keyStore.aliases();
+		val aliases = keyStore.aliases();
 		while (aliases.hasMoreElements())
 		{
-			String alias = aliases.nextElement();
+			val alias = aliases.nextElement();
 			if (keyStore.isKeyEntry(alias))
 				keyStore.getKey(alias,password.toCharArray());
 		}
@@ -119,16 +119,16 @@ public class Utils
 
 	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password) throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
-    ClassLoader loader = Utils.class.getClassLoader();
-    Class<?> driverClass = loader.loadClass(driverClassName);
-    Driver driver = (Driver)driverClass.newInstance();
+    val loader = Utils.class.getClassLoader();
+    val driverClass = loader.loadClass(driverClassName);
+    val driver = (Driver)driverClass.newInstance();
     if (!driver.acceptsURL(jdbcUrl))
     	throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid!");
-    Properties info = new Properties();
+    val info = new Properties();
     info.setProperty("user",username);
     if (password != null)
     	info.setProperty("password",password);
-    try (Connection connection = driver.connect(jdbcUrl,info))
+    try (val connection = driver.connect(jdbcUrl,info))
     {
     }
 	}

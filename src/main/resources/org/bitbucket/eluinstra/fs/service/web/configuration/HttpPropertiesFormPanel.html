@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+	<form wicket:id="form">
+		<div class="form-group" wicket:id="hostFeedback">
+			<label wicket:for="host" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<div class="input-group"><span class="input-group-addon" wicket:id="protocol"/><input type="text" class="form-control" wicket:id="host"/></div>
+			</div>
+		</div>
+		<div class="form-group" wicket:id="portFeedback">
+			<label wicket:for="port" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" wicket:id="port"/>
+			</div>
+		</div>
+		<div class="form-group" wicket:id="pathFeedback">
+			<label wicket:for="path" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<div class="input-group"><span class="input-group-addon">/</span><input type="text" class="form-control" wicket:id="path"/></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label wicket:for="url" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" wicket:id="url"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label wicket:for="base64Writer" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="base64Writer" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label wicket:for="ssl" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="ssl" />
+			</div>
+		</div>
+		<wicket:container wicket:id="sslProperties"/>
+	</form>
+</wicket:panel>
+</body>
+</html>

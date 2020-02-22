@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer;
+import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -46,7 +47,7 @@ public class HomePage extends BasePage
 				.setVisible(file.exists()));
 		add(new WebMarkupContainer("configurationFile.notFound")
 				.add(new Label("configurationFile",file.getFile().getAbsolutePath()),
-						new BookmarkablePageLink<Void>("configurationPageLink",/*FSServicePropertiesPage*/HomePage.class))
+						new BookmarkablePageLink<Void>("configurationPageLink",FSServicePropertiesPage.class))
 				.setVisible(!file.exists()));
 	}
 

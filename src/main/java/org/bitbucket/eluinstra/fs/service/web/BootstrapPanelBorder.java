@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.bitbucket.eluinstra.fs.service.web.configuration;
+package org.bitbucket.eluinstra.fs.service.web;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.border.Border;
 
-@NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
-public class JdbcURL
+public class BootstrapPanelBorder extends Border
 {
-	String host = "localhost";
-	Integer port = 9001;
-	String database = "fs";
+	private static final long serialVersionUID = 1L;
+
+	public BootstrapPanelBorder(final String id, final String title, final Component...components)
+	{
+		super(id);
+		addToBorder(new Label("title",title));
+		add(components);
+	}
+
 }
