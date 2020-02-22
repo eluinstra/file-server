@@ -54,7 +54,7 @@ public class WicketApplication extends WebApplication
 		menuItems.add(file);
 
 		val configuration = new MenuItem("3","configuration");
-		//new MenuLinkItem(configuration,"1","fsServiceProperties",org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.class);
+		new MenuLinkItem(configuration,"1","fsServiceProperties",org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.class);
 		menuItems.add(configuration);
 
 		val extensionProviders = ExtensionProvider.get();
@@ -92,7 +92,7 @@ public class WicketApplication extends WebApplication
 		super.init();
 		getDebugSettings().setDevelopmentUtilitiesEnabled(true);
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
-		getJavaScriptLibrarySettings().setJQueryReference(new JavaScriptResourceReference(HomePage.class,"../../../../../js/jquery-min.js"));
+		getJavaScriptLibrarySettings().setJQueryReference(new JavaScriptResourceReference(HomePage.class,"../../../../../../js/jquery-min.js"));
 		getRequestCycleListeners().add(new IRequestCycleListener()
 		{
 			@Override

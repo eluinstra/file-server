@@ -13,19 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.bitbucket.eluinstra.fs.service.web.configuration;
+package org.bitbucket.eluinstra.fs.service.web;
+
+import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.IModel;
 
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
-public class JdbcURL
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class ResetButton extends Button //GoToButton
 {
-	String host = "localhost";
-	Integer port = 9001;
-	String database = "fs";
+	private static final long serialVersionUID = 1L;
+	Class<? extends Page> page;
+
+	public ResetButton(final String id, final IModel<String> model, final Class<? extends Page> page)
+	{
+		super(id,model);
+		this.page = page;
+		setDefaultFormProcessing(false);
+	}
+
+	@Override
+	public void onSubmit()
+	{
+		setResponsePage(page);
+	}
 }

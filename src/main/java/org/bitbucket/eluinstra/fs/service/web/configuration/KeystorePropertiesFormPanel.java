@@ -15,17 +15,14 @@
  */
 package org.bitbucket.eluinstra.fs.service.web.configuration;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.apache.wicket.model.IModel;
 
-@NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
-public class JdbcURL
+public class KeystorePropertiesFormPanel extends JavaKeyStorePropertiesFormPanel
 {
-	String host = "localhost";
-	Integer port = 9001;
-	String database = "fs";
+	private static final long serialVersionUID = 1L;
+
+	public KeystorePropertiesFormPanel(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+	{
+		super(id,model);
+	}
 }
