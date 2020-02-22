@@ -48,23 +48,23 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	boolean required;
 
-	public JavaKeyStorePropertiesFormPanel(final String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+	public JavaKeyStorePropertiesFormPanel(final String id, final IModel<JavaKeyStoreProperties> javaKeyStorePropertiesModel)
 	{
-		this(id,model,true);
+		this(id,javaKeyStorePropertiesModel,true);
 	}
 
-	public JavaKeyStorePropertiesFormPanel(final String id, final IModel<JavaKeyStorePropertiesFormModel> model, final boolean required)
+	public JavaKeyStorePropertiesFormPanel(final String id, final IModel<JavaKeyStoreProperties> javaKeyStorePropertiesModel, final boolean required)
 	{
-		super(id,model);
+		super(id,javaKeyStorePropertiesModel);
 		this.required = required;
-		add(new JavaKeyStorePropertiesForm("form",model));
+		add(new JavaKeyStorePropertiesForm("form",javaKeyStorePropertiesModel));
 	}
 
-	public class JavaKeyStorePropertiesForm extends Form<JavaKeyStorePropertiesFormModel>
+	public class JavaKeyStorePropertiesForm extends Form<JavaKeyStoreProperties>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public JavaKeyStorePropertiesForm(final String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+		public JavaKeyStorePropertiesForm(final String id, final IModel<JavaKeyStoreProperties> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
@@ -73,7 +73,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 			add(createTestButton("test",model));
 		}
 
-		private Button createTestButton(final String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+		private Button createTestButton(final String id, final IModel<JavaKeyStoreProperties> model)
 		{
 			return new Button(id,new ResourceModel("cmd.test"))
 			{
@@ -101,7 +101,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	@AllArgsConstructor
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
-	public static class JavaKeyStorePropertiesFormModel implements IClusterable
+	public static class JavaKeyStoreProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull

@@ -15,16 +15,17 @@
  */
 package org.bitbucket.eluinstra.fs.service.web;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum JQueryLocale
 {
 	EN("en");
 	
-	private String s;
-
-	private JQueryLocale(String s)
-	{
-		this.s = s;
-	}
+	String s;
 
 	@Override
 	public String toString()

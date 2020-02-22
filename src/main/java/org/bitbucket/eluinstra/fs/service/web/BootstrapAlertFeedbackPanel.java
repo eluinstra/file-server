@@ -25,34 +25,32 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 {
-	private static final long serialVersionUID = 1L;
+	@RequiredArgsConstructor
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+	@Getter
 	private enum ErrorLevel
 	{
 		UNDEFINED(0,"alert-info"), DEBUG(100,"alert-info"), INFO(200,"alert-info"), SUCCESS(250,"alert-success"), WARNING(300,"alert-warning"), ERROR(400,"alert-danger"), FATAL(500,"alert-danger");
 		
-		private int errorCode;
-		private String cssClass;
+		int errorCode;
+		String cssClass;
 
-		private ErrorLevel(int errorCode, String cssClass)
-		{
-			this.errorCode = errorCode;
-			this.cssClass = cssClass;
-		}
-		
 		public static ErrorLevel getErrorLevel(final int errorCode)
 		{
 			return Arrays.stream(ErrorLevel.values()).filter(e -> errorCode == e.errorCode).findFirst().orElse(null);
 		}
-		
-		public String getCssClass()
-		{
-			return cssClass;
-		}
 	}
+
+	private static final long serialVersionUID = 1L;
 
 	public BootstrapAlertFeedbackPanel(final String id)
 	{

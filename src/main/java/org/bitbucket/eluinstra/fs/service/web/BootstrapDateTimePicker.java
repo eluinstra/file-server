@@ -44,6 +44,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	{
 		H12, H24;
 	}
+
 	private static final long serialVersionUID = 1L;
 	String format;
 	String formatJS;
@@ -62,17 +63,18 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	{
 		this(id,(IModel<Date>)null);
 	}
-	public BootstrapDateTimePicker(final String id, String format, Type type)
+
+	public BootstrapDateTimePicker(final String id, final String format, final Type type)
 	{
 		this(id,null,format,type);
 	}
 	
-	public BootstrapDateTimePicker(final String id, IModel<Date> model)
+	public BootstrapDateTimePicker(final String id, final IModel<Date> model)
 	{
 		this(id,model,"dd-MM-yyyy HH:mm:ss",Type.DATE_TIME);
 	}
 
-	public BootstrapDateTimePicker(final String id, IModel<Date> model, String format, Type type)
+	public BootstrapDateTimePicker(final String id, final IModel<Date> model, final String format, final Type type)
 	{
 		super(id,model);
 		this.format = format;

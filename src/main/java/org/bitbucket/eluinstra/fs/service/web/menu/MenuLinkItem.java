@@ -28,13 +28,13 @@ public class MenuLinkItem extends MenuItem
 	@NonNull
 	Class<? extends Page> pageClass;
 	
-	public MenuLinkItem(final String id, final String name, final Class<? extends Page> pageClass)
+	public MenuLinkItem(@NonNull final String id, @NonNull final String name, final Class<? extends Page> pageClass)
 	{
 		super(id,name);
 		this.pageClass = pageClass;
 	}
 
-	public MenuLinkItem(final MenuItem parent, final String id, final String name, final Class<? extends Page> pageClass)
+	public MenuLinkItem(@NonNull final MenuItem parent, @NonNull final String id, @NonNull final String name, final Class<? extends Page> pageClass)
 	{
 		super(parent,id,name);
 		this.pageClass = pageClass;

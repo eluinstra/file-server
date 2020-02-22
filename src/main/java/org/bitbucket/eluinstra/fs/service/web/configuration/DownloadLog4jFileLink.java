@@ -25,12 +25,16 @@ import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadLog4jFileLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(getClass());
 
-	public DownloadLog4jFileLink(String id)
+	public DownloadLog4jFileLink(final String id)
 	{
 		super(id,null);
 	}
@@ -51,11 +55,11 @@ public class DownloadLog4jFileLink extends Link<Void>
 		}
 	}
 
-	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
+	private ResourceStreamRequestHandler createRequestHandler(final String fileName, final IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName(fileName)
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName(fileName)
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

@@ -25,7 +25,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServicePropertiesFormModel;
+import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -36,13 +36,13 @@ public class DownloadFSServicePropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
-	FSServicePropertiesFormModel fsServicePropertiesFormModel;
+	FSServiceProperties fsServiceProperties;
 	PropertiesType propertiesType;
 
-	public DownloadFSServicePropertiesButton(final String id, final ResourceModel resourceModel, final FSServicePropertiesFormModel fsServicePropertiesFormModel, final PropertiesType propertiesType)
+	public DownloadFSServicePropertiesButton(final String id, final ResourceModel resourceModel, final FSServiceProperties fsServiceProperties, final PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
-		this.fsServicePropertiesFormModel = fsServicePropertiesFormModel;
+		this.fsServiceProperties = fsServiceProperties;
 		this.propertiesType = propertiesType;
 	}
 
@@ -52,7 +52,7 @@ public class DownloadFSServicePropertiesButton extends Button
 		try
 		{
 			val writer = new StringWriter();
-			new FSServicePropertiesWriter(writer,true).write(fsServicePropertiesFormModel);
+			new FSServicePropertiesWriter(writer,true).write(fsServiceProperties);
 			val resourceStream = new StringWriterResourceStream(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
@@ -63,7 +63,7 @@ public class DownloadFSServicePropertiesButton extends Button
 		}
 	}
 
-	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
+	private ResourceStreamRequestHandler createRequestHandler(final IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
 				.setFileName(propertiesType.getPropertiesFile())

@@ -27,27 +27,23 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.http.PageExpiredException;
 
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ErrorPage extends BasePage
 {
-	private static final long serialVersionUID = 1L;
+	@RequiredArgsConstructor
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+	@Getter
 	private enum ErrorType
 	{
 		ERROR("error"), PAGE_EXPIRED("pageExpired"), UNAUTHORIZED_ACTION("unauthorizedAction");
 		
-		private String title;
+		String title;
 
-		private ErrorType(final String title)
-		{
-			this.title = title;
-		}
-		public String getTitle()
-		{
-			return title;
-		}
 		public static ErrorType get(final Exception exception)
 		{
 			if (exception instanceof PageExpiredException)
@@ -58,6 +54,8 @@ public class ErrorPage extends BasePage
 				return ERROR;
 		}
 	}
+
+	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	ErrorType errorType;
 

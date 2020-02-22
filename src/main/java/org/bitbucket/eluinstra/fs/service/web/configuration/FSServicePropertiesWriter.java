@@ -20,11 +20,11 @@ import java.io.Writer;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServicePropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
+import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServiceProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.SslPropertiesFormPanel.SslProperties;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -40,7 +40,7 @@ public class FSServicePropertiesWriter
 	Writer writer;
 	boolean enableSslOverridePropeties;
 
-	public void write(@NonNull final FSServicePropertiesFormModel fsServiceProperties) throws IOException
+	public void write(@NonNull final FSServiceProperties fsServiceProperties) throws IOException
 	{
 		val p = new Properties();
 		write(p,fsServiceProperties.getServiceProperties());
@@ -49,13 +49,13 @@ public class FSServicePropertiesWriter
 		p.store(writer,"FS Service properties");
 	}
 
-  protected void write(final Properties properties, final ServicePropertiesFormModel serviceProperties)
+  protected void write(final Properties properties, final ServiceProperties serviceProperties)
   {
 		properties.setProperty("maxItemsPerPage",Integer.toString(serviceProperties.getMaxItemsPerPage()));
 		properties.setProperty("log4j.file",serviceProperties.getLog4jPropertiesFile() != null ? "file:" + serviceProperties.getLog4jPropertiesFile() : "");
   }
 
-	protected void write(final Properties properties, final HttpPropertiesFormModel httpProperties, final boolean enableSslOverridePropeties)
+	protected void write(final Properties properties, final HttpProperties httpProperties, final boolean enableSslOverridePropeties)
   {
 		properties.setProperty("fs.host",httpProperties.getHost());
 		properties.setProperty("fs.port",httpProperties.getPort() == null ? "" : httpProperties.getPort().toString());
@@ -66,7 +66,7 @@ public class FSServicePropertiesWriter
 			write(properties,httpProperties.getSslProperties(),enableSslOverridePropeties);
   }
 
-	protected void write(final Properties properties, final SslPropertiesFormModel sslProperties, final boolean enableSslOverridePropeties)
+	protected void write(final Properties properties, final SslProperties sslProperties, final boolean enableSslOverridePropeties)
   {
 		if (enableSslOverridePropeties && sslProperties.isOverrideDefaultProtocols())
 			properties.setProperty("https.protocols",StringUtils.join(sslProperties.getEnabledProtocols(),','));
@@ -81,7 +81,7 @@ public class FSServicePropertiesWriter
  		properties.setProperty("truststore.password",StringUtils.defaultString(sslProperties.getTruststoreProperties().getPassword()));
   }
 
-	protected void write(final Properties properties, final JdbcPropertiesFormModel jdbcProperties)
+	protected void write(final Properties properties, final JdbcProperties jdbcProperties)
   {
 		properties.setProperty("fs.jdbc.driverClassName",jdbcProperties.getDriver().getDriverClassName());
 		properties.setProperty("fs.jdbc.url",jdbcProperties.getUrl());

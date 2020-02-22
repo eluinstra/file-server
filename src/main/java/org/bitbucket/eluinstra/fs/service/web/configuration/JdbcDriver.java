@@ -17,6 +17,14 @@ package org.bitbucket.eluinstra.fs.service.web.configuration;
 
 import java.util.Arrays;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Getter
 public enum JdbcDriver
 {
 	HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s","select 1 from information_schema.system_tables"),
@@ -27,28 +35,10 @@ public enum JdbcDriver
 	ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s","select 1 from dual"),
 	ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s","select 1 from dual");
 	
-	private String driverClassName;
-	private String urlExpr;
-	private String preferredTestQuery;
+	String driverClassName;
+	String urlExpr;
+	String preferredTestQuery;
 
-	private JdbcDriver(String driverClassName, String urlExpr, String preferredTestQuery)
-	{
-		this.driverClassName = driverClassName;
-		this.urlExpr = urlExpr;
-		this.preferredTestQuery = preferredTestQuery;
-	}
-	public String getDriverClassName()
-	{
-		return driverClassName;
-	}
-	public String getURLExpr()
-	{
-		return urlExpr;
-	}
-	public String getPreferredTestQuery()
-	{
-		return preferredTestQuery;
-	}
 	public static JdbcDriver getJdbcDriver(String driverClassName)
 	{
 		return Arrays.stream(JdbcDriver.values()).filter(j -> j.driverClassName.equals(driverClassName)).findFirst().orElse(null);

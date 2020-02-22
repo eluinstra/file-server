@@ -21,7 +21,7 @@ public class HomePageLink extends BookmarkablePageLink<Void>
 {
 	private static final long serialVersionUID = 1L;
 
-	public HomePageLink(String id)
+	public HomePageLink(final String id)
 	{
 		super(id,WicketApplication.get().getHomePage());
 	}

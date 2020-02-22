@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
@@ -30,7 +29,6 @@ public enum PropertiesType
 {
 	FS_SERVICE("fs-service.properties");
 
-	@NonNull
 	String propertiesFile;
 
 	public static PropertiesType getPropertiesType(final String propertiesFile)

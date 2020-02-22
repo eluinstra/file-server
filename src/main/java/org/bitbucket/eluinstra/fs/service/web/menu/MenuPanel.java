@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
@@ -34,7 +35,7 @@ public class MenuPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		int level;
 
-		public MenuItems(String id, List<MenuItem> list, int level)
+		public MenuItems(@NonNull final String id, @NonNull final List<MenuItem> list, final int level)
 		{
 			super(id,list);
 			this.level = level;
@@ -42,7 +43,7 @@ public class MenuPanel extends Panel
 		}
 
 		@Override
-		protected void populateItem(ListItem<MenuItem> item)
+		protected void populateItem(final ListItem<MenuItem> item)
 		{
 			val menuItem = item.getModelObject();
 			if (menuItem instanceof MenuLinkItem)
@@ -57,7 +58,7 @@ public class MenuPanel extends Panel
 
 	private static final long serialVersionUID = 1L;
 
-	public MenuPanel(final String id, final List<MenuItem> menuItems)
+	public MenuPanel(@NonNull final String id, @NonNull final List<MenuItem> menuItems)
 	{
 		super(id,Model.of(menuItems));
 		add(new MenuItems("menuItems",menuItems,0));

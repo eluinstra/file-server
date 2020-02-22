@@ -23,11 +23,11 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bitbucket.eluinstra.fs.core.KeyStoreManager.KeyStoreType;
-import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServicePropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
+import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServiceProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.SslPropertiesFormPanel.SslProperties;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -42,7 +42,7 @@ public class FSServicePropertiesReader
 	@NonNull
 	Reader reader;
 
-	public void read(@NonNull final FSServicePropertiesFormModel fsServiceProperties, @NonNull final PropertiesType propertiesType) throws IOException
+	public void read(@NonNull final FSServiceProperties fsServiceProperties, @NonNull final PropertiesType propertiesType) throws IOException
 	{
 		val properties = new Properties();
 		properties.load(reader);
@@ -51,13 +51,13 @@ public class FSServicePropertiesReader
 		read(properties,fsServiceProperties.getJdbcProperties());
 	}
 	
-	protected void read(final Properties properties, final ServicePropertiesFormModel serviceProperties) throws MalformedURLException
+	protected void read(final Properties properties, final ServiceProperties serviceProperties) throws MalformedURLException
 	{
 		serviceProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
 		serviceProperties.setLog4jPropertiesFile(StringUtils.defaultString(properties.getProperty("log4j.file")).replaceFirst("file:",""));
 	}
 
-	protected void read(final Properties properties, final HttpPropertiesFormModel httpProperties) throws MalformedURLException
+	protected void read(final Properties properties, final HttpProperties httpProperties) throws MalformedURLException
 	{
 		httpProperties.setHost(properties.getProperty("fs.host"));
 		httpProperties.setPort(properties.getProperty("fs.port") == null ? null : new Integer(properties.getProperty("fs.port")));
@@ -68,7 +68,7 @@ public class FSServicePropertiesReader
 			read(properties,httpProperties.getSslProperties());
 	}
 
-	protected void read(final Properties properties, final SslPropertiesFormModel sslProperties) throws MalformedURLException
+	protected void read(final Properties properties, final SslProperties sslProperties) throws MalformedURLException
 	{
 		sslProperties.setOverrideDefaultProtocols(!StringUtils.isEmpty(properties.getProperty("https.protocols")));
 		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols",""),','))));
@@ -83,7 +83,7 @@ public class FSServicePropertiesReader
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));
 	}
 
-	protected void read(final Properties properties, final JdbcPropertiesFormModel jdbcProperties) throws MalformedURLException
+	protected void read(final Properties properties, final JdbcProperties jdbcProperties) throws MalformedURLException
 	{
 		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("fs.jdbc.driverClassName")));
 		//jdbcProperties.setJdbcURL(properties.getProperty("fs.jdbc.url"));
