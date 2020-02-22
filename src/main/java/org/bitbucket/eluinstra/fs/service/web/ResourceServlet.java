@@ -26,8 +26,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.util.io.IOUtils;
 
+import lombok.AccessLevel;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ResourceServlet extends GenericServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -39,7 +42,7 @@ public class ResourceServlet extends GenericServlet
 	}
 
 	@Override
-	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException
+	public void service(final ServletRequest request, final ServletResponse response) throws ServletException, IOException
 	{
 		val input = this.getClass().getResourceAsStream(((HttpServletRequest)request).getServletPath() + ((HttpServletRequest)request).getPathInfo());
 		if (input == null)
@@ -52,7 +55,7 @@ public class ResourceServlet extends GenericServlet
 		}
 	}
 
-	private String getContentType(String pathInfo)
+	private String getContentType(final String pathInfo)
 	{
 		if (pathInfo.endsWith(".css"))
 			return "text/css";

@@ -37,17 +37,17 @@ public class ServicePropertiesFormPanel extends Panel
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 
-	public ServicePropertiesFormPanel(String id, final IModel<ServicePropertiesFormModel> model)
+	public ServicePropertiesFormPanel(String id, final IModel<ServiceProperties> model)
 	{
 		super(id,model);
 		add(new ServicePropertiesForm("form",model));
 	}
 
-	public class ServicePropertiesForm extends Form<ServicePropertiesFormModel>
+	public class ServicePropertiesForm extends Form<ServiceProperties>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public ServicePropertiesForm(String id, final IModel<ServicePropertiesFormModel> model)
+		public ServicePropertiesForm(String id, final IModel<ServiceProperties> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
@@ -58,7 +58,7 @@ public class ServicePropertiesFormPanel extends Panel
 
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
-	public static class ServicePropertiesFormModel implements IClusterable
+	public static class ServiceProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		int maxItemsPerPage = 20;

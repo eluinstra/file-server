@@ -19,11 +19,13 @@ import java.net.URISyntaxException;
 
 import org.apache.wicket.core.util.resource.PackageResourceStream;
 
+import lombok.NonNull;
+
 public class XMLFileResourceStream extends PackageResourceStream
 {
 	private static final long serialVersionUID = 1L;
 
-	public XMLFileResourceStream(String location) throws URISyntaxException
+	public XMLFileResourceStream(@NonNull final String location) throws URISyntaxException
 	{
 		super(XMLFileResourceStream.class,location);
 	}

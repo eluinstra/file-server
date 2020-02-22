@@ -96,7 +96,7 @@ public class WicketApplication extends WebApplication
 		getRequestCycleListeners().add(new IRequestCycleListener()
 		{
 			@Override
-			public IRequestHandler onException(RequestCycle cycle, Exception e)
+			public IRequestHandler onException(final RequestCycle cycle, final Exception e)
 			{
 				return new RenderPageRequestHandler(new PageProvider(new ErrorPage(e)));
 			}

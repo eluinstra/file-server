@@ -15,14 +15,49 @@
  */
 package org.bitbucket.eluinstra.fs.service.web;
 
-public class WebMarkupContainer extends org.apache.wicket.markup.html.WebMarkupContainer
+import org.danekja.java.util.function.serializable.SerializableBooleanSupplier;
+
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public abstract class WebMarkupContainer extends org.apache.wicket.markup.html.WebMarkupContainer
 {
 	private static final long serialVersionUID = 1L;
 
-	public WebMarkupContainer(String id)
+	public static WebMarkupContainer of(final String id)
+	{
+		return new WebMarkupContainer(id)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return true;
+			}
+		};
+	}
+
+	public static WebMarkupContainer of(final String id, final SerializableBooleanSupplier isVisible)
+	{
+		return new WebMarkupContainer(id)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return isVisible.getAsBoolean();
+			}
+		};
+	}
+
+	private WebMarkupContainer(final String id)
 	{
 		super(id);
 		setOutputMarkupId(true);
 	}
 
+	public abstract boolean isVisible();
 }

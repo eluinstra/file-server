@@ -42,7 +42,7 @@ public class MenuItem implements IClusterable
 	MenuItem parent;
 	List<MenuItem> children = new ArrayList<>();
 
-	public MenuItem(MenuItem parent, String id, String name)
+	public MenuItem(final MenuItem parent, final String id, final String name)
 	{
 		this.id = parent.getId() + "." + id;
 		this.name = name;

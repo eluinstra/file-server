@@ -37,6 +37,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import lombok.NonNull;
 import lombok.val;
 
 public class Utils
@@ -65,19 +66,19 @@ public class Utils
 		return sslEngine.getSupportedCipherSuites();
 	}
 
-	public static String createURL(String hostname, int port)
+	public static String createURL(@NonNull final String hostname, final int port)
 	{
 		return hostname + (port == -1 ? "" : ":" + port); 
 	}
 	
-	public static String createURL(String hostname, Integer port)
+	public static String createURL(@NonNull final String hostname, @NonNull final Integer port)
 	{
 		return hostname + (port == null ? "" : ":" + port); 
 	}
 	
-	public static JdbcURL parseJdbcURL(String jdbcURL, JdbcURL model) throws MalformedURLException
+	public static JdbcURL parseJdbcURL(@NonNull final String jdbcURL, @NonNull final JdbcURL model) throws MalformedURLException
 	{
-		try (Scanner scanner = new Scanner(jdbcURL))
+		try (val scanner = new Scanner(jdbcURL))
 		{
 			val protocol = scanner.findInLine("(://|@|:@//)");
 			if (protocol != null)
@@ -97,13 +98,13 @@ public class Utils
 		}
 	}
 
-	public static Resource getResource(String path) throws MalformedURLException, IOException
+	public static Resource getResource(@NonNull final String path) throws MalformedURLException, IOException
 	{
 		val result = new FileSystemResource(path);
 		return result.exists() ? result : new ClassPathResource(path);
 	}
   
-	public static void testKeystore(KeyStoreType type, String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+	public static void testKeystore(@NonNull final KeyStoreType type, @NonNull final String path, @NonNull final String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		val resource = getResource(path);
 		val keyStore = KeyStore.getInstance(type.name());
@@ -117,7 +118,7 @@ public class Utils
 		}
 	}
 
-	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password) throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
+	public static void testJdbcConnection(@NonNull final String driverClassName, @NonNull final String jdbcUrl, @NonNull final String username, @NonNull final String password) throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
     val loader = Utils.class.getClassLoader();
     val driverClass = loader.loadClass(driverClassName);

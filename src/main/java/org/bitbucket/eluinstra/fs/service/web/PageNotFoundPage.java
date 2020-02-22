@@ -19,6 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.request.http.WebResponse;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PageNotFoundPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
@@ -29,7 +33,7 @@ public class PageNotFoundPage extends BasePage
 	}
 
 	@Override
-	protected void configureResponse(WebResponse response)
+	protected void configureResponse(final WebResponse response)
 	{
 		super.configureResponse(response);
 		((HttpServletResponse)response.getContainerResponse()).setStatus(HttpServletResponse.SC_NOT_FOUND);

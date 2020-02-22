@@ -21,7 +21,7 @@ public class TruststorePropertiesFormPanel extends JavaKeyStorePropertiesFormPan
 {
 	private static final long serialVersionUID = 1L;
 
-	public TruststorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormModel> model)
+	public TruststorePropertiesFormPanel(final String id, final IModel<JavaKeyStoreProperties> model)
 	{
 		super(id,model);
 	}

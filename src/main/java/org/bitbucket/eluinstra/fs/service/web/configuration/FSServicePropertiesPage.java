@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -39,9 +38,9 @@ import org.bitbucket.eluinstra.fs.service.web.BasePage;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapFeedbackPanel;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapPanelBorder;
 import org.bitbucket.eluinstra.fs.service.web.ResetButton;
-import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
+import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServiceProperties;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -81,27 +80,30 @@ public class FSServicePropertiesPage extends BasePage
 	{
 		this(null);
 	}
-	public FSServicePropertiesPage(FSServicePropertiesFormModel fsServicePropertiesFormModel) throws IOException
+	public FSServicePropertiesPage(final FSServiceProperties fsServiceProperties) throws IOException
 	{
 		propertiesType = PropertiesType.getPropertiesType(propertyPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
 		add(new BootstrapFeedbackPanel("feedback"));
-		if (fsServicePropertiesFormModel == null)
+		val model = fsServiceProperties == null ? createFSServiceProperties() : fsServiceProperties;
+		add(new FSServicePropertiesForm("form",model));
+	}
+
+	private FSServiceProperties createFSServiceProperties()
+	{
+		val result = new FSServiceProperties();
+		try
 		{
-			fsServicePropertiesFormModel = new FSServicePropertiesFormModel();
-			try
-			{
-				val file = new File(propertiesType.getPropertiesFile());
-				val reader = new FileReader(file);
-				new FSServicePropertiesReader(reader).read(fsServicePropertiesFormModel,propertiesType);
-				this.info(new StringResourceModel("properties.loaded",this,Model.of(file)).getString());
-			}
-			catch (IOException e)
-			{
-				logger.error("",e);
-				error(e.getMessage());
-			}
+			val file = new File(propertiesType.getPropertiesFile());
+			val reader = new FileReader(file);
+			new FSServicePropertiesReader(reader).read(result,propertiesType);
+			this.info(new StringResourceModel("properties.loaded",this,Model.of(file)).getString());
 		}
-		add(new FSServicePropertiesForm("form",fsServicePropertiesFormModel));
+		catch (IOException e)
+		{
+			logger.error("",e);
+			error(e.getMessage());
+		}
+		return result;
 	}
 	
 	@Override
@@ -110,17 +112,17 @@ public class FSServicePropertiesPage extends BasePage
 		return getLocalizer().getString("fsServiceProperties",this);
 	}
 	
-	public class FSServicePropertiesForm extends Form<FSServicePropertiesFormModel>
+	public class FSServicePropertiesForm extends Form<FSServiceProperties>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public FSServicePropertiesForm(String id, FSServicePropertiesFormModel model)
+		public FSServicePropertiesForm(final String id, final FSServiceProperties fsServiceProperties)
 		{
-			super(id,new CompoundPropertyModel<>(model));
+			super(id,CompoundPropertyModel.of(fsServiceProperties));
 			val components = new ArrayList<BootstrapPanelBorder>();
-			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"serviceProperties"))));
-			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"httpProperties"),true)));  
-			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"jdbcProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",getModel().map(m -> m.getServiceProperties()))));
+			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",getModel().map(m -> m.getHttpProperties()),true)));  
+			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",getModel().map(m -> m.getJdbcProperties()))));
 			add(new ComponentsListView("components",components));
 			add(createValidateButton("validate"));
 			add(new DownloadFSServicePropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
@@ -128,7 +130,7 @@ public class FSServicePropertiesPage extends BasePage
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),FSServicePropertiesPage.class));
 		}
 
-		private Button createValidateButton(String id)
+		private Button createValidateButton(final String id)
 		{
 			return new Button(id)
 			{
@@ -146,11 +148,11 @@ public class FSServicePropertiesPage extends BasePage
 	@NoArgsConstructor
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
-	public static class FSServicePropertiesFormModel implements IClusterable
+	public static class FSServiceProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		ServicePropertiesFormModel serviceProperties = new ServicePropertiesFormModel();
-		HttpPropertiesFormModel httpProperties = new HttpPropertiesFormModel();
-		JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
+		ServiceProperties serviceProperties = new ServiceProperties();
+		HttpProperties httpProperties = new HttpProperties();
+		JdbcProperties jdbcProperties = new JdbcProperties();
 	}
 }

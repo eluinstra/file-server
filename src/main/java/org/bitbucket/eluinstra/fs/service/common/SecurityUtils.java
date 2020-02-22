@@ -20,9 +20,11 @@ import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import lombok.NonNull;
+
 public class SecurityUtils
 {
-	public static String toMD5(String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
+	public static String toMD5(@NonNull final String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
 	{
 		return "MD5:" + DigestUtils.md5Hex(s);
 	}

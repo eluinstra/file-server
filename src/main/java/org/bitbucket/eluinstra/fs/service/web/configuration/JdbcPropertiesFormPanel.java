@@ -53,7 +53,7 @@ public class JdbcPropertiesFormPanel extends Panel
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 
-	public JdbcPropertiesFormPanel(final String id, final IModel<JdbcPropertiesFormModel> model)
+	public JdbcPropertiesFormPanel(final String id, final IModel<JdbcProperties> model)
 	{
 		super(id,model);
 		JdbcPropertiesForm jdbcPropertiesForm = new JdbcPropertiesForm("form",model);
@@ -61,11 +61,11 @@ public class JdbcPropertiesFormPanel extends Panel
 		add(jdbcPropertiesForm);
 	}
 
-	public class JdbcPropertiesForm extends Form<JdbcPropertiesFormModel>
+	public class JdbcPropertiesForm extends Form<JdbcProperties>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public JdbcPropertiesForm(final String id, final IModel<JdbcPropertiesFormModel> model)
+		public JdbcPropertiesForm(final String id, final IModel<JdbcProperties> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriverChoice("driver",model)));
@@ -78,7 +78,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false)));
 		}
 
-		private DropDownChoice<JdbcDriver> createDriverChoice(final String id, final IModel<JdbcPropertiesFormModel> model)
+		private DropDownChoice<JdbcDriver> createDriverChoice(final String id, final IModel<JdbcProperties> model)
 		{
 			val result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"));
 			result.setLabel(new ResourceModel("lbl.driver"));
@@ -117,16 +117,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
 			result.setRequired(true);
-			result.add(new OnChangeAjaxBehavior()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(getURLComponent());
-				}
-			});
+			result.add(OnChangeAjaxBehavior.onUpdate("change",t -> t.add(getURLComponent())));
 			return result;
 		}
 
@@ -134,16 +125,7 @@ public class JdbcPropertiesFormPanel extends Panel
 		{
 			val result = new TextField<Integer>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
-			result.add(new OnChangeAjaxBehavior()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(getURLComponent());
-				}
-			});
+			result.add(OnChangeAjaxBehavior.onUpdate("change",t -> t.add(getURLComponent())));
 			return result;
 		}
 
@@ -152,20 +134,11 @@ public class JdbcPropertiesFormPanel extends Panel
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.database"));
 			result.setRequired(true);
-			result.add(new OnChangeAjaxBehavior()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(getURLComponent());
-				}
-			});
+			result.add(OnChangeAjaxBehavior.onUpdate("change",t -> t.add(getURLComponent())));
 			return result;
 		}
 
-		private Button createTestButton(final String id, final IModel<JdbcPropertiesFormModel> model)
+		private Button createTestButton(final String id, final IModel<JdbcProperties> model)
 		{
 			val result = new Button(id,new ResourceModel("cmd.test"))
 			{
@@ -201,7 +174,7 @@ public class JdbcPropertiesFormPanel extends Panel
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
 	@EqualsAndHashCode(callSuper = true)
-	public static class JdbcPropertiesFormModel extends JdbcURL implements IClusterable
+	public static class JdbcProperties extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		final List<JdbcDriver> drivers = Arrays.asList(JdbcDriver.values());
@@ -212,7 +185,7 @@ public class JdbcPropertiesFormPanel extends Panel
 		public String getUrl()
 		{
 			//return driver.createJdbcURL(getHost(),getPort(),getDatabase());
-			return JdbcDriver.createJdbcURL(driver.getURLExpr(),getHost(),getPort(),getDatabase());
+			return JdbcDriver.createJdbcURL(driver.getUrlExpr(),getHost(),getPort(),getDatabase());
 		}
 	}
 }
