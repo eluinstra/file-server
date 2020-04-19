@@ -35,4 +35,12 @@ Usage:
 
 - download the file in your browser from the FileServer:
 
-  open in your browser: https://localhost:8443/fs<uploadFileResponse/fsFile/virtualPath>
+  open in your browser: https://localhost:8443/fs[/uploadFileResponse/fsFile/virtualPath]
+
+  or
+
+  run in SoapUI and use /uploadFileResponse/fsFile/virtualPath: fs-service -> GBServiceImplServiceSoapBinding -> getExternalDataReference -> Request 1
+  
+  and
+  
+  open in your browser: [/getExternalDataReferenceResponse/external-data-reference/data-reference/transport/location/senderUrl]
