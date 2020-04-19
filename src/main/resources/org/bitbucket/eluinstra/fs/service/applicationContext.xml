@@ -32,9 +32,9 @@
 	<jaxws:endpoint implementor="#fsAdminService" address="/admin" />
 
 	<jaxws:endpoint implementor="#fsService" address="/file">
-<!-- 		<jaxws:properties> -->
-<!-- 			<entry key="mtom-enabled" value="true" /> -->
-<!-- 		</jaxws:properties> -->
+		<jaxws:properties>
+			<entry key="mtom-enabled" value="true" />
+		</jaxws:properties>
 	</jaxws:endpoint>
 
 	<context:component-scan base-package="org.bitbucket.eluinstra.fs.service" />
