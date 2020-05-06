@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.bitbucket.eluinstra.fs.service.web.configuration;
+package org.bitbucket.eluinstra.fs.service.web;
 
-import java.net.URISyntaxException;
+import org.apache.wicket.model.IModel;
 
-import org.apache.wicket.core.util.resource.PackageResourceStream;
+import lombok.Builder;
 
-import lombok.NonNull;
-
-public class XMLFileResourceStream extends PackageResourceStream
+public class Button extends org.apache.wicket.markup.html.form.Button
 {
 	private static final long serialVersionUID = 1L;
+	Action onSubmit;
 
-	public XMLFileResourceStream(@NonNull final String location) throws URISyntaxException
+	public Button(String id)
 	{
-		super(XMLFileResourceStream.class,location);
+		this(id,null,null);
 	}
-	
-	@Override
-	public String getContentType()
+
+	@Builder
+	public Button(String id, IModel<String> model, Action onSubmit)
 	{
-		return "text/xml";
+		super(id,model);
+		this.onSubmit = onSubmit == null ? () -> super.onSubmit() : onSubmit;
+	}
+
+	@Override
+	public void onSubmit()
+	{
+		onSubmit.doIt();
 	}
 }

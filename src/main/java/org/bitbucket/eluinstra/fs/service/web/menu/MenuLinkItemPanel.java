@@ -43,5 +43,4 @@ public class MenuLinkItemPanel extends Panel
 		add(link);
 		//add(AttributeModifier.replace("class",Model.of("active"));
 	}
-
 }

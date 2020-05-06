@@ -23,10 +23,6 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.form.FormComponent;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapFormComponentFeedbackBorder extends Border implements IFeedback
 {
 	private static final long serialVersionUID = 1L;

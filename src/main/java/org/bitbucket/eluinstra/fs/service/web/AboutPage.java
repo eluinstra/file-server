@@ -30,14 +30,12 @@ import org.bitbucket.eluinstra.fs.service.Utils;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AboutPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	@NonFinal
 	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
 
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException

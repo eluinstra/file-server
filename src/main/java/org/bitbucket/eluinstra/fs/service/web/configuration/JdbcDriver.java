@@ -18,12 +18,12 @@ package org.bitbucket.eluinstra.fs.service.web.configuration;
 import java.util.Arrays;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 @Getter
 public enum JdbcDriver
 {

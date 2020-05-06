@@ -18,8 +18,6 @@ package org.bitbucket.eluinstra.fs.service.web;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -27,16 +25,18 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.http.PageExpiredException;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
 
+@CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ErrorPage extends BasePage
 {
-	@RequiredArgsConstructor
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+	@AllArgsConstructor
 	@Getter
 	private enum ErrorType
 	{
@@ -56,12 +56,11 @@ public class ErrorPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	ErrorType errorType;
 
 	public ErrorPage(final Exception exception)
 	{
-		logger.error("",exception);
+		log.error("",exception);
 		errorType = ErrorType.get(exception);
 		add(new WebMarkupContainer("error")
 				.add(new HomePageLink("homePageLink"))

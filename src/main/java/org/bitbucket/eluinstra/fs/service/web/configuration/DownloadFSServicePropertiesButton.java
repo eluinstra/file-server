@@ -18,8 +18,6 @@ package org.bitbucket.eluinstra.fs.service.web.configuration;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -30,12 +28,13 @@ import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesP
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
 
+@CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadFSServicePropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	FSServiceProperties fsServiceProperties;
 	PropertiesType propertiesType;
 
@@ -58,7 +57,7 @@ public class DownloadFSServicePropertiesButton extends Button
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}

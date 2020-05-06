@@ -19,10 +19,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.border.Border;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapPanelBorder extends Border
 {
 	private static final long serialVersionUID = 1L;
@@ -33,5 +29,4 @@ public class BootstrapPanelBorder extends Border
 		addToBorder(new Label("title",title));
 		add(components);
 	}
-
 }

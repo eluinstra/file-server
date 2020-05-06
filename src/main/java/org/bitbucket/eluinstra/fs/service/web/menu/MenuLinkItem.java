@@ -18,6 +18,7 @@ package org.bitbucket.eluinstra.fs.service.web.menu;
 import org.apache.wicket.Page;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
@@ -34,6 +35,7 @@ public class MenuLinkItem extends MenuItem
 		this.pageClass = pageClass;
 	}
 
+	@Builder
 	public MenuLinkItem(@NonNull final MenuItem parent, @NonNull final String id, @NonNull final String name, final Class<? extends Page> pageClass)
 	{
 		super(parent,id,name);

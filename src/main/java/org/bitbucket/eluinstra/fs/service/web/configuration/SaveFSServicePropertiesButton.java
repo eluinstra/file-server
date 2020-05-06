@@ -28,6 +28,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
@@ -39,6 +40,7 @@ public class SaveFSServicePropertiesButton extends Button
 	FSServiceProperties fsServiceProperties;
 	PropertiesType propertiesType;
 
+	@Builder
 	public SaveFSServicePropertiesButton(final String id, final ResourceModel resourceModel, final FSServiceProperties fsServiceProperties, final PropertiesType propertiesType)
 	{
 		super(id,resourceModel);

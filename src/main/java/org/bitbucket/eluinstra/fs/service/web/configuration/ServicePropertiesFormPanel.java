@@ -15,8 +15,6 @@
  */
 package org.bitbucket.eluinstra.fs.service.web.configuration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -28,6 +26,7 @@ import org.bitbucket.eluinstra.fs.service.web.BootstrapFormComponentFeedbackBord
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 
@@ -35,7 +34,6 @@ import lombok.experimental.FieldDefaults;
 public class ServicePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public ServicePropertiesFormPanel(String id, final IModel<ServiceProperties> model)
 	{
@@ -56,8 +54,9 @@ public class ServicePropertiesFormPanel extends Panel
 		}
 	}
 
-	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class ServiceProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

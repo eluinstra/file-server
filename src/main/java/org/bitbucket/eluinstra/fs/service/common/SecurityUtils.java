@@ -28,5 +28,4 @@ public class SecurityUtils
 	{
 		return "MD5:" + DigestUtils.md5Hex(s);
 	}
-
 }

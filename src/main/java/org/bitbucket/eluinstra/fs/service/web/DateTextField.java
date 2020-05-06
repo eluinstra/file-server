@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.bitbucket.eluinstra.fs.service.web.configuration;
+package org.bitbucket.eluinstra.fs.service.web;
 
-import java.net.URISyntaxException;
+import java.util.Date;
 
-import org.apache.wicket.core.util.resource.PackageResourceStream;
+import org.apache.wicket.model.IModel;
 
-import lombok.NonNull;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.experimental.FieldDefaults;
 
-public class XMLFileResourceStream extends PackageResourceStream
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class DateTextField extends org.apache.wicket.extensions.markup.html.form.DateTextField
 {
 	private static final long serialVersionUID = 1L;
+	Supplier<Boolean> isRequired;
 
-	public XMLFileResourceStream(@NonNull final String location) throws URISyntaxException
+	@Builder
+	public DateTextField(String id, IModel<Date> model, String datePattern, Supplier<Boolean> isRequired)
 	{
-		super(XMLFileResourceStream.class,location);
+		super(id,model,datePattern);
+		this.isRequired = isRequired;
 	}
-	
+
 	@Override
-	public String getContentType()
+	public boolean isRequired()
 	{
-		return "text/xml";
+		return isRequired.get();
 	}
 }

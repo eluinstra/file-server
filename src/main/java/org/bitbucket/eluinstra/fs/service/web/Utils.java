@@ -50,5 +50,4 @@ public class Utils
 	{
 		return content.replaceFirst("(?ms)^.*(<[^<>]*:?ErrorList.*ErrorList>).*$","$1");
 	}
-
 }

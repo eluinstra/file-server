@@ -18,8 +18,6 @@ package org.bitbucket.eluinstra.fs.service.web.configuration;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
@@ -46,12 +44,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
 
+@CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JdbcPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public JdbcPropertiesFormPanel(final String id, final IModel<JdbcProperties> model)
 	{
@@ -155,7 +154,7 @@ public class JdbcPropertiesFormPanel extends Panel
 					}
 					catch (Exception e)
 					{
-						logger .error("",e);
+						log.error("",e);
 						error(new StringResourceModel("test.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
 					}
 				}
@@ -170,9 +169,9 @@ public class JdbcPropertiesFormPanel extends Panel
 		}
 	}
 
-	@NoArgsConstructor
-	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
 	public static class JdbcProperties extends JdbcURL implements IClusterable
 	{

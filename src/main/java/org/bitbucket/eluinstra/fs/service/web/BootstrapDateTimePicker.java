@@ -19,16 +19,17 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -46,16 +47,20 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	}
 
 	private static final long serialVersionUID = 1L;
+	@Getter
 	String format;
 	String formatJS;
-	@NonFinal
 	Type type;
 	HourFormat hourFormat;
 	@NonFinal
+	@Setter
 	Date startDate;
 	@NonFinal
+	@Setter
 	Date endDate;
 	@NonFinal
+	@Getter
+	@Setter
 	Date dateTime;
 	TextField<Date> dateTimeField;
 
@@ -80,26 +85,17 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
 		this.formatJS = format.replaceAll("H","h");
-		setType(type);
-		
-		val dateTimePicker = new MarkupContainer("dateTimePicker")
-		{
-			private static final long serialVersionUID = 1L;
-		};
+		this.type = type;
+		val dateTimePicker = new WebMarkupContainer("dateTimePicker");
 		dateTimePicker.setMarkupId(getDateTimePickerId());
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
-
-		dateTimeField = new DateTextField("dateTime",new PropertyModel<>(this,"dateTime"),format)
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isRequired()
-			{
-				return BootstrapDateTimePicker.this.isRequired();
-			}
-		};
+		dateTimeField = DateTextField.builder()
+				.id("dateTime")
+				.model(new PropertyModel<>(this,"dateTime"))
+				.datePattern(format)
+				.isRequired(() -> BootstrapDateTimePicker.this.isRequired())
+				.build();
 		dateTimePicker.add(dateTimeField);
 	}
 	
@@ -156,44 +152,14 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		super.onBeforeRender();
 	}
 	
-	public String getDateFormat()
-	{
-		return format;
-	}
-	
-	public BootstrapDateTimePicker setType(final Type type)
-	{
-		this.type = type;
-		return this;
-	}
-	
 	public JQueryLocale getJQueryLocale()
 	{
 		return JQueryLocale.EN;
 	}
 
-	public void setStartDate(final Date startDate)
-	{
-		this.startDate = startDate;
-	}
-
-	public void setEndDate(final Date endDate)
-	{
-		this.endDate = endDate;
-	}
-	
 	private String getDateTimePickerId()
 	{
 		return getMarkupId() + "DateTimePicker";
 	}
 	
-	public Date getDateTime()
-	{
-		return dateTime;
-	}
-	
-	public void setDateTime(final Date dateTime)
-	{
-		this.dateTime = dateTime;
-	}
 }

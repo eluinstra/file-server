@@ -26,11 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.util.io.IOUtils;
 
-import lombok.AccessLevel;
 import lombok.val;
-import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ResourceServlet extends GenericServlet
 {
 	private static final long serialVersionUID = 1L;

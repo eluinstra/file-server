@@ -25,5 +25,4 @@ public class MenuDivider extends MenuItem
 	{
 		super(parent,id,"");
 	}
-
 }

@@ -24,11 +24,8 @@ import org.apache.wicket.util.io.IClusterable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
 public class MenuItem implements IClusterable
@@ -38,16 +35,21 @@ public class MenuItem implements IClusterable
 	String id;
 	@NonNull
 	String name;
-	@NonFinal
 	MenuItem parent;
-	List<MenuItem> children = new ArrayList<>();
+	final List<MenuItem> children = new ArrayList<>();
+
+	public MenuItem(String id, String name)
+	{
+		this(null,id,name);
+	}
 
 	public MenuItem(final MenuItem parent, final String id, final String name)
 	{
-		this.id = parent.getId() + "." + id;
+		this.id = parent == null ? id : parent.getId() + "." + id;
 		this.name = name;
 		this.parent = parent;
-		this.parent.children.add(this);
+		if (parent != null)
+			this.parent.children.add(this);
 	}
 
 	public List<MenuItem> getChildren()

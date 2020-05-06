@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -37,6 +34,7 @@ import org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer;
 import org.bitbucket.eluinstra.fs.service.web.BasePage;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapFeedbackPanel;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapPanelBorder;
+import org.bitbucket.eluinstra.fs.service.web.Button;
 import org.bitbucket.eluinstra.fs.service.web.ResetButton;
 import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpProperties;
 import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcProperties;
@@ -47,9 +45,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
+import lombok.extern.apachecommons.CommonsLog;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FSServicePropertiesPage extends BasePage
 {
 	private class ComponentsListView extends ListView<BootstrapPanelBorder>
@@ -70,11 +69,9 @@ public class FSServicePropertiesPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="propertyConfigurer")
-	@NonFinal
 	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
-	PropertiesType propertiesType;
+	final PropertiesType propertiesType;
 
 	public FSServicePropertiesPage() throws IOException
 	{
@@ -100,7 +97,7 @@ public class FSServicePropertiesPage extends BasePage
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 		return result;
@@ -132,22 +129,16 @@ public class FSServicePropertiesPage extends BasePage
 
 		private Button createValidateButton(final String id)
 		{
-			return new Button(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit()
-				{
-					info(FSServicePropertiesPage.this.getString("validate.ok"));
-				}
-			};
+			return Button.builder()
+					.id(id)
+					.onSubmit(() -> info(FSServicePropertiesPage.this.getString("validate.ok")))
+					.build();
 		}
 	}
 
-	@NoArgsConstructor
-	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class FSServiceProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

@@ -21,5 +21,4 @@ public class FSServiceProperties extends ServerProperties
 	{
 		super(protocol);
 	}
-
 }

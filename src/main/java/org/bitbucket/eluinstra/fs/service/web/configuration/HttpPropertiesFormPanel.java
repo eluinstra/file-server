@@ -17,24 +17,21 @@ package org.bitbucket.eluinstra.fs.service.web.configuration;
 
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
 import org.apache.wicket.util.io.IClusterable;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapFormComponentFeedbackBorder;
+import org.bitbucket.eluinstra.fs.service.web.TextField;
 import org.bitbucket.eluinstra.fs.service.web.configuration.SslPropertiesFormPanel.SslProperties;
 
 import lombok.AccessLevel;
@@ -43,11 +40,9 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 public class HttpPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public HttpPropertiesFormPanel(final String id, final IModel<HttpProperties> model, final boolean enableSslOverridePropeties)
 	{
@@ -90,17 +85,10 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private TextField<String> createPathField(final String id)
 		{
-			val result = new TextField<String>(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@SuppressWarnings("unchecked")
-				@Override
-				public <C> IConverter<C> getConverter(final Class<C> type)
-				{
-					return (IConverter<C>)new PathConverter();
-				}
-			};
+			val result = TextField.<String>builder()
+					.id(id)
+					.getConverter(t -> new PathConverter())
+					.build();
 			result.setLabel(new ResourceModel("lbl.path"));
 			result.setRequired(true);
 			result.add(OnChangeAjaxBehavior.onChange(t -> t.add(HttpPropertiesForm.this.get("url"))));
@@ -117,24 +105,20 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private SslPropertiesFormPanel createSslPropertiesPanel(final String id, final boolean enableSslOverridePropeties)
 		{
-			val result = new SslPropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"sslProperties"),enableSslOverridePropeties)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isVisible()
-				{
-					return getModelObject().getSsl();
-				}
-			};
+			val result = SslPropertiesFormPanel.builder()
+					.id(id)
+					.model(new PropertyModel<>(getModelObject(),"sslProperties"))
+					.enableSslOverridePropeties(enableSslOverridePropeties)
+					.isVisible(() -> getModelObject().getSsl())
+					.build();
 			return result;
 		}
 
 	}
 
-	@NoArgsConstructor
+	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
-	@Data()
+	@NoArgsConstructor
 	public static class HttpProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

@@ -17,9 +17,6 @@ package org.bitbucket.eluinstra.fs.service.web.configuration;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -32,20 +29,24 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 import org.bitbucket.eluinstra.fs.core.KeyStoreManager.KeyStoreType;
+import org.bitbucket.eluinstra.fs.service.web.Action;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapFormComponentFeedbackBorder;
+import org.bitbucket.eluinstra.fs.service.web.Button;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
 
+@CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JavaKeyStorePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	boolean required;
 
 	public JavaKeyStorePropertiesFormPanel(final String id, final IModel<JavaKeyStoreProperties> javaKeyStorePropertiesModel)
@@ -75,32 +76,28 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 
 		private Button createTestButton(final String id, final IModel<JavaKeyStoreProperties> model)
 		{
-			return new Button(id,new ResourceModel("cmd.test"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						val o = model.getObject();
-						Utils.testKeystore(o.getType(),o.getUri(),o.getPassword());
-						info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
-					}
-					catch (Exception e)
-					{
-						logger .error("",e);
-						error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
-					}
+					val o = model.getObject();
+					Utils.testKeystore(o.getType(),o.getUri(),o.getPassword());
+					info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
+				}
+				catch (Exception e)
+				{
+					log .error("",e);
+					error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
 				}
 			};
+			return new Button(id,new ResourceModel("cmd.test"),onSubmit);
 		}
 	}
 
-	@AllArgsConstructor
-	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class JavaKeyStoreProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

@@ -17,8 +17,6 @@ package org.bitbucket.eluinstra.fs.service.web.configuration;
 
 import java.net.URISyntaxException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -26,13 +24,15 @@ import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import lombok.AccessLevel;
+import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
 
+@CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadLog4jFileLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(getClass());
 
 	public DownloadLog4jFileLink(final String id)
 	{
@@ -44,13 +44,13 @@ public class DownloadLog4jFileLink extends Link<Void>
 	{
 		try
 		{
-			String fileName = UrlEncoder.QUERY_INSTANCE.encode("log4j2.xml",getRequest().getCharset());
-			IResourceStream resourceStream = new XMLFileResourceStream("/log4j2.xml");
+			val fileName = UrlEncoder.QUERY_INSTANCE.encode("log4j2.xml",getRequest().getCharset());
+			val resourceStream = new XMLFileResourceStream("/log4j2.xml");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 		}
 		catch (URISyntaxException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e);
 		}
 	}

@@ -19,10 +19,6 @@ import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.navigation.paging.IPageable;
 import org.apache.wicket.markup.html.navigation.paging.IPagingLabelProvider;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapPagingNavigator extends AjaxPagingNavigator
 {
 	private static final long serialVersionUID = 1L;
@@ -36,5 +32,4 @@ public class BootstrapPagingNavigator extends AjaxPagingNavigator
 	{
 		super(id,pageable,labelProvider);
 	}
-
 }

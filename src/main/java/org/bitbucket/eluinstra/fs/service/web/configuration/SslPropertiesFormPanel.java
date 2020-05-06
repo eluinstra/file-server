@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
@@ -33,10 +31,12 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 import org.bitbucket.eluinstra.fs.core.KeyStoreManager.KeyStoreType;
+import org.bitbucket.eluinstra.fs.service.web.Supplier;
 import org.bitbucket.eluinstra.fs.service.web.WebMarkupContainer;
 import org.bitbucket.eluinstra.fs.service.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStoreProperties;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -46,12 +46,20 @@ import lombok.experimental.FieldDefaults;
 public class SslPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
+	Supplier<Boolean> isVisible;
 
-	public SslPropertiesFormPanel(final String id, final IModel<SslProperties> model, final boolean enableSslOverridePropeties)
+	@Builder
+	public SslPropertiesFormPanel(final String id, final IModel<SslProperties> model, final boolean enableSslOverridePropeties, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
+		this.isVisible = isVisible;
 		add(new SslPropertiesForm("form",model,enableSslOverridePropeties));
+	}
+
+	@Override
+	public boolean isVisible()
+	{
+		return isVisible.get();
 	}
 
 	public class SslPropertiesForm extends Form<SslProperties>
@@ -72,7 +80,10 @@ public class SslPropertiesFormPanel extends Panel
 
 		private WebMarkupContainer createOverrideDefaultProtocolsContainer(final String id, final boolean enableSslOverridePropeties)
 		{
-			val result = WebMarkupContainer.of(id,() -> enableSslOverridePropeties);
+			val result = WebMarkupContainer.builder()
+					.id(id)
+					.isVisible(() -> enableSslOverridePropeties)
+					.build();
 			val checkBox = new CheckBox("overrideDefaultProtocols");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
 			checkBox.add(AjaxFormComponentUpdatingBehavior.onUpdate("change",t -> t.add(SslPropertiesForm.this)));
@@ -82,7 +93,10 @@ public class SslPropertiesFormPanel extends Panel
 
 		private WebMarkupContainer createEnabledProtocolsContainer(final String id, final boolean enableSslOverridePropeties)
 		{
-			val result = WebMarkupContainer.of(id,() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols());
+			val result = WebMarkupContainer.builder()
+					.id(id)
+					.isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols())
+					.build();
 			result.add(
 				new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
 					.setSuffix("<br/>")
@@ -93,7 +107,10 @@ public class SslPropertiesFormPanel extends Panel
 
 		private WebMarkupContainer createOverrideDefaultCipherSuitesContainer(final String id, final boolean enableSslOverridePropeties)
 		{
-			val result = WebMarkupContainer.of(id,() -> enableSslOverridePropeties);
+			val result = WebMarkupContainer.builder()
+					.id(id)
+					.isVisible(() -> enableSslOverridePropeties)
+					.build();
 			val checkBox = new CheckBox("overrideDefaultCipherSuites");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
 			checkBox.add(AjaxFormComponentUpdatingBehavior.onUpdate("change",t -> t.add(SslPropertiesForm.this)));
@@ -103,7 +120,10 @@ public class SslPropertiesFormPanel extends Panel
 
 		private WebMarkupContainer createEnabledCipherSuitesContainer(final String id, final boolean enableSslOverridePropeties)
 		{
-			val result = WebMarkupContainer.of(id,() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites());
+			val result = WebMarkupContainer.builder()
+					.id(id)
+					.isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites())
+					.build();
 			result.add(
 				new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
 					.setSuffix("<br/>")
@@ -122,9 +142,9 @@ public class SslPropertiesFormPanel extends Panel
 
 	}
 
-	@NoArgsConstructor
-	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class SslProperties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

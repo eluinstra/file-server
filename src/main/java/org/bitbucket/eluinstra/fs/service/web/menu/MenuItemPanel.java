@@ -39,12 +39,14 @@ public class MenuItemPanel extends Panel
 	public MenuItemPanel(@NonNull final String id, @NonNull final IModel<MenuItem> model, int level)
 	{
 		super(id,model);
-		val menuItem = WebMarkupContainer.of("menuListItem");
+		val menuItem = new WebMarkupContainer("menuListItem");
 		menuItem.add(new AttributeModifier("class",Model.of(level < 1 ? "dropdown" : "dropdown-submenu")));
 		add(menuItem);
 		menuItem.add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
-		menuItem.add(WebMarkupContainer.of("menuItemCaret",() -> level < 1));
+		menuItem.add(WebMarkupContainer.builder()
+				.id("menuItemCaret")
+				.isVisible(() -> level < 1)
+				.build());
 		menuItem.add(new MenuItems("menuItems",model.getObject().getChildren(),level + 1));
 	}
-
 }

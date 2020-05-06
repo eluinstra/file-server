@@ -107,19 +107,17 @@ public class Start
 
 	protected void startService(String[] args) throws ParseException, IOException, AclFormatException, URISyntaxException, MalformedURLException, Exception, NoSuchAlgorithmException, InterruptedException
 	{
-		Options options = createOptions();
-		CommandLine cmd = new DefaultParser().parse(options,args);
-
+		val options = createOptions();
+		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-
 		init(cmd);
 		
-		Server server = new Server();
-		ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+		val server = new Server();
+		val handlerCollection = new ContextHandlerCollection();
 		server.setHandler(handlerCollection);
 
-		Map<String,String> properties = getProperties(getPropertyConfigurerFile());
+		val properties = getProperties(getPropertyConfigurerFile());
 		startHSQLDB(cmd,properties);
 		initWebServer(cmd,server);
 		initFSServer(properties,server);

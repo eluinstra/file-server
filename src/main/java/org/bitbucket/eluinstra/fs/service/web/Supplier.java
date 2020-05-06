@@ -13,26 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.bitbucket.eluinstra.fs.service.web.configuration;
+package org.bitbucket.eluinstra.fs.service.web;
 
-import java.net.URISyntaxException;
+import java.io.Serializable;
 
-import org.apache.wicket.core.util.resource.PackageResourceStream;
-
-import lombok.NonNull;
-
-public class XMLFileResourceStream extends PackageResourceStream
+public interface Supplier<T> extends java.util.function.Supplier<T>, Serializable
 {
-	private static final long serialVersionUID = 1L;
 
-	public XMLFileResourceStream(@NonNull final String location) throws URISyntaxException
-	{
-		super(XMLFileResourceStream.class,location);
-	}
-	
-	@Override
-	public String getContentType()
-	{
-		return "text/xml";
-	}
 }

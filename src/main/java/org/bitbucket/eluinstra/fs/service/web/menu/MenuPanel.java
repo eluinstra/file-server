@@ -27,9 +27,9 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MenuPanel extends Panel
 {
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	public static class MenuItems extends ListView<MenuItem>
 	{
 		private static final long serialVersionUID = 1L;
