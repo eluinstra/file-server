@@ -15,8 +15,8 @@
  */
 package org.bitbucket.eluinstra.fs.service.web.configuration;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -153,7 +153,7 @@ public class SslPropertiesFormPanel extends Panel
 		List<String> enabledProtocols = Arrays.asList("TLSv1.2");
 		boolean overrideDefaultCipherSuites = false;
 		final List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
-		List<String> enabledCipherSuites = new ArrayList<>();
+		List<String> enabledCipherSuites = Collections.emptyList();
 		boolean requireClientAuthentication = true;
 		JavaKeyStoreProperties keystoreProperties = new JavaKeyStoreProperties(KeyStoreType.PKCS12,"keystore.p12","password");
 		JavaKeyStoreProperties truststoreProperties = new JavaKeyStoreProperties(KeyStoreType.PKCS12,"truststore.p12","password");

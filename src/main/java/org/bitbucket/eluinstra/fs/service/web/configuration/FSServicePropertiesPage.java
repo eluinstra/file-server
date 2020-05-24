@@ -30,7 +30,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
-import org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer;
+import org.bitbucket.eluinstra.fs.service.PropertySourcesPlaceholderConfigurer;
 import org.bitbucket.eluinstra.fs.service.web.BasePage;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapFeedbackPanel;
 import org.bitbucket.eluinstra.fs.service.web.BootstrapPanelBorder;
@@ -70,7 +70,7 @@ public class FSServicePropertiesPage extends BasePage
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 	final PropertiesType propertiesType;
 
 	public FSServicePropertiesPage() throws IOException
@@ -79,7 +79,7 @@ public class FSServicePropertiesPage extends BasePage
 	}
 	public FSServicePropertiesPage(final FSServiceProperties fsServiceProperties) throws IOException
 	{
-		propertiesType = PropertiesType.getPropertiesType(propertyPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
+		propertiesType = PropertiesType.getPropertiesType(propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
 		add(new BootstrapFeedbackPanel("feedback"));
 		val model = fsServiceProperties == null ? createFSServiceProperties() : fsServiceProperties;
 		add(new FSServicePropertiesForm("form",model));

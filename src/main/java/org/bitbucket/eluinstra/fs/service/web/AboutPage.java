@@ -24,7 +24,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer;
+import org.bitbucket.eluinstra.fs.service.PropertySourcesPlaceholderConfigurer;
 import org.bitbucket.eluinstra.fs.service.Utils;
 
 import lombok.AccessLevel;
@@ -36,7 +36,7 @@ public class AboutPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
 	{
@@ -45,7 +45,7 @@ public class AboutPage extends BasePage
 				.add(new Label("version",Utils.readVersion("/META-INF/maven/org.bitbucket.eluinstra.fs.service/fs-service/pom.properties"))));
 		add(new WebMarkupContainer("fs-core.version")
 				.add(new Label("version",Utils.readVersion("/META-INF/maven/org.bitbucket.eluinstra.fs.core/fs-core/pom.properties"))));
-		val properties = propertyPlaceholderConfigurer.getProperties();
+		val properties = propertySourcesPlaceholderConfigurer.getProperties();
 		val writer = new StringWriter();
 		Utils.writeProperties(properties,writer);
 		add(new MultiLineLabel("properties",writer.toString()));
@@ -56,5 +56,4 @@ public class AboutPage extends BasePage
 	{
 		return getLocalizer().getString("about",this);
 	}
-
 }

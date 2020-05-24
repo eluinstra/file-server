@@ -15,6 +15,8 @@
  */
 package org.bitbucket.eluinstra.fs.service;
 
+import org.apache.cxf.common.logging.LogUtils;
+
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -24,6 +26,7 @@ public class StartGB extends Start
 {
 	public static void main(String[] args) throws Exception
 	{
+		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
 		val app = new StartGB();
 		app.startService(args);
 	}
@@ -33,5 +36,4 @@ public class StartGB extends Start
 	{
 		return new String[]{"classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml","classpath:org/bitbucket/eluinstra/digikoppeling/gb/processor.xml"};
 	}
-
 }

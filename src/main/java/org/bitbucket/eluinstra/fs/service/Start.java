@@ -44,6 +44,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.common.logging.LogUtils;
 import org.bitbucket.eluinstra.fs.core.KeyStoreManager.KeyStoreType;
 import org.bitbucket.eluinstra.fs.service.common.SecurityUtils;
 import org.bitbucket.eluinstra.fs.service.web.ExtensionProvider;
@@ -91,6 +92,7 @@ public class Start
 
 	public static void main(String[] args) throws Exception
 	{
+		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
 		val app = new Start();
 		app.startService(args);
 	}
@@ -166,7 +168,7 @@ public class Start
 		result.addOption("clientTrustStoreType",true,"set client truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("clientTrustStorePath",true,"set client truststore path");
 		result.addOption("clientTrustStorePassword",true,"set client truststore password");
-		result.addOption("propertiesFilesDir",true,"set properties files directory (default=current dir)");
+		result.addOption("configDir",true,"set config directory (default=current dir)");
 		result.addOption("jmx",false,"start mbean server");
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
@@ -184,16 +186,16 @@ public class Start
 
 	protected void init(CommandLine cmd)
 	{
-		val propertiesFilesDir = cmd.getOptionValue("propertiesFilesDir","");
-		System.setProperty("fs.propertiesFilesDir",propertiesFilesDir);
-		System.out.println("Using properties files directory: " + propertiesFilesDir);
+		val configDir = cmd.getOptionValue("configDir","");
+		System.setProperty("fs.configDir",configDir);
+		System.out.println("Using config directory: " + configDir);
 	}
 
-	protected Map<String,String> getProperties(String...files)
+	protected Map<String,String> getProperties(String...files) throws IOException
 	{
 		try (val applicationContext = new ClassPathXmlApplicationContext(files))
 		{
-			val properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
+			val properties = (PropertySourcesPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
 			return properties.getProperties();
 		}
 	}
@@ -618,7 +620,7 @@ public class Start
 		result.setVirtualHosts(new String[] {"@fs"});
 		result.setContextPath("/");
 		result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(org.bitbucket.eluinstra.fs.core.server.servlet.FSServlet.class,properties.get("fs.path") + "/*");
+		result.addServlet(org.bitbucket.eluinstra.fs.core.server.servlet.Download.class,properties.get("fs.path") + "/*");
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}

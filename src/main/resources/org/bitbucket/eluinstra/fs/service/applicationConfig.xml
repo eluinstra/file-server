@@ -20,15 +20,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="propertyConfigurer" class="org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer" class="org.bitbucket.eluinstra.fs.service.PropertySourcesPlaceholderConfigurer">
 		<property name="ignoreResourceNotFound" value="true" />
-		<property name="systemPropertiesMode" value="2" />
 		<property name="locations"> 
 			<list>
 				<value>classpath:org/bitbucket/eluinstra/fs/core/default.properties</value>   
 				<value>classpath:org/bitbucket/eluinstra/fs/service/default.properties</value>   
-				<value>file:${fs.propertiesFilesDir}fs-service.advanced.properties</value>
-				<value>file:${fs.propertiesFilesDir}fs-service.properties</value>
+				<value>file:${fs.configDir}fs-service.advanced.properties</value>
+				<value>file:${fs.configDir}fs-service.properties</value>
 			</list>
 		</property>
 	</bean>

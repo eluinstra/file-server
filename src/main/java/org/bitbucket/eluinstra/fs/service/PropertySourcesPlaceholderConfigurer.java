@@ -15,50 +15,39 @@
  */
 package org.bitbucket.eluinstra.fs.service;
 
+import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.Resource;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.val;
 import lombok.experimental.FieldDefaults;
 
-@SuppressWarnings("deprecation")
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @Getter
-public class PropertyPlaceholderConfigurer extends org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+public class PropertySourcesPlaceholderConfigurer extends org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 {
 	Resource overridePropertiesFile;
-	Map<String,String> properties;
 
 	@Override
-	public void setLocations(@NonNull final Resource...locations)
+	public void setLocations(Resource...locations)
 	{
 		overridePropertiesFile = locations[locations.length - 1];
 		super.setLocations(locations);
 	}
 	
-	@Override
-	protected void processProperties(@NonNull final ConfigurableListableBeanFactory beanFactoryToProcess, @NonNull final Properties properties) throws BeansException
+	public Resource getOverridePropertiesFile()
 	{
-		super.processProperties(beanFactoryToProcess,properties);
-		this.properties = properties.entrySet().stream().collect(Collectors.toMap(e -> (String)e.getKey(),e -> (String)e.getValue()));
+		return overridePropertiesFile;
 	}
 	
-	@Override
-	protected void convertProperties(@NonNull final Properties properties)
+	public Map<String,String> getProperties() throws IOException
 	{
-		super.convertProperties(properties);
+		val properties = mergeProperties();
+		return properties.entrySet().stream()
+				.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue()));
 	}
-
-	public String getProperty(@NonNull final String name)
-	{
-		return properties.get(name);
-	}
-
 }

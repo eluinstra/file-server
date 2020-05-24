@@ -22,7 +22,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.bitbucket.eluinstra.fs.service.PropertyPlaceholderConfigurer;
+import org.bitbucket.eluinstra.fs.service.PropertySourcesPlaceholderConfigurer;
 import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage;
 
 import lombok.AccessLevel;
@@ -34,12 +34,12 @@ public class HomePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 
 	public HomePage(final PageParameters parameters) throws IOException
 	{
 		super(parameters);
-		val file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
+		val file = propertySourcesPlaceholderConfigurer.getOverridePropertiesFile();
 		add(new WebMarkupContainer("configurationFile.found")
 				.add(new Label("configurationFile",file.getFile().getAbsolutePath()))
 				.setVisible(file.exists()));
