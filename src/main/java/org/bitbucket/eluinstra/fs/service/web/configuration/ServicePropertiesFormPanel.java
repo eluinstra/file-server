@@ -49,8 +49,6 @@ public class ServicePropertiesFormPanel extends Panel
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("log4jPropertiesFileFeedback",new TextField<String>("log4jPropertiesFile").setLabel(new ResourceModel("lbl.log4jPropertiesFile"))));
-			add(new DownloadLog4jFileLink("downloadLog4jFile"));
 		}
 	}
 
@@ -61,6 +59,5 @@ public class ServicePropertiesFormPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		int maxItemsPerPage = 20;
-		String log4jPropertiesFile;
 	}
 }

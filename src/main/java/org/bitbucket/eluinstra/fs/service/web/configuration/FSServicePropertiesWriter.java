@@ -52,7 +52,6 @@ public class FSServicePropertiesWriter
   protected void write(final Properties properties, final ServiceProperties serviceProperties)
   {
 		properties.setProperty("maxItemsPerPage",Integer.toString(serviceProperties.getMaxItemsPerPage()));
-		properties.setProperty("log4j.file",serviceProperties.getLog4jPropertiesFile() != null ? "file:" + serviceProperties.getLog4jPropertiesFile() : "");
   }
 
 	protected void write(final Properties properties, final HttpProperties httpProperties, final boolean enableSslOverridePropeties)

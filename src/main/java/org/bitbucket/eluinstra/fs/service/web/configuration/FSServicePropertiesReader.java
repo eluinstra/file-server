@@ -54,7 +54,6 @@ public class FSServicePropertiesReader
 	protected void read(final Properties properties, final ServiceProperties serviceProperties) throws MalformedURLException
 	{
 		serviceProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
-		serviceProperties.setLog4jPropertiesFile(StringUtils.defaultString(properties.getProperty("log4j.file")).replaceFirst("file:",""));
 	}
 
 	protected void read(final Properties properties, final HttpProperties httpProperties) throws MalformedURLException

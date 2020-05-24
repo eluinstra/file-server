@@ -39,15 +39,6 @@
 
 	<context:component-scan base-package="org.bitbucket.eluinstra.fs.service" />
 
-	<bean class="org.springframework.beans.factory.config.MethodInvokingBean">
-		<property name="staticMethod" value="org.bitbucket.eluinstra.fs.service.Log4j2Configurer.initLogging" />
-		<property name="arguments">
-			<list>
-				<value>${log4j.file}</value>
-			</list>
-		</property>
-	</bean>
-
 	<bean id="maxItemsPerPage" class="java.lang.Integer">
 		<constructor-arg value="${maxItemsPerPage}"/>
 	</bean>
