@@ -28,9 +28,9 @@ import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesP
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadFSServicePropertiesButton extends Button
 {

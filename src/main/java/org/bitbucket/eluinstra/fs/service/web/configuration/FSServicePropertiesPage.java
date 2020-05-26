@@ -45,9 +45,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FSServicePropertiesPage extends BasePage
 {
