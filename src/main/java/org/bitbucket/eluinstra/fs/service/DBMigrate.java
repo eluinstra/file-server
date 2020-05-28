@@ -86,9 +86,9 @@ public class DBMigrate
 				.locations(location)
 				.ignoreMissingMigrations(true);
 		if (StringUtils.isNotEmpty(baselineVersion))
-				config = config
-						.baselineVersion(baselineVersion)
-						.baselineOnMigrate(true);
+			config = config
+					.baselineVersion(baselineVersion)
+					.baselineOnMigrate(true);
 		config.load().migrate();
 	}
 

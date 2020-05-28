@@ -155,6 +155,8 @@ public class Start
 		result.addOption("port",true,"set port");
 		result.addOption("path",true,"set path");
 		result.addOption("ssl",false,"use ssl");
+		result.addOption("protocols",true,"set ssl protocols");
+		result.addOption("cipherSuites",true,"set ssl cipherSuites");
 		result.addOption("keyStoreType",true,"set keystore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("keyStorePath",true,"set keystore path");
 		result.addOption("keyStorePassword",true,"set keystore password");
@@ -310,10 +312,11 @@ public class Start
 		addKeyStore(cmd,result);
 		if (cmd.hasOption("clientAuthentication"))
 			addTrustStore(cmd,result);
+		result.setExcludeCipherSuites();
 		return result;
 	}
 
-	protected void addKeyStore(CommandLine cmd, SslContextFactory result) throws MalformedURLException, IOException
+	protected void addKeyStore(CommandLine cmd, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
 		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
@@ -322,9 +325,15 @@ public class Start
 		System.out.println("Using keyStore " + keyStore.getURI());
 		if (keyStore != null && keyStore.exists())
 		{
-			result.setKeyStoreType(keyStoreType);
-			result.setKeyStoreResource(keyStore);
-			result.setKeyStorePassword(keyStorePassword);
+			String protocols = cmd.getOptionValue("protocols");
+			if (!StringUtils.isEmpty(protocols))
+				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
+			String cipherSuites = cmd.getOptionValue("cipherSuites");
+			if (!StringUtils.isEmpty(cipherSuites))
+				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
+			sslContextFactory.setKeyStoreType(keyStoreType);
+			sslContextFactory.setKeyStoreResource(keyStore);
+			sslContextFactory.setKeyStorePassword(keyStorePassword);
 		}
 		else
 		{
