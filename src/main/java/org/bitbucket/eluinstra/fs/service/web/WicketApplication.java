@@ -33,6 +33,7 @@ import org.bitbucket.eluinstra.fs.service.web.menu.MenuLinkItem;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
@@ -40,10 +41,13 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public class WicketApplication extends WebApplication
 {
+	@NonNull
+	Integer maxItemsPerPage;
 	List<MenuItem> menuItems = new ArrayList<>();
 	
-	public WicketApplication()
+	public WicketApplication(@NonNull Integer maxItemsPerPage)
 	{
+		this.maxItemsPerPage = maxItemsPerPage;
 		val home = new MenuLinkItem("0","home",getHomePage());
 		menuItems.add(home);
 		

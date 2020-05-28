@@ -173,6 +173,7 @@ public class Start
 		result.addOption("jmx",false,"start mbean server");
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
+		result.addOption("baselineVersion",true,"set baselineVersion for hsqldb update (default: none)");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
 		return result;
@@ -322,9 +323,9 @@ public class Start
 		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
 		val keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
 		val keyStore = getResource(keyStorePath);
-		System.out.println("Using keyStore " + keyStore.getURI());
 		if (keyStore != null && keyStore.exists())
 		{
+			System.out.println("Using keyStore " + keyStore.getURI());
 			String protocols = cmd.getOptionValue("protocols");
 			if (!StringUtils.isEmpty(protocols))
 				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
@@ -348,9 +349,9 @@ public class Start
 		val trustStorePath = cmd.getOptionValue("trustStorePath");
 		val trustStorePassword = cmd.getOptionValue("trustStorePassword");
 		val trustStore = getResource(trustStorePath);
-		System.out.println("Using trustStore " + trustStore.getURI());
 		if (trustStore != null && trustStore.exists())
 		{
+			System.out.println("Using trustStore " + trustStore.getURI());
 			sslContextFactory.setNeedClientAuth(true);
 			sslContextFactory.setTrustStoreType(trustStoreType);
 			sslContextFactory.setTrustStoreResource(trustStore);
@@ -510,7 +511,8 @@ public class Start
 	protected FilterHolder createWicketFilterHolder()
 	{
 		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
-		result.setInitParameter("applicationClassName","org.bitbucket.eluinstra.fs.service.web.WicketApplication");
+		result.setInitParameter("applicationFactoryClassName","org.apache.wicket.spring.SpringWebApplicationFactory");
+		result.setInitParameter("applicationBean","wicketApplication");
 		result.setInitParameter("filterMappingUrlPattern","/*");
 		return result;
 	}

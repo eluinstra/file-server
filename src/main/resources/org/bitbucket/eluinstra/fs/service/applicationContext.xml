@@ -39,8 +39,8 @@
 
 	<context:component-scan base-package="org.bitbucket.eluinstra.fs.service" />
 
-	<bean id="maxItemsPerPage" class="java.lang.Integer">
-		<constructor-arg value="${maxItemsPerPage}"/>
+	<bean id="wicketApplication" class="org.bitbucket.eluinstra.fs.service.web.WicketApplication">
+		<constructor-arg name="maxItemsPerPage" value="${maxItemsPerPage}"/>
 	</bean>
 
 </beans>
