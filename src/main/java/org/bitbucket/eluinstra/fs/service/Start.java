@@ -24,8 +24,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -42,12 +40,10 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.bitbucket.eluinstra.fs.core.KeyStoreManager.KeyStoreType;
 import org.bitbucket.eluinstra.fs.service.common.SecurityUtils;
-import org.bitbucket.eluinstra.fs.service.web.ExtensionProvider;
 import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcURL;
 import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
@@ -68,6 +64,8 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.Location;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.FSServiceProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
@@ -79,6 +77,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import lombok.AccessLevel;
 import lombok.val;
+import lombok.var;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
@@ -207,7 +206,7 @@ public class Start
 		{
 			System.out.println("Starting hsqldb...");
 			val server = startHSQLDBServer(cmd,jdbcURL.get());
-			initHSQLDBDatabase(server);
+			initHSQLDBDatabase(server,cmd.getOptionValue("baselineVersion"));
 		}
 	}
 
@@ -250,41 +249,21 @@ public class Start
 		return server;
 	}
 
-	protected void initHSQLDBDatabase(org.hsqldb.server.Server server)
+	protected void initHSQLDBDatabase(org.hsqldb.server.Server server, String baselineVersion)
 	{
-    try (val c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", ""))
-		{
-			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'fs_client'").next())
-			{
-				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/org/bitbucket/eluinstra/fs/service/database/hsqldb.create.sql"),Charset.defaultCharset()));
-				System.out.println("FS tables created");
-			}
-			else
-				System.out.println("FS tables already exist");
-			ExtensionProvider.get().stream()
-				.filter(p -> StringUtils.isNotEmpty(p.getHSQLDBFile()))
-				.forEach(p -> executeSQLFile(c,p));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	protected void executeSQLFile(Connection c, ExtensionProvider provider)
-	{
-		try
-		{
-			c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(provider.getHSQLDBFile()),Charset.defaultCharset()));
-			System.out.println(provider.getName() + " tables created");
-		}
-		catch (Exception e)
-		{
-			if (e.getMessage().contains("already exists"))
-				System.out.println(provider.getName() + " tables already exist");
-			else
-				e.printStackTrace();
-		}
+		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
+		val user = "sa";
+		val password = "";
+		Location[] locations = {new Location("classpath:/org/bitbucket/eluinstra/fs/db/migration/hsqldb")};
+		var config = Flyway.configure()
+				.dataSource(url,user,password)
+				.locations(locations)
+				.ignoreMissingMigrations(true);
+		if (StringUtils.isNotEmpty(baselineVersion))
+				config = config
+						.baselineVersion(baselineVersion)
+						.baselineOnMigrate(true);
+		config.load().migrate();
 	}
 
 	protected void initJMX(CommandLine cmd, Server server) throws Exception
