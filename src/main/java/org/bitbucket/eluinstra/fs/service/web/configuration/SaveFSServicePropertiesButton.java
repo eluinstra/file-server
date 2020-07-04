@@ -19,8 +19,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
@@ -31,12 +29,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SaveFSServicePropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	FSServiceProperties fsServiceProperties;
 	PropertiesType propertiesType;
 
@@ -61,7 +60,7 @@ public class SaveFSServicePropertiesButton extends Button
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}

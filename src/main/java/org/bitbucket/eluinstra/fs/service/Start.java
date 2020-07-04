@@ -52,6 +52,7 @@ import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -71,9 +72,8 @@ import org.hsqldb.server.FSServiceProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -96,16 +96,6 @@ public class Start
 		app.startService(args);
 	}
 
-	protected String getPropertyConfigurerFile()
-	{
-		return "org/bitbucket/eluinstra/fs/service/applicationConfig.xml";
-	}
-
-	protected String[] getConfigLocations()
-	{
-		return new String[]{"classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml"};
-	}
-
 	protected void startService(String[] args) throws ParseException, IOException, AclFormatException, URISyntaxException, MalformedURLException, Exception, NoSuchAlgorithmException, InterruptedException
 	{
 		val options = createOptions();
@@ -118,33 +108,35 @@ public class Start
 		val handlerCollection = new ContextHandlerCollection();
 		server.setHandler(handlerCollection);
 
-		val properties = getProperties(getPropertyConfigurerFile());
+		val properties = getProperties();
 		startHSQLDB(cmd,properties);
 		initWebServer(cmd,server);
 		initFSServer(properties,server);
 		initJMX(cmd,server);
 
-		val context = new XmlWebApplicationContext();
-		context.setConfigLocations(getConfigLocations());
-		val contextLoaderListener = new ContextLoaderListener(context);
-		if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
-			handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
-		handlerCollection.addHandler(createFSContextHandler(properties,contextLoaderListener));
-
-		System.out.println("Starting web server...");
-
-		try
+		try (val context = new AnnotationConfigWebApplicationContext())
 		{
-			server.start();
+			registerConfig(context);
+			val contextLoaderListener = new ContextLoaderListener(context);
+			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
+				handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
+			handlerCollection.addHandler(createFSContextHandler(properties,contextLoaderListener));
+	
+			System.out.println("Starting web server...");
+	
+			try
+			{
+				server.start();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				server.stop();
+				System.exit(1);
+			}
+			System.out.println("Web server started.");
+			server.join();
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			server.stop();
-			System.exit(1);
-		}
-		System.out.println("Web server started.");
-		server.join();
 	}
 
 	protected Options createOptions()
@@ -154,6 +146,7 @@ public class Start
 		result.addOption("host",true,"set host");
 		result.addOption("port",true,"set port");
 		result.addOption("path",true,"set path");
+		result.addOption("connectionLimit",true,"set connection limit (default: none)");
 		result.addOption("ssl",false,"use ssl");
 		result.addOption("protocols",true,"set ssl protocols");
 		result.addOption("cipherSuites",true,"set ssl cipherSuites");
@@ -171,9 +164,11 @@ public class Start
 		result.addOption("clientTrustStorePassword",true,"set client truststore password");
 		result.addOption("configDir",true,"set config directory (default=current dir)");
 		result.addOption("jmx",false,"start mbean server");
+		result.addOption("jmxPort",true,"set jmx port");
+		result.addOption("jmxAccessFile",true,"set jmx access file");
+		result.addOption("jmxPasswordFile",true,"set jmx password file");
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
-		result.addOption("baselineVersion",true,"set baselineVersion for hsqldb update (default: none)");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
 		return result;
@@ -193,13 +188,14 @@ public class Start
 		System.out.println("Using config directory: " + configDir);
 	}
 
+	protected void registerConfig(AnnotationConfigWebApplicationContext context)
+	{
+		context.register(AppConfig.class);
+	}
+
 	protected Map<String,String> getProperties(String...files) throws IOException
 	{
-		try (val applicationContext = new ClassPathXmlApplicationContext(files))
-		{
-			val properties = (PropertySourcesPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
-			return properties.getProperties();
-		}
+		return AppConfig.PROPERTY_SOURCE.getProperties();
 	}
 
 	protected void startHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
@@ -209,7 +205,7 @@ public class Start
 		{
 			System.out.println("Starting hsqldb...");
 			val server = startHSQLDBServer(cmd,jdbcURL.get());
-			initHSQLDBDatabase(server,cmd.getOptionValue("baselineVersion"));
+			initHSQLDBDatabase(server);
 		}
 	}
 
@@ -252,7 +248,7 @@ public class Start
 		return server;
 	}
 
-	protected void initHSQLDBDatabase(org.hsqldb.server.Server server, String baselineVersion)
+	protected void initHSQLDBDatabase(org.hsqldb.server.Server server)
 	{
 		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
 		val user = "sa";
@@ -262,10 +258,6 @@ public class Start
 				.dataSource(url,user,password)
 				.locations(locations)
 				.ignoreMissingMigrations(true);
-		if (StringUtils.isNotEmpty(baselineVersion))
-				config = config
-						.baselineVersion(baselineVersion)
-						.baselineOnMigrate(true);
 		config.load().migrate();
 	}
 
@@ -273,25 +265,35 @@ public class Start
 	{
 		if (cmd.hasOption("jmx"))
 		{
-			System.out.println("Starting mbean server...");
+			System.out.println("Starting jmx server...");
 			val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 			server.addBean(mBeanContainer);
 			server.addBean(Log.getLog());
-			val jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
-			val jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
+			val jmxURL = new JMXServiceURL("rmi",null,Integer.parseInt(cmd.getOptionValue("jmxPort","1999")),"/jndi/rmi:///jmxrmi");
+			//val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
+			val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");//,sslContextFactory);
 			server.addBean(jmxServer);
+			System.out.println("Jmx server configured on " + jmxURL);
 		}
+	}
+
+	private Map<String,Object> createEnv(CommandLine cmd)
+	{
+		val result = new HashMap<String, Object>();
+		if (cmd.hasOption("jmxAccessFile") && cmd.hasOption("jmxPasswordFile"))
+		{
+			result.put("jmx.remote.x.access.file",cmd.hasOption("jmxAccessFile"));
+			result.put("jmx.remote.x.password.file",cmd.hasOption("jmxPasswordFile"));
+		}
+		return result;
 	}
 
 	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
 	{
-		if (!cmd.hasOption("ssl"))
-			server.addConnector(createHttpConnector(cmd,server));
-		else
-		{
-			val factory = createSslContextFactory(cmd);
-			server.addConnector(createHttpsConnector(cmd,server,factory));
-		}
+		val connector = cmd.hasOption("ssl") ? createHttpsConnector(cmd,server,createSslContextFactory(cmd)) : createHttpConnector(cmd,server);
+		server.addConnector(connector);
+		if (cmd.hasOption("connectionLimit"))
+			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue("connectionLimit")),connector));
 	}
 
 	protected ServerConnector createHttpConnector(CommandLine cmd, Server server)

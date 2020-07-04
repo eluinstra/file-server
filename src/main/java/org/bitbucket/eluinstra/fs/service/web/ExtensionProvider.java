@@ -35,7 +35,6 @@ public abstract class ExtensionProvider
 	}
 
 	public abstract String getSpringConfigurationFile();
-	public abstract String getHSQLDBFile();
 	public abstract String getName();
 	public abstract List<MenuItem> getMenuItems(MenuItem parent);
 }

@@ -15,6 +15,11 @@
  */
 package org.bitbucket.eluinstra.fs.service.web;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+import static org.bitbucket.eluinstra.fs.core.Predicates.endsWith;
+
 import java.io.IOException;
 
 import javax.servlet.GenericServlet;
@@ -54,21 +59,14 @@ public class ResourceServlet extends GenericServlet
 
 	private String getContentType(final String pathInfo)
 	{
-		if (pathInfo.endsWith(".css"))
-			return "text/css";
-		else if (pathInfo.endsWith(".js"))
-			return "text/javascript";
-		else if (pathInfo.endsWith(".gif"))
-			return "image/gif";
-		else if (pathInfo.endsWith(".eot"))
-			return "application/vnd.ms-fontobject";
-		else if (pathInfo.endsWith(".svg"))
-			return "image/svg+xml";
-		else if (pathInfo.endsWith(".ttf"))
-			return "font/ttf";
-		else if (pathInfo.endsWith(".woff"))
-			return "application/font-woff";
-		else
-			return null;
+		return Match(pathInfo).of(
+				Case($(endsWith(".css")),"text/css"),
+				Case($(endsWith(".js")),"text/javascript"),
+				Case($(endsWith(".gif")),"image/gif"),
+				Case($(endsWith(".eot")),"application/vnd.ms-fontobject"),
+				Case($(endsWith(".svg")),"image/svg+xml"),
+				Case($(endsWith(".ttf")),"font/ttf"),
+				Case($(endsWith(".woff")),"application/font-woff"),
+				Case($(),(String)null));
 	}
 }

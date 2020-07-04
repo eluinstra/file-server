@@ -84,7 +84,7 @@ public class FSServicePropertiesReader
 
 	protected void read(final Properties properties, final JdbcProperties jdbcProperties) throws MalformedURLException
 	{
-		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("fs.jdbc.driverClassName")));
+		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("fs.jdbc.driverClassName")).orElse(null));
 		//jdbcProperties.setJdbcURL(properties.getProperty("fs.jdbc.url"));
 		Utils.parseJdbcURL(properties.getProperty("fs.jdbc.url"),jdbcProperties);
 		jdbcProperties.setUsername(properties.getProperty("fs.jdbc.username"));

@@ -15,7 +15,11 @@
  */
 package org.bitbucket.eluinstra.fs.service;
 
+import java.io.IOException;
+import java.util.Map;
+
 import org.apache.cxf.common.logging.LogUtils;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -32,8 +36,14 @@ public class StartGB extends Start
 	}
 	
 	@Override
-	protected String[] getConfigLocations()
+	protected void registerConfig(AnnotationConfigWebApplicationContext context)
 	{
-		return new String[]{"classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml","classpath:org/bitbucket/eluinstra/digikoppeling/gb/processor.xml"};
+		context.register(GBAppConfig.class);
+	}
+
+	@Override
+	protected Map<String,String> getProperties(String...files) throws IOException
+	{
+		return GBAppConfig.PROPERTY_SOURCE.getProperties();
 	}
 }
