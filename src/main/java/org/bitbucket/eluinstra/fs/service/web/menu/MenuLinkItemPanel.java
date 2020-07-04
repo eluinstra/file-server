@@ -19,23 +19,16 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.bitbucket.eluinstra.fs.service.web.BasePage;
 import org.bitbucket.eluinstra.fs.service.web.Utils;
 
-import lombok.NonNull;
 import lombok.val;
 
 public class MenuLinkItemPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public MenuLinkItemPanel(@NonNull final String id, @NonNull final MenuLinkItem menuItem)
-	{
-		this(id,Model.of(menuItem));
-	}
-	
-	public MenuLinkItemPanel(@NonNull final String id, @NonNull final IModel<MenuLinkItem> model)
+	public MenuLinkItemPanel(String id, IModel<MenuLinkItem> model)
 	{
 		super(id,model);
 		val link = new BookmarkablePageLink<BasePage>("link",model.getObject().getPageClass());

@@ -24,29 +24,20 @@ import org.bitbucket.eluinstra.fs.service.web.Utils;
 import org.bitbucket.eluinstra.fs.service.web.WebMarkupContainer;
 import org.bitbucket.eluinstra.fs.service.web.menu.MenuPanel.MenuItems;
 
-import lombok.NonNull;
 import lombok.val;
 
 public class MenuItemPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public MenuItemPanel(@NonNull final String id, @NonNull final MenuItem menuItem, final int level)
-	{
-		this(id,Model.of(menuItem),level);
-	}
-	
-	public MenuItemPanel(@NonNull final String id, @NonNull final IModel<MenuItem> model, int level)
+	public MenuItemPanel(String id, IModel<? extends MenuItem> model, int level)
 	{
 		super(id,model);
 		val menuItem = new WebMarkupContainer("menuListItem");
-		menuItem.add(new AttributeModifier("class",Model.of(level < 1 ? "dropdown" : "dropdown-submenu")));
+		menuItem.add(new AttributeModifier("class",new Model<String>(level < 1 ? "dropdown" : "dropdown-submenu")));
 		add(menuItem);
-		menuItem.add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
-		menuItem.add(WebMarkupContainer.builder()
-				.id("menuItemCaret")
-				.isVisible(() -> level < 1)
-				.build());
+		menuItem.add(new Label("name",Utils.getResourceString(getClass(),model.getObject().getName())));
+		menuItem.add(new WebMarkupContainer("menuItemCaret").setVisible(level < 1));
 		menuItem.add(new MenuItems("menuItems",model.getObject().getChildren(),level + 1));
 	}
 }

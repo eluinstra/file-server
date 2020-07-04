@@ -69,7 +69,7 @@ public class WicketApplication extends WebApplication
 			val i = new AtomicInteger(1);
 			extensionProviders.forEach(p ->
 			{
-				val epmi = new MenuItem(extensions,"" + i.getAndIncrement(),p.getName());
+				val epmi = new MenuItem(extensions,String.valueOf(i.getAndIncrement()),p.getName());
 				p.getMenuItems(epmi);
 			});
 		}

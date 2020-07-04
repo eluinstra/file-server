@@ -16,7 +16,6 @@
 package org.bitbucket.eluinstra.fs.service.web.menu;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.util.io.IClusterable;
@@ -36,14 +35,14 @@ public class MenuItem implements IClusterable
 	@NonNull
 	String name;
 	MenuItem parent;
-	final List<MenuItem> children = new ArrayList<>();
+	List<MenuItem> children = new ArrayList<>();
 
 	public MenuItem(String id, String name)
 	{
 		this(null,id,name);
 	}
 
-	public MenuItem(final MenuItem parent, final String id, final String name)
+	public MenuItem(MenuItem parent, String id, String name)
 	{
 		this.id = parent == null ? id : parent.getId() + "." + id;
 		this.name = name;
@@ -54,7 +53,7 @@ public class MenuItem implements IClusterable
 
 	public List<MenuItem> getChildren()
 	{
-		return Collections.unmodifiableList(children);
+		return children;
 	}
 
 	@Override
@@ -62,5 +61,4 @@ public class MenuItem implements IClusterable
 	{
 		return id;
 	}
-
 }

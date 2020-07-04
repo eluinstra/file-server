@@ -15,6 +15,11 @@
  */
 package org.bitbucket.eluinstra.fs.service.web.menu;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+import static io.vavr.Predicates.instanceOf;
+
 import java.util.List;
 
 import org.apache.wicket.markup.html.list.ListItem;
@@ -23,7 +28,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import lombok.AccessLevel;
-import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
@@ -35,7 +39,7 @@ public class MenuPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		int level;
 
-		public MenuItems(@NonNull final String id, @NonNull final List<MenuItem> list, final int level)
+		public MenuItems(String id, List<MenuItem> list, int level)
 		{
 			super(id,list);
 			this.level = level;
@@ -45,20 +49,18 @@ public class MenuPanel extends Panel
 		@Override
 		protected void populateItem(final ListItem<MenuItem> item)
 		{
-			val menuItem = item.getModelObject();
-			if (menuItem instanceof MenuLinkItem)
-				item.add(new MenuLinkItemPanel("menuItem",(MenuLinkItem)menuItem)/*.setRenderBodyOnly(true)*/);
-			else if (menuItem instanceof MenuDivider)
-				item.add(new MenuDividerPanel("menuItem"));
-			else
-				item.add(new MenuItemPanel("menuItem",menuItem,level)/*.setRenderBodyOnly(true)*/);
+			val o = item.getModelObject();
+			Match(o).of(
+					Case($(instanceOf(MenuLinkItem.class)),i -> item.add(new MenuLinkItemPanel("menuItem",Model.of((MenuLinkItem)o))/*.setRenderBodyOnly(true)*/)),
+					Case($(instanceOf(MenuDivider.class)),i -> item.add(new MenuDividerPanel("menuItem"))),
+					Case($(),i -> item.add(new MenuItemPanel("menuItem",item.getModel(),level)/*.setRenderBodyOnly(true)*/)));
 			//item.setRenderBodyOnly(true);
 		}
 	}
 
 	private static final long serialVersionUID = 1L;
 
-	public MenuPanel(@NonNull final String id, @NonNull final List<MenuItem> menuItems)
+	public MenuPanel(String id, List<MenuItem> menuItems)
 	{
 		super(id,Model.of(menuItems));
 		add(new MenuItems("menuItems",menuItems,0));
