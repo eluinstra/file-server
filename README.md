@@ -1,5 +1,5 @@
 # Secured FileServer
-With the Secured FileServer clients (users) can download files using their SSL client certificates for authentication. The FileServer is managed through a SOAP interface. The files can be downloaded over HTTPS using HTTP GET. The FileServer can be used for Grote Berichten file transfer.  
+With the Secured FileServer clients (users) can download files using their SSL client certificates for authentication. The FileServer is managed through a SOAP interface. The files can be download over HTTPS using HTTP GET (Ranges are supported). The FileServer can be used for Grote Berichten file transfer.  
 
 ## Overview
    
