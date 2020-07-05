@@ -29,7 +29,7 @@ The FileServer uses SSL client authentication, so the client must authenticate i
 
 *   Download and install SoapUI to manage the FileServer
 *   import fs-service-soapui-project.xml into SoapUI (this project already contains some predefined SOAP Requests)
-*   import keystore.p12 as certificate/keystore in your browser to be able to download the uploaded file from the FileServer
+*   import keystore.p12 as certificate/keystore in your browser to be able to download the uploaded file from the FileServer (password = password)
 
 ### Usage
 
