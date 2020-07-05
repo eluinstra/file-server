@@ -96,7 +96,9 @@
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="createClientResponse">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="id" type="xs:long"/>
+        </xs:sequence>
       </xs:complexType>
       <xs:complexType name="getClients">
         <xs:sequence/>
@@ -292,13 +294,15 @@
       <xs:element name="deleteFile" type="tns:deleteFile"/>
       <xs:element name="deleteFileResponse" type="tns:deleteFileResponse"/>
       <xs:element name="file" type="tns:file"/>
+      <xs:element name="fsFile" type="tns:fsFile"/>
       <xs:element name="getFile" type="tns:getFile"/>
       <xs:element name="getFileResponse" type="tns:getFileResponse"/>
+      <xs:element name="period" type="tns:period"/>
       <xs:element name="uploadFile" type="tns:uploadFile"/>
       <xs:element name="uploadFileResponse" type="tns:uploadFileResponse"/>
       <xs:complexType name="deleteFile">
         <xs:sequence>
-          <xs:element name="url" type="xs:string"/>
+          <xs:element name="path" type="xs:string"/>
           <xs:element minOccurs="0" name="force" type="xs:boolean"/>
         </xs:sequence>
       </xs:complexType>
@@ -313,15 +317,25 @@
       </xs:complexType>
       <xs:complexType name="file">
         <xs:sequence>
-          <xs:element minOccurs="0" name="filename" type="xs:string"/>
+          <xs:element name="filename" type="xs:string"/>
           <xs:element name="contentType" type="xs:string"/>
           <xs:element minOccurs="0" name="checksum" type="xs:string"/>
-          <xs:element name="startDate" type="xs:dateTime"/>
-          <xs:element name="endDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="startDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="endDate" type="xs:dateTime"/>
           <xs:element name="content" type="xs:base64Binary"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="uploadFileResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="path" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getFile">
+        <xs:sequence>
+          <xs:element name="path" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getFileResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="fsFile" type="tns:fsFile"/>
         </xs:sequence>
@@ -333,24 +347,14 @@
           <xs:element name="contentType" type="xs:string"/>
           <xs:element name="md5checksum" type="xs:string"/>
           <xs:element name="sha256checksum" type="xs:string"/>
-          <xs:element name="period" type="tns:period"/>
+          <xs:element minOccurs="0" name="period" type="tns:period"/>
           <xs:element name="clientId" type="xs:long"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="period">
         <xs:sequence>
-          <xs:element name="startDate" type="xs:dateTime"/>
-          <xs:element name="endDate" type="xs:dateTime"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getFile">
-        <xs:sequence>
-          <xs:element name="url" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getFileResponse">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="fsFile" type="tns:fsFile"/>
+          <xs:element minOccurs="0" name="startDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="endDate" type="xs:dateTime"/>
         </xs:sequence>
       </xs:complexType>
       <xs:element name="FSServiceException" type="tns:FSServiceException"/>
@@ -403,7 +407,7 @@
    <soapenv:Header/>
    <soapenv:Body>
       <ns:deleteFile>
-         <url>/test.xml</url>
+         <path>/0F6dsXhUs1dVTRUg7FnAtUlcKg5SbKq4R7Cp0KT62LuEVlKpP08NHleOayeAO99UYkf0FBJFFVJwhOaoiRXIopJU5MDuGIBjFcZhd7ISNokjQ8RZUTOOnMSHiKKVlRpc</path>
       </ns:deleteFile>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/deleteFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="d5030ae0-20ad-4127-a7e1-0741751405ed" isOneWay="false" action="" name="uploadFile" bindingOperationName="uploadFile" type="Request-Response" outputName="uploadFileResponse" inputName="uploadFile" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="52c5bc8c-73a0-43a7-9a21-ac80045ff643" name="upload File hsqldb.create.sql"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@force_mtom">false</con:setting><con:setting id="WsdlSettings@enable-mtom">true</con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://bitbucket.org/eluinstra/fs/core/1.0">
@@ -438,7 +442,7 @@
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getFile>
-         <url>/fRbMct1pzyaNTZu6UO9k0I4SDyvf8OUMFRHHg0AACdIAYTYRxTQ5W7ZeambVA5xiAJPtT14iButvkPzS3Zm9KWNhf7EUWl4zvbQ6H2JYtk2GADfmoEzaUop80tFDzlUC</url>
+         <path>/0F6dsXhUs1dVTRUg7FnAtUlcKg5SbKq4R7Cp0KT62LuEVlKpP08NHleOayeAO99UYkf0FBJFFVJwhOaoiRXIopJU5MDuGIBjFcZhd7ISNokjQ8RZUTOOnMSHiKKVlRpc</path>
       </ns:getFile>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/findFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="b9a62073-85b1-4db1-bdcd-fab418dcc08a" wsaVersion="NONE" name="GBServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.gb.digikoppeling.eluinstra.bitbucket.org/}GBServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/gb?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/gb?wsdl"><con:part><con:url>http://localhost:8080/service/gb?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="GBServiceImplService" targetNamespace="http://service.gb.digikoppeling.eluinstra.bitbucket.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.gb.digikoppeling.eluinstra.bitbucket.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://bitbucket.org/eluinstra/digikoppeling/gb/1.0">
@@ -467,6 +471,7 @@
   <wsdl:types>
     <xs:schema elementFormDefault="qualified" targetNamespace="http://www.logius.nl/digikoppeling/gb/2010/10" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.logius.nl/digikoppeling/gb/2010/10">
       <xs:element name="digikoppeling-external-data-references" type="tns:external-data-reference"/>
+      <xs:element name="external-data-reference" type="tns:external-data-reference"/>
       <xs:complexType name="external-data-reference">
         <xs:sequence>
           <xs:element maxOccurs="unbounded" name="data-reference" type="tns:data-reference"/>
@@ -551,12 +556,12 @@
       <xs:element name="getExternalDataReferenceResponse" type="tns:getExternalDataReferenceResponse"/>
       <xs:complexType name="getExternalDataReference">
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" name="virtualPath" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" name="path" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="getExternalDataReferenceResponse">
         <xs:sequence>
-          <xs:element minOccurs="0" name="external-data-reference" type="ns1:external-data-reference"/>
+          <xs:element minOccurs="0" ref="ns1:external-data-reference"/>
         </xs:sequence>
       </xs:complexType>
       <xs:element name="GBServiceException" type="tns:GBServiceException"/>
@@ -587,7 +592,7 @@
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getExternalDataReference>
-         <virtualPath>/CoaH2lqAHf1NjHxjKgqt4iakfBrg0utg8MKVJUaT8fdZv1RraPSE1SDeJCYJmbX0GJpZ46tz6ypOPV8CT8k3Kd9DLcuchCnzB8O4yP2r38Fx6xhI5Fc3XwWepcsLmXSS</virtualPath>
+         <path>/0F6dsXhUs1dVTRUg7FnAtUlcKg5SbKq4R7Cp0KT62LuEVlKpP08NHleOayeAO99UYkf0FBJFFVJwhOaoiRXIopJU5MDuGIBjFcZhd7ISNokjQ8RZUTOOnMSHiKKVlRpc</path>
       </ns:getExternalDataReference>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.gb.digikoppeling.eluinstra.bitbucket.org/GBService/getExternalDataReference"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
