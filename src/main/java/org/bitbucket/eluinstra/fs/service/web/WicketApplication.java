@@ -51,8 +51,8 @@ public class WicketApplication extends WebApplication
 		val home = new MenuLinkItem("0","home",getHomePage());
 		menuItems.add(home);
 		
-		val client = new MenuItem("1","clientService");
-		menuItems.add(client);
+		val user = new MenuItem("1","userService");
+		menuItems.add(user);
 
 		val file = new MenuItem("2","fileService");
 		menuItems.add(file);
