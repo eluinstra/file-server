@@ -23,7 +23,7 @@ import javax.xml.ws.soap.SOAPBinding;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
-import org.bitbucket.eluinstra.fs.core.service.FSAdminService;
+import org.bitbucket.eluinstra.fs.core.service.UserService;
 import org.bitbucket.eluinstra.fs.core.service.FSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class WebConfig
 	@Value("${maxItemsPerPage}")
 	Integer maxItemsPerPage;
 	@Autowired
-	FSAdminService fsAdminService;
+	UserService userService;
 	@Autowired
 	FSService fsService;
 
@@ -49,7 +49,7 @@ public class WebConfig
 	@Bean
 	public Endpoint fsAdminServiceEndpoint()
 	{
-		return publishEndpoint(fsAdminService,"/admin");
+		return publishEndpoint(userService,"/user");
 	}
 
 	@Bean
