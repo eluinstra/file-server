@@ -24,7 +24,7 @@ import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.bitbucket.eluinstra.fs.core.service.UserService;
-import org.bitbucket.eluinstra.fs.core.service.FSService;
+import org.bitbucket.eluinstra.fs.core.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ public class WebConfig
 	@Autowired
 	UserService userService;
 	@Autowired
-	FSService fsService;
+	FileService fileService;
 
 	@Bean
 	public WicketApplication wicketApplication()
@@ -47,15 +47,15 @@ public class WebConfig
 	}
 
 	@Bean
-	public Endpoint fsAdminServiceEndpoint()
+	public Endpoint userServiceEndpoint()
 	{
 		return publishEndpoint(userService,"/user");
 	}
 
 	@Bean
-	public Endpoint fsServiceEndpoint()
+	public Endpoint fileServiceEndpoint()
 	{
-		val result = publishEndpoint(fsService,"/file");
+		val result = publishEndpoint(fileService,"/file");
 		((SOAPBinding)result.getBinding()).setMTOMEnabled(true);
 		return result;
 	}

@@ -68,7 +68,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.Location;
 import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.FSServiceProperties;
+import org.hsqldb.server.ServiceProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
@@ -237,7 +237,7 @@ public class Start
 			options.add(jdbcURL.getPort().toString());
 		}
 		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
-		val props = new FSServiceProperties(ServerConstants.SC_PROTOCOL_HSQL);
+		val props = new ServiceProperties(ServerConstants.SC_PROTOCOL_HSQL);
 		props.addProperties(argProps);
 		ServerConfiguration.translateDefaultDatabaseProperty(props);
 		ServerConfiguration.translateDefaultNoSystemExitProperty(props);

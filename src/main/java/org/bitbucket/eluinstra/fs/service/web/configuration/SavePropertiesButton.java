@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.PropertiesPage.Properties;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,17 +33,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class SaveFSServicePropertiesButton extends Button
+public class SavePropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
-	FSServiceProperties fsServiceProperties;
+	Properties properties;
 	PropertiesType propertiesType;
 
 	@Builder
-	public SaveFSServicePropertiesButton(final String id, final ResourceModel resourceModel, final FSServiceProperties fsServiceProperties, final PropertiesType propertiesType)
+	public SavePropertiesButton(final String id, final ResourceModel resourceModel, final Properties properties, final PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
-		this.fsServiceProperties = fsServiceProperties;
+		this.properties = properties;
 		this.propertiesType = propertiesType;
 	}
 
@@ -54,7 +54,7 @@ public class SaveFSServicePropertiesButton extends Button
 		{
 			val file = new File(propertiesType.getPropertiesFile());
 			val writer = new FileWriter(file);
-			new FSServicePropertiesWriter(writer,true).write(fsServiceProperties);
+			new PropertiesWriter(writer,true).write(properties);
 			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
 			error(new StringResourceModel("restart",getPage(),null).getString());
 		}

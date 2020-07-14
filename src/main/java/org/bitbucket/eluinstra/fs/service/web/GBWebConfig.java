@@ -25,7 +25,7 @@ import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.bitbucket.eluinstra.digikoppeling.gb.service.GBService;
 import org.bitbucket.eluinstra.fs.core.service.UserService;
-import org.bitbucket.eluinstra.fs.core.service.FSService;
+import org.bitbucket.eluinstra.fs.core.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,7 +44,7 @@ public class GBWebConfig
 	@Autowired
 	UserService userService;
 	@Autowired
-	FSService fsService;
+	FileService fileService;
 	@Autowired
 	GBService gbService;
 
@@ -61,9 +61,9 @@ public class GBWebConfig
 	}
 
 	@Bean
-	public Endpoint fsServiceEndpoint()
+	public Endpoint fileServiceEndpoint()
 	{
-		val result = publishEndpoint(fsService,"/file");
+		val result = publishEndpoint(fileService,"/file");
 		((SOAPBinding)result.getBinding()).setMTOMEnabled(true);
 		return result;
 	}

@@ -23,7 +23,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bitbucket.eluinstra.fs.core.KeyStoreManager.KeyStoreType;
-import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
 import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpProperties;
 import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcProperties;
 import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServiceProperties;
@@ -37,18 +36,18 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
-public class FSServicePropertiesReader
+public class PropertiesReader
 {
 	@NonNull
 	Reader reader;
 
-	public void read(@NonNull final FSServiceProperties fsServiceProperties, @NonNull final PropertiesType propertiesType) throws IOException
+	public void read(@NonNull final org.bitbucket.eluinstra.fs.service.web.configuration.PropertiesPage.Properties properties, @NonNull final PropertiesType propertiesType) throws IOException
 	{
-		val properties = new Properties();
-		properties.load(reader);
-		read(properties,fsServiceProperties.getServiceProperties());
-		read(properties,fsServiceProperties.getHttpProperties());
-		read(properties,fsServiceProperties.getJdbcProperties());
+		val p = new Properties();
+		p.load(reader);
+		read(p,properties.getServiceProperties());
+		read(p,properties.getHttpProperties());
+		read(p,properties.getJdbcProperties());
 	}
 	
 	protected void read(final Properties properties, final ServiceProperties serviceProperties) throws MalformedURLException

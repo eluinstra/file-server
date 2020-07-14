@@ -21,7 +21,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bitbucket.eluinstra.fs.service.web.configuration.ServicePropertiesFormPanel.ServiceProperties;
-import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
 import org.bitbucket.eluinstra.fs.service.web.configuration.HttpPropertiesFormPanel.HttpProperties;
 import org.bitbucket.eluinstra.fs.service.web.configuration.JdbcPropertiesFormPanel.JdbcProperties;
 import org.bitbucket.eluinstra.fs.service.web.configuration.SslPropertiesFormPanel.SslProperties;
@@ -34,18 +33,18 @@ import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
-public class FSServicePropertiesWriter
+public class PropertiesWriter
 {
 	@NonNull
 	Writer writer;
 	boolean enableSslOverridePropeties;
 
-	public void write(@NonNull final FSServiceProperties fsServiceProperties) throws IOException
+	public void write(@NonNull final org.bitbucket.eluinstra.fs.service.web.configuration.PropertiesPage.Properties properties) throws IOException
 	{
 		val p = new Properties();
-		write(p,fsServiceProperties.getServiceProperties());
-		write(p,fsServiceProperties.getHttpProperties(),enableSslOverridePropeties);
-		write(p,fsServiceProperties.getJdbcProperties());
+		write(p,properties.getServiceProperties());
+		write(p,properties.getHttpProperties(),enableSslOverridePropeties);
+		write(p,properties.getJdbcProperties());
 		p.store(writer,"FS Service properties");
 	}
 

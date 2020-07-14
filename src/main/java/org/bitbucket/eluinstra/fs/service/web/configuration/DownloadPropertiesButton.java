@@ -23,7 +23,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.bitbucket.eluinstra.fs.service.web.configuration.FSServicePropertiesPage.FSServiceProperties;
+import org.bitbucket.eluinstra.fs.service.web.configuration.PropertiesPage.Properties;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -32,16 +32,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DownloadFSServicePropertiesButton extends Button
+public class DownloadPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
-	FSServiceProperties fsServiceProperties;
+	Properties properties;
 	PropertiesType propertiesType;
 
-	public DownloadFSServicePropertiesButton(final String id, final ResourceModel resourceModel, final FSServiceProperties fsServiceProperties, final PropertiesType propertiesType)
+	public DownloadPropertiesButton(final String id, final ResourceModel resourceModel, final Properties properties, final PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
-		this.fsServiceProperties = fsServiceProperties;
+		this.properties = properties;
 		this.propertiesType = propertiesType;
 	}
 
@@ -51,7 +51,7 @@ public class DownloadFSServicePropertiesButton extends Button
 		try
 		{
 			val writer = new StringWriter();
-			new FSServicePropertiesWriter(writer,true).write(fsServiceProperties);
+			new PropertiesWriter(writer,true).write(properties);
 			val resourceStream = new StringWriterResourceStream(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}

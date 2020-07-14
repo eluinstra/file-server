@@ -15,9 +15,9 @@
  */
 package org.hsqldb.server;
 
-public class FSServiceProperties extends ServerProperties
+public class ServiceProperties extends ServerProperties
 {
-	public FSServiceProperties(int protocol)
+	public ServiceProperties(int protocol)
 	{
 		super(protocol);
 	}

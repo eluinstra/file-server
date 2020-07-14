@@ -49,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FSServicePropertiesPage extends BasePage
+public class PropertiesPage extends BasePage
 {
 	private class ComponentsListView extends ListView<BootstrapPanelBorder>
 	{
@@ -73,26 +73,26 @@ public class FSServicePropertiesPage extends BasePage
 	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 	final PropertiesType propertiesType;
 
-	public FSServicePropertiesPage() throws IOException
+	public PropertiesPage() throws IOException
 	{
 		this(null);
 	}
-	public FSServicePropertiesPage(final FSServiceProperties fsServiceProperties) throws IOException
+	public PropertiesPage(final Properties properties) throws IOException
 	{
 		propertiesType = PropertiesType.getPropertiesType(propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
 		add(new BootstrapFeedbackPanel("feedback"));
-		val model = fsServiceProperties == null ? createFSServiceProperties() : fsServiceProperties;
-		add(new FSServicePropertiesForm("form",model));
+		val model = properties == null ? createProperties() : properties;
+		add(new PropertiesForm("form",model));
 	}
 
-	private FSServiceProperties createFSServiceProperties()
+	private Properties createProperties()
 	{
-		val result = new FSServiceProperties();
+		val result = new Properties();
 		try
 		{
 			val file = new File(propertiesType.getPropertiesFile());
 			val reader = new FileReader(file);
-			new FSServicePropertiesReader(reader).read(result,propertiesType);
+			new PropertiesReader(reader).read(result,propertiesType);
 			this.info(new StringResourceModel("properties.loaded",this,Model.of(file)).getString());
 		}
 		catch (IOException e)
@@ -106,32 +106,32 @@ public class FSServicePropertiesPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("fsServiceProperties",this);
+		return getLocalizer().getString("properties",this);
 	}
 	
-	public class FSServicePropertiesForm extends Form<FSServiceProperties>
+	public class PropertiesForm extends Form<Properties>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public FSServicePropertiesForm(final String id, final FSServiceProperties fsServiceProperties)
+		public PropertiesForm(final String id, final Properties properties)
 		{
-			super(id,CompoundPropertyModel.of(fsServiceProperties));
+			super(id,CompoundPropertyModel.of(properties));
 			val components = new ArrayList<BootstrapPanelBorder>();
-			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",getModel().map(m -> m.getServiceProperties()))));
-			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",getModel().map(m -> m.getHttpProperties()),true)));  
-			components.add(new BootstrapPanelBorder("panelBorder",FSServicePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",getModel().map(m -> m.getJdbcProperties()))));
+			components.add(new BootstrapPanelBorder("panelBorder",PropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",getModel().map(m -> m.getServiceProperties()))));
+			components.add(new BootstrapPanelBorder("panelBorder",PropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",getModel().map(m -> m.getHttpProperties()),true)));  
+			components.add(new BootstrapPanelBorder("panelBorder",PropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",getModel().map(m -> m.getJdbcProperties()))));
 			add(new ComponentsListView("components",components));
 			add(createValidateButton("validate"));
-			add(new DownloadFSServicePropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
-			add(new SaveFSServicePropertiesButton("save",new ResourceModel("cmd.save"),getModelObject(),propertiesType));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),FSServicePropertiesPage.class));
+			add(new DownloadPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
+			add(new SavePropertiesButton("save",new ResourceModel("cmd.save"),getModelObject(),propertiesType));
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),PropertiesPage.class));
 		}
 
 		private Button createValidateButton(final String id)
 		{
 			return Button.builder()
 					.id(id)
-					.onSubmit(() -> info(FSServicePropertiesPage.this.getString("validate.ok")))
+					.onSubmit(() -> info(PropertiesPage.this.getString("validate.ok")))
 					.build();
 		}
 	}
@@ -139,7 +139,7 @@ public class FSServicePropertiesPage extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class FSServiceProperties implements IClusterable
+	public static class Properties implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		ServiceProperties serviceProperties = new ServiceProperties();
