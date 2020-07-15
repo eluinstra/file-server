@@ -23,7 +23,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:org/bitbucket/eluinstra/fs/service/applicationContext.xml</param-value>
+		<param-value>classpath:dev/luin/fs/service/applicationContext.xml</param-value>
 	</context-param>
 
 	<filter>
@@ -31,7 +31,7 @@
 		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
-			<param-value>org.bitbucket.eluinstra.fs.service.web.WicketApplication</param-value>
+			<param-value>dev.luin.fs.web.WicketApplication</param-value>
 		</init-param>
 	</filter>
 

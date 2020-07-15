@@ -21,7 +21,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.bitbucket.eluinstra.fs</groupId>
+	<groupId>dev.luin.fs</groupId>
 	<artifactId>fs-service</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0-SNAPSHOT</version>
@@ -176,12 +176,12 @@
 			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bitbucket.eluinstra.fs</groupId>
+			<groupId>dev.luin.fs</groupId>
 			<artifactId>fs-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bitbucket.eluinstra.digikoppeling.gb</groupId>
+			<groupId>dev.luin.digikoppeling.gb</groupId>
 			<artifactId>gbfs-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
@@ -340,7 +340,7 @@
 							<resource>ECLIPSEF.RSA</resource>
 						</transformer>
 						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>org.bitbucket.eluinstra.fs.service.Start</mainClass>
+							<mainClass>dev.luin.fs.Start</mainClass>
 						</transformer>
 						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>META-INF/spring.handlers</resource>
@@ -429,7 +429,7 @@
 					<linkXref>true</linkXref>
 					<targetJdk>${jdk.version}</targetJdk>
 					<!--excludes>
-						<exclude>org/bitbucket/eluinstrs/fs/service/model/**/*.java</exclude>
+						<exclude>dev/luin/fs/service/model/**/*.java</exclude>
 					</excludes-->
 				</configuration>
 			</plugin>
@@ -445,7 +445,7 @@
 				<configuration>
 					<instrumentation>
 						<ignores>
-							<ignore>org.bitbucket.eluinstra.fs.service.dao.*</ignore>
+							<ignore>dev.luin.fs.dao.*</ignore>
 						</ignores>
 					</instrumentation>
 					<systemProperties>

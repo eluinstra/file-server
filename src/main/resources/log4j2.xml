@@ -38,9 +38,9 @@
 			<AppenderRef ref="File" />
 		</AsyncRoot>
 
-		<AsyncLogger name="org.bitbucket.eluinstra.fs.core" level="INFO" />
+		<AsyncLogger name="dev.luin.fs.core" level="INFO" />
 
-		<AsyncLogger name="org.bitbucket.eluinstra.fs.core.server" level="DEBUG" />
+		<AsyncLogger name="dev.luin.fs.core.server" level="DEBUG" />
 
 		<AsyncLogger name="org.apache.wicket" level="WARN" />
 
