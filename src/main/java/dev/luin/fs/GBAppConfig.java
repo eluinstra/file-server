@@ -50,7 +50,7 @@ import lombok.experimental.FieldDefaults;
 @PropertySource(value = {
 		"classpath:dev/luin/fs/core/default.properties",
 		"classpath:dev/luin/digikoppeling/gb/default.properties",
-		"classpath:dev/luin/fs/service/default.properties",
+		"classpath:dev/luin/fs/default.properties",
 		"file:${fs.configDir}fs-service.advanced.properties",
 		"file:${fs.configDir}fs-service.properties"},
 		ignoreResourceNotFound = true)
@@ -66,7 +66,7 @@ public class GBAppConfig
 		val resources = new Resource[]{
 				new ClassPathResource("dev/luin/fs/core/default.properties"),
 				new ClassPathResource("dev/luin/digikoppeling/gb/default.properties"),
-				new ClassPathResource("classpath:dev/luin/fs/service/default.properties"),
+				new ClassPathResource("dev/luin/fs/default.properties"),
 				new FileSystemResource(configDir + "fs-service.advanced.properties"),
 				new FileSystemResource(configDir + "fs-service.properties")};
 		result.setLocations(resources);

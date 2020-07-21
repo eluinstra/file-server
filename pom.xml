@@ -429,7 +429,7 @@
 					<linkXref>true</linkXref>
 					<targetJdk>${jdk.version}</targetJdk>
 					<!--excludes>
-						<exclude>dev/luin/fs/service/model/**/*.java</exclude>
+						<exclude>dev/luin/fs/model/**/*.java</exclude>
 					</excludes-->
 				</configuration>
 			</plugin>
