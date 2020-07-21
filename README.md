@@ -44,9 +44,13 @@ The FileServer uses SSL clientAuthentication, so the user must authenticate itse
     open in your browser: https://localhost:8443/files[virtualPath]  
    	or use curl to download:
 
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=0-255"
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=256-511"
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=512-676"  
+        curl -k --cert keystore.pem:password -I https://localhost:8443/files[virtualPath]
+
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i
+
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -H "Range: bytes=0-255"
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -H "Range: bytes=256-511"
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -H "Range: bytes=512-676"  
 
         curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=0-255, 256-511, 512-676"
 
