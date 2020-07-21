@@ -41,6 +41,14 @@ The FileServer uses SSL clientAuthentication, so the user must authenticate itse
     run in SoapUI: fs-service -> FileServiceImplServiceSoapBinding -> uploadFile -> upload file hsqldb.create.sql    
     The response contains the virtualPath of the file download in xpath://Envelope/Header/Body/uploadFileResponse/fsFile/virtualPath
 3.  download the file in your browser from the FileServer  
-    open in your browser: https://localhost:8443/files[virtualPath]
+    open in your browser: https://localhost:8443/files[virtualPath]  
+   	or use curl to download:
+
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=0-255"
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=256-511"
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=512-676"  
+
+        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=0-255, 256-511, 512-676"
+
 4.  Optional: download Grote Berichten external-data-reference  
     run in SoapUI and use [virtualPath] in Request 1: fs-service -> GBServiceImplServiceSoapBinding -> getExternalDataReference -> Request 1
