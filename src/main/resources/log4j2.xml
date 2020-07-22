@@ -38,6 +38,8 @@
 			<AppenderRef ref="File" />
 		</AsyncRoot>
 
+		<AsyncLogger name="dev.luin.fs" level="INFO" />
+
 		<AsyncLogger name="dev.luin.fs.core" level="INFO" />
 
 		<AsyncLogger name="dev.luin.fs.core.server" level="DEBUG" />

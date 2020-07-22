@@ -26,6 +26,7 @@ import dev.luin.fs.core.datasource.DataSourceConfig;
 import dev.luin.fs.core.file.FileSystemConfig;
 import dev.luin.fs.core.querydsl.QueryDSLConfig;
 import dev.luin.fs.core.server.download.DownloadServerConfig;
+import dev.luin.fs.core.server.upload.UploadServerConfig;
 import dev.luin.fs.core.service.ServiceConfig;
 import dev.luin.fs.core.transaction.TransactionManagerConfig;
 import dev.luin.fs.core.user.UserManagerConfig;
@@ -43,6 +44,7 @@ import lombok.experimental.FieldDefaults;
 	QueryDSLConfig.class,
 	ServiceConfig.class,
 	TransactionManagerConfig.class,
+	UploadServerConfig.class,
 	WebConfig.class
 })
 @PropertySource(value = {

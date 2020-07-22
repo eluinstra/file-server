@@ -612,7 +612,8 @@ public class Start
 		result.setVirtualHosts(new String[] {"@fs"});
 		result.setContextPath("/");
 		result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(dev.luin.fs.core.server.servlet.Download.class,properties.get("fs.path") + "/*");
+		result.addServlet(dev.luin.fs.core.server.servlet.Download.class,properties.get("fs.path") + "/download/*");
+		result.addServlet(dev.luin.fs.core.server.servlet.Upload.class,properties.get("fs.path") + "/upload/*");
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}

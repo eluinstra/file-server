@@ -15,6 +15,7 @@ hooks
 /findbugs
 dependency-reduced-pom.xml
 /hsqldb
+/files
 
 # IntelliJ IDEA
 .idea
