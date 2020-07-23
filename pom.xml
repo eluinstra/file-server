@@ -49,7 +49,7 @@
 		<jetty.version>9.4.26.v20200117</jetty.version>
 		<spring.version>5.2.3.RELEASE</spring.version>
 		<cxf.version>3.3.5</cxf.version>
-		<log4j.version>2.13.0</log4j.version>
+		<log4j.version>2.13.3</log4j.version>
 		<checkstyle.config.location>${basedir}/resources/reporting/checkstyle.xml</checkstyle.config.location>
 		<checkstyle.header.file>${basedir}/resources/reporting/license.txt</checkstyle.header.file>
 		<checkstyle.cache.file>${project.build.directory}/checkstyle-cachefile</checkstyle.cache.file>
