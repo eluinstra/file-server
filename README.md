@@ -16,43 +16,43 @@ The FileServer uses SSL clientAuthentication, so the user must authenticate itse
 ### Install the FileServer
 
 *   install JDK/JRE 8
-*   create directory fs-service
-*   copy fs-service-1.0.0-SNAPSHOT to fs-service
-*   cd fs-service
+*   create directory file-server
+*   copy file-server-1.0.0-M1 to file-server
+*   cd file-server
 *   create directory files
 
 ### Start the FileServer
 
-    java -Djavax.net.ssl.trustStore= -cp fs-service-1.0.0-SNAPSHOT.jar dev.luin.fs.StartGB -hsqldb -soap -headless
+    java -Djavax.net.ssl.trustStore= -cp file-server-1.0.0-M1.jar dev.luin.fs.StartGB -hsqldb -soap -headless
 
 ## Example
 
 ### Preparation
 
 *   Download and install SoapUI to manage the FileServer
-*   import fs-service-soapui-project.xml into SoapUI (this project already contains some predefined SOAP Requests)
+*   import file-server-soapui-project.xml into SoapUI (this project already contains some predefined SOAP Requests)
 *   import keystore.p12 as certificate/keystore in your browser to be able to download the uploaded file from the FileServer (password = password)
 
 ### Usage
 
 1.  create user Ordina using certificate localhost.pem on the FileServer  
-    run in SoapUI: fs-service -> UserServiceImplServiceSoapBinding -> createUser -> create user Ordina
+    run in SoapUI: file-server -> UserServiceImplServiceSoapBinding -> createUser -> create user Ordina
 2.  upload file hsqldb.create.sql for user Ordina to the FileServer  
-    run in SoapUI: fs-service -> FileServiceImplServiceSoapBinding -> uploadFile -> upload file hsqldb.create.sql    
+    run in SoapUI: file-server -> FileServiceImplServiceSoapBinding -> uploadFile -> upload file hsqldb.create.sql    
     The response contains the virtualPath of the file download in xpath://Envelope/Header/Body/uploadFileResponse/fsFile/virtualPath
 3.  download the file in your browser from the FileServer  
-    open in your browser: https://localhost:8443/files[virtualPath]  
+    open in your browser: https://localhost:8443/files/download/[virtualPath]  
    	or use curl to download:
 
-        curl -k --cert keystore.pem:password -I https://localhost:8443/files[virtualPath]
+        curl -k --cert keystore.pem:password -I https://localhost:8443/files/download[virtualPath]
 
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i
+        curl -k --cert keystore.pem:password https://localhost:8443/files/download[virtualPath] -i
 
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -H "Range: bytes=0-255"
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -H "Range: bytes=256-511"
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -H "Range: bytes=512-676"  
+        curl -k --cert keystore.pem:password https://localhost:8443/files/download[virtualPath] -H "Range: bytes=0-255"
+        curl -k --cert keystore.pem:password https://localhost:8443/files/download[virtualPath] -H "Range: bytes=256-511"
+        curl -k --cert keystore.pem:password https://localhost:8443/files/download[virtualPath] -H "Range: bytes=512-676"  
 
-        curl -k --cert keystore.pem:password https://localhost:8443/files[virtualPath] -i -H "Range: bytes=0-255, 256-511, 512-676"
+        curl -k --cert keystore.pem:password https://localhost:8443/files/download[virtualPath] -i -H "Range: bytes=0-255, 256-511, 512-676"
 
 4.  Optional: download Grote Berichten external-data-reference  
-    run in SoapUI and use [virtualPath] in Request 1: fs-service -> GBServiceImplServiceSoapBinding -> getExternalDataReference -> Request 1
+    run in SoapUI and use [virtualPath] in Request 1: file-server -> GBServiceImplServiceSoapBinding -> getExternalDataReference -> Request 1
