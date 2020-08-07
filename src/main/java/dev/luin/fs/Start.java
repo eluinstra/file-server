@@ -62,13 +62,11 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.Location;
 import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.ServiceProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
+import org.hsqldb.server.ServiceProperties;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -77,7 +75,6 @@ import dev.luin.fs.core.KeyStoreManager.KeyStoreType;
 import dev.luin.fs.web.configuration.JdbcURL;
 import lombok.AccessLevel;
 import lombok.val;
-import lombok.var;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
@@ -200,16 +197,15 @@ public class Start
 
 	protected void startHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
 	{
-		val jdbcURL = initHSQLDB(cmd,properties);
+		val jdbcURL = getHsqlDbJdbcUrl(cmd,properties);
 		if (jdbcURL.isPresent())
 		{
 			System.out.println("Starting hsqldb...");
-			val server = startHSQLDBServer(cmd,jdbcURL.get());
-			initHSQLDBDatabase(server);
+			startHSQLDBServer(cmd,jdbcURL.get());
 		}
 	}
 
-	protected Optional<JdbcURL> initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
+	protected Optional<JdbcURL> getHsqlDbJdbcUrl(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("fs.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
@@ -246,19 +242,6 @@ public class Start
 		server.setProperties(props);
 		server.start();
 		return server;
-	}
-
-	protected void initHSQLDBDatabase(org.hsqldb.server.Server server)
-	{
-		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
-		val user = "sa";
-		val password = "";
-		Location[] locations = {new Location("classpath:/dev/luin/fs/db/migration/hsqldb")};
-		var config = Flyway.configure()
-				.dataSource(url,user,password)
-				.locations(locations)
-				.ignoreMissingMigrations(true);
-		config.load().migrate();
 	}
 
 	protected void initJMX(CommandLine cmd, Server server) throws Exception
