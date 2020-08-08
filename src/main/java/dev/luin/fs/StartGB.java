@@ -16,7 +16,7 @@
 package dev.luin.fs;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.Properties;
 
 import org.apache.cxf.common.logging.LogUtils;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -42,7 +42,7 @@ public class StartGB extends Start
 	}
 
 	@Override
-	protected Map<String,String> getProperties(String...files) throws IOException
+	protected Properties getProperties(String...files) throws IOException
 	{
 		return GBAppConfig.PROPERTY_SOURCE.getProperties();
 	}

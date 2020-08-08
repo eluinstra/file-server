@@ -16,7 +16,8 @@
 package dev.luin.fs;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.AbstractMap;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.Resource;
@@ -44,10 +45,14 @@ public class PropertySourcesPlaceholderConfigurer extends org.springframework.co
 		return overridePropertiesFile;
 	}
 	
-	public Map<String,String> getProperties() throws IOException
+	public Properties getProperties() throws IOException
 	{
 		val properties = mergeProperties();
-		return properties.entrySet().stream()
-				.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue()));
+		val result = new Properties();
+		result.putAll(properties.entrySet().stream()
+				.map(e -> System.getProperty((String)e.getKey()) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getProperty((String)e.getKey())))
+				.map(e -> System.getenv((String)e.getKey()) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getenv((String)e.getKey())))
+				.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue())));
+		return result;
 	}
 }

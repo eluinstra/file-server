@@ -30,6 +30,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
@@ -190,12 +191,12 @@ public class Start
 		context.register(AppConfig.class);
 	}
 
-	protected Map<String,String> getProperties(String...files) throws IOException
+	protected Properties getProperties(String...files) throws IOException
 	{
 		return AppConfig.PROPERTY_SOURCE.getProperties();
 	}
 
-	protected void startHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
+	protected void startHSQLDB(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException
 	{
 		val jdbcURL = getHsqlDbJdbcUrl(cmd,properties);
 		if (jdbcURL.isPresent())
@@ -205,11 +206,11 @@ public class Start
 		}
 	}
 
-	protected Optional<JdbcURL> getHsqlDbJdbcUrl(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
+	protected Optional<JdbcURL> getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException
 	{
-		if ("org.hsqldb.jdbcDriver".equals(properties.get("fs.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
+		if ("org.hsqldb.jdbcDriver".equals(properties.getProperty("fs.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
-			val jdbcURL = dev.luin.fs.web.configuration.Utils.parseJdbcURL(properties.get("fs.jdbc.url"),new JdbcURL());
+			val jdbcURL = dev.luin.fs.web.configuration.Utils.parseJdbcURL(properties.getProperty("fs.jdbc.url"),new JdbcURL());
 			if (!jdbcURL.getHost().matches("(localhost|127.0.0.1)"))
 			{
 				System.out.println("Cannot start server on " + jdbcURL.getHost());
@@ -511,9 +512,9 @@ public class Start
 		return result;
 	}
 
-	protected void initFSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
+	protected void initFSServer(Properties properties, Server server) throws MalformedURLException, IOException
 	{
-		if (!"true".equals(properties.get("fs.ssl")))
+		if (!"true".equals(properties.getProperty("fs.ssl")))
 		{
 			server.addConnector(createFSHttpConnector(properties,server));
 		}
@@ -524,17 +525,17 @@ public class Start
 		}
 	}
 
-	protected ServerConnector createFSHttpConnector(Map<String,String> properties, Server server)
+	protected ServerConnector createFSHttpConnector(Properties properties, Server server)
 	{
 		val result = new ServerConnector(server);
-		result.setHost(StringUtils.isEmpty(properties.get("fs.host")) ? "0.0.0.0" : properties.get("fs.host"));
-		result.setPort(StringUtils.isEmpty(properties.get("fs.port"))  ? 8888 : Integer.parseInt(properties.get("fs.port")));
+		result.setHost(StringUtils.isEmpty(properties.getProperty("fs.host")) ? "0.0.0.0" : properties.getProperty("fs.host"));
+		result.setPort(StringUtils.isEmpty(properties.getProperty("fs.port"))  ? 8888 : Integer.parseInt(properties.getProperty("fs.port")));
 		result.setName("fs");
-		System.out.println("FS Service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.get("fs.path"));
+		System.out.println("FS Service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("fs.path"));
 		return result;
 	}
 
-	protected SslContextFactory createFSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
+	protected SslContextFactory createFSSslContextFactory(Properties properties) throws MalformedURLException, IOException
 	{
 		val result = new SslContextFactory.Server();
 		addFSKeyStore(properties,result);
@@ -542,69 +543,69 @@ public class Start
 		return result;
 	}
 
-	protected void addFSKeyStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	protected void addFSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
-		val keyStore = getResource(properties.get("keystore.path"));
+		val keyStore = getResource(properties.getProperty("keystore.path"));
 		if (keyStore != null && keyStore.exists())
 		{
-			if (!StringUtils.isEmpty(properties.get("https.protocols")))
-				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.protocols"),',')));
-			if (!StringUtils.isEmpty(properties.get("https.cipherSuites")))
-				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.cipherSuites"),',')));
-			sslContextFactory.setKeyStoreType(properties.get("keystore.type"));
+			if (!StringUtils.isEmpty(properties.getProperty("https.protocols")))
+				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols"),',')));
+			if (!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")))
+				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites"),',')));
+			sslContextFactory.setKeyStoreType(properties.getProperty("keystore.type"));
 			sslContextFactory.setKeyStoreResource(keyStore);
-			sslContextFactory.setKeyStorePassword(properties.get("keystore.password"));
+			sslContextFactory.setKeyStorePassword(properties.getProperty("keystore.password"));
 		}
 		else
 		{
-			System.out.println("FS Service not available: keystore " + properties.get("keystore.path") + " not found!");
+			System.out.println("FS Service not available: keystore " + properties.getProperty("keystore.path") + " not found!");
 			System.exit(1);
 		}
 	}
 
-	protected void addFSTrustStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	protected void addFSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
-		val trustStore = getResource(properties.get("truststore.path"));
+		val trustStore = getResource(properties.getProperty("truststore.path"));
 		if (trustStore != null && trustStore.exists())
 		{
 			sslContextFactory.setNeedClientAuth(true);
-			sslContextFactory.setTrustStoreType(properties.get("truststore.type"));
+			sslContextFactory.setTrustStoreType(properties.getProperty("truststore.type"));
 			sslContextFactory.setTrustStoreResource(trustStore);
-			sslContextFactory.setTrustStorePassword(properties.get("truststore.password"));
+			sslContextFactory.setTrustStorePassword(properties.getProperty("truststore.password"));
 		}
 		else
 		{
-			System.out.println("FS Service not available: truststore " + properties.get("truststore.path") + " not found!");
+			System.out.println("FS Service not available: truststore " + properties.getProperty("truststore.path") + " not found!");
 			System.exit(1);
 		}
 	}
 
-	protected ServerConnector createFSHttpsConnector(Map<String,String> properties, Server server, SslContextFactory factory)
+	protected ServerConnector createFSHttpsConnector(Properties properties, Server server, SslContextFactory factory)
 	{
 		val result = new ServerConnector(server,factory);
-		result.setHost(StringUtils.isEmpty(properties.get("fs.host")) ? "0.0.0.0" : properties.get("fs.host"));
-		result.setPort(StringUtils.isEmpty(properties.get("fs.port"))  ? 8888 : Integer.parseInt(properties.get("fs.port")));
+		result.setHost(StringUtils.isEmpty(properties.getProperty("fs.host")) ? "0.0.0.0" : properties.getProperty("fs.host"));
+		result.setPort(StringUtils.isEmpty(properties.getProperty("fs.port"))  ? 8888 : Integer.parseInt(properties.getProperty("fs.port")));
 		result.setName("fs");
-		System.out.println("FS Service configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + properties.get("fs.path"));
+		System.out.println("FS Service configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("fs.path"));
 		return result;
 	}
 
-	protected Handler createFSContextHandler(Map<String,String> properties, ContextLoaderListener contextLoaderListener)
+	protected Handler createFSContextHandler(Properties properties, ContextLoaderListener contextLoaderListener)
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@fs"});
 		result.setContextPath("/");
 		result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(dev.luin.fs.core.server.servlet.Download.class,properties.get("fs.path") + "/download/*");
-		result.addServlet(dev.luin.fs.core.server.servlet.Upload.class,properties.get("fs.path") + "/upload/*");
+		result.addServlet(dev.luin.fs.core.server.servlet.Download.class,properties.getProperty("fs.path") + "/download/*");
+		result.addServlet(dev.luin.fs.core.server.servlet.Upload.class,properties.getProperty("fs.path") + "/upload/*");
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}
 
-	protected FilterHolder createClientCertificateManagerFilterHolder(Map<String,String> properties)
+	protected FilterHolder createClientCertificateManagerFilterHolder(Properties properties)
 	{
 		val result = new FilterHolder(dev.luin.fs.core.server.servlet.ClientCertificateManagerFilter.class); 
-		result.setInitParameter("x509CertificateHeader",properties.get("https.clientCertificateHeader"));
+		result.setInitParameter("x509CertificateHeader",properties.getProperty("https.clientCertificateHeader"));
 		return result;
 	}
 
