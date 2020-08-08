@@ -52,13 +52,14 @@ import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
@@ -168,7 +169,6 @@ public class Start
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
 		result.addOption("soap",false,"start soap service");
-		result.addOption("headless",false,"start without web interface");
 		return result;
 	}
 	
@@ -282,7 +282,9 @@ public class Start
 
 	protected ServerConnector createHttpConnector(CommandLine cmd, Server server)
 	{
-		val result = new ServerConnector(server);
+		val httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 		result.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 		result.setName("web");
@@ -394,15 +396,6 @@ public class Start
 		}
 		if (cmd.hasOption("soap"))
 			result.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
-		if (!cmd.hasOption("headless"))
-		{
-			val servletHolder = new ServletHolder(dev.luin.fs.web.ResourceServlet.class);
-			result.addServlet(servletHolder,"/css/*");
-			result.addServlet(servletHolder,"/fonts/*");
-			result.addServlet(servletHolder,"/images/*");
-			result.addServlet(servletHolder,"/js/*");
-			result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-		}
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
@@ -492,15 +485,6 @@ public class Start
 			System.exit(1);
 			return null;
 		}
-	}
-
-	protected FilterHolder createWicketFilterHolder()
-	{
-		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
-		result.setInitParameter("applicationFactoryClassName","org.apache.wicket.spring.SpringWebApplicationFactory");
-		result.setInitParameter("applicationBean","wicketApplication");
-		result.setInitParameter("filterMappingUrlPattern","/*");
-		return result;
 	}
 
 	protected ErrorPageErrorHandler createErrorHandler()

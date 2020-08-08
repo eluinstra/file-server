@@ -24,7 +24,6 @@ import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,20 +38,12 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GBWebConfig
 {
-	@Value("${maxItemsPerPage}")
-	Integer maxItemsPerPage;
 	@Autowired
 	UserService userService;
 	@Autowired
 	FileService fileService;
 	@Autowired
 	GBService gbService;
-
-	@Bean
-	public WicketApplication wicketApplication()
-	{
-		return new WicketApplication(maxItemsPerPage);
-	}
 
 	@Bean
 	public Endpoint userServiceEndpoint()

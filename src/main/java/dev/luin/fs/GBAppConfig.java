@@ -53,8 +53,8 @@ import lombok.experimental.FieldDefaults;
 		"classpath:dev/luin/fs/core/default.properties",
 		"classpath:dev/luin/digikoppeling/gb/default.properties",
 		"classpath:dev/luin/fs/default.properties",
-		"file:${fs.configDir}fs-service.advanced.properties",
-		"file:${fs.configDir}fs-service.properties"},
+		"file:${fs.configDir}file-server.advanced.properties",
+		"file:${fs.configDir}file-server.properties"},
 		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GBAppConfig
@@ -69,8 +69,8 @@ public class GBAppConfig
 				new ClassPathResource("dev/luin/fs/core/default.properties"),
 				new ClassPathResource("dev/luin/digikoppeling/gb/default.properties"),
 				new ClassPathResource("dev/luin/fs/default.properties"),
-				new FileSystemResource(configDir + "fs-service.advanced.properties"),
-				new FileSystemResource(configDir + "fs-service.properties")};
+				new FileSystemResource(configDir + "file-server.advanced.properties"),
+				new FileSystemResource(configDir + "file-server.properties")};
 		result.setLocations(resources);
 		result.setIgnoreResourceNotFound(true);
 		return result;

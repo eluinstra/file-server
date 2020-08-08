@@ -17,7 +17,6 @@
 
 -->
 <Configuration>
-
 	<Appenders>
 		<Console name="Console">
 			<PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
@@ -31,33 +30,14 @@
 			</Policies>                               
 		</RollingFile>
 	</Appenders>
-
 	<Loggers>
-
 		<AsyncRoot level="INFO">
 			<AppenderRef ref="File" />
 		</AsyncRoot>
-
 		<AsyncLogger name="dev.luin.fs" level="INFO" />
-
 		<AsyncLogger name="dev.luin.fs.core" level="INFO" />
-
 		<AsyncLogger name="dev.luin.fs.core.server" level="DEBUG" />
-
-		<AsyncLogger name="org.apache.wicket" level="WARN" />
-
-		<AsyncLogger name="org.apache.wicket.protocol.http.HttpSessionStore" level="DEBUG" />
-
-		<AsyncLogger name="org.apache.wicket.version" level="DEBUG" />
-
-		<AsyncLogger name="org.apache.wicket.RequestCycle" level="WARN" />
-
 		<AsyncLogger name="org.springframework.beans.factory" level="WARN" />
-
 		<AsyncLogger name="org.springframework.jdbc" level="WARN" />
-
-		<AsyncLogger name="com.mchange.v2" level="WARN" />
-
 	</Loggers>
-
 </Configuration>

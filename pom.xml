@@ -22,12 +22,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>dev.luin.fs</groupId>
-	<artifactId>fs-service</artifactId>
+	<artifactId>file-server</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>FileServer Service</name>
-	<description></description>
-	<url>https://bitbucket.org/eluinstra/fs-service</url>
+	<name>FileServer</name>
+	<description>FileServer for secure upload and download</description>
+	<url>git@github.com:eluinstra/file-server.git</url>
 	<developers>
 		<developer>
 			<id>eluinstra</id>
@@ -45,7 +45,6 @@
 	<properties>
 		<jdk.version>1.8</jdk.version>
 		<junit.jupiter.version>5.6.2</junit.jupiter.version>
-		<wicket.version>8.8.0</wicket.version>
 		<jetty.version>9.4.30.v20200611</jetty.version>
 		<spring.version>5.2.7.RELEASE</spring.version>
 		<cxf.version>3.3.7</cxf.version>
@@ -119,26 +118,6 @@
 			<groupId>com.lmax</groupId>
 			<artifactId>disruptor</artifactId>
 			<version>3.4.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-core</artifactId>
-			<version>${wicket.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-spring</artifactId>
-			<version>${wicket.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
-			<version>${wicket.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wicketstuff</groupId>
-			<artifactId>wicket-datetime</artifactId>
-			<version>${wicket.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -246,10 +225,6 @@
 	</repositories>
 	<build>
 		<resources>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/webapp</directory>
-			</resource>
 			<resource>
 				<filtering>false</filtering>
 				<directory>src/main/resources</directory>
