@@ -3,42 +3,6 @@
   <wsdl:import location="http://localhost:8080/service/user?wsdl=UserService.wsdl" namespace="http://luin.dev/fs/core/1.0"></wsdl:import>
   <wsdl:binding name="UserServiceImplServiceSoapBinding" type="ns1:UserService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="updateUser">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="updateUser">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="updateUserResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="ServiceException">
-        <soap:fault name="ServiceException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="deleteUser">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="deleteUser">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="deleteUserResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="ServiceException">
-        <soap:fault name="ServiceException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="createUser">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="createUser">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="createUserResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="ServiceException">
-        <soap:fault name="ServiceException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
     <wsdl:operation name="getUser">
       <soap:operation soapAction="" style="document"/>
       <wsdl:input name="getUser">
@@ -57,6 +21,42 @@
         <soap:body use="literal"/>
       </wsdl:input>
       <wsdl:output name="getUsersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createUser">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="createUser">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="createUserResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateUser">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="updateUser">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateUserResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteUser">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="deleteUser">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="deleteUserResponse">
         <soap:body use="literal"/>
       </wsdl:output>
       <wsdl:fault name="ServiceException">
@@ -83,9 +83,14 @@
       <xs:element name="updateUser" type="tns:updateUser"/>
       <xs:element name="updateUserResponse" type="tns:updateUserResponse"/>
       <xs:element name="user" type="tns:user"/>
-      <xs:complexType name="updateUser">
+      <xs:complexType name="getUser">
         <xs:sequence>
-          <xs:element name="user" type="tns:user"/>
+          <xs:element name="id" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getUserResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="user" type="tns:user"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="user">
@@ -93,6 +98,29 @@
           <xs:element minOccurs="0" name="id" type="xs:long"/>
           <xs:element name="name" type="xs:string"/>
           <xs:element name="certificate" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getUsers">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="getUsersResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="users" type="tns:user"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createUser">
+        <xs:sequence>
+          <xs:element name="user" type="tns:user"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createUserResponse">
+        <xs:sequence>
+          <xs:element name="id" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="updateUser">
+        <xs:sequence>
+          <xs:element name="user" type="tns:user"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="updateUserResponse">
@@ -106,34 +134,6 @@
       <xs:complexType name="deleteUserResponse">
         <xs:sequence/>
       </xs:complexType>
-      <xs:complexType name="createUser">
-        <xs:sequence>
-          <xs:element name="user" type="tns:user"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="createUserResponse">
-        <xs:sequence>
-          <xs:element name="id" type="xs:long"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUser">
-        <xs:sequence>
-          <xs:element name="id" type="xs:long"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUserResponse">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="user" type="tns:user"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getUsers">
-        <xs:sequence/>
-      </xs:complexType>
-      <xs:complexType name="getUsersResponse">
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="users" type="tns:user"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:element name="ServiceException" type="tns:ServiceException"/>
       <xs:complexType name="ServiceException">
         <xs:sequence>
@@ -142,20 +142,17 @@
       </xs:complexType>
     </xs:schema>
   </wsdl:types>
-  <wsdl:message name="getUserResponse">
-    <wsdl:part element="ns1:getUserResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="getUsersResponse">
+    <wsdl:part element="ns1:getUsersResponse" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="ServiceException">
-    <wsdl:part element="ns1:ServiceException" name="ServiceException"></wsdl:part>
+  <wsdl:message name="deleteUserResponse">
+    <wsdl:part element="ns1:deleteUserResponse" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="createUserResponse">
-    <wsdl:part element="ns1:createUserResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="updateUserResponse">
+    <wsdl:part element="ns1:updateUserResponse" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getUser">
-    <wsdl:part element="ns1:getUser" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getUsers">
-    <wsdl:part element="ns1:getUsers" name="parameters"></wsdl:part>
+  <wsdl:message name="createUser">
+    <wsdl:part element="ns1:createUser" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="updateUser">
     <wsdl:part element="ns1:updateUser" name="parameters"></wsdl:part>
@@ -163,34 +160,22 @@
   <wsdl:message name="deleteUser">
     <wsdl:part element="ns1:deleteUser" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="createUser">
-    <wsdl:part element="ns1:createUser" name="parameters"></wsdl:part>
+  <wsdl:message name="getUser">
+    <wsdl:part element="ns1:getUser" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="updateUserResponse">
-    <wsdl:part element="ns1:updateUserResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="getUsers">
+    <wsdl:part element="ns1:getUsers" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="deleteUserResponse">
-    <wsdl:part element="ns1:deleteUserResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="ServiceException">
+    <wsdl:part element="ns1:ServiceException" name="ServiceException"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getUsersResponse">
-    <wsdl:part element="ns1:getUsersResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="createUserResponse">
+    <wsdl:part element="ns1:createUserResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getUserResponse">
+    <wsdl:part element="ns1:getUserResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:portType name="UserService">
-    <wsdl:operation name="updateUser">
-      <wsdl:input message="ns1:updateUser" name="updateUser"></wsdl:input>
-      <wsdl:output message="ns1:updateUserResponse" name="updateUserResponse"></wsdl:output>
-      <wsdl:fault message="ns1:ServiceException" name="ServiceException"></wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="deleteUser">
-      <wsdl:input message="ns1:deleteUser" name="deleteUser"></wsdl:input>
-      <wsdl:output message="ns1:deleteUserResponse" name="deleteUserResponse"></wsdl:output>
-      <wsdl:fault message="ns1:ServiceException" name="ServiceException"></wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="createUser">
-      <wsdl:input message="ns1:createUser" name="createUser"></wsdl:input>
-      <wsdl:output message="ns1:createUserResponse" name="createUserResponse"></wsdl:output>
-      <wsdl:fault message="ns1:ServiceException" name="ServiceException"></wsdl:fault>
-    </wsdl:operation>
     <wsdl:operation name="getUser">
       <wsdl:input message="ns1:getUser" name="getUser"></wsdl:input>
       <wsdl:output message="ns1:getUserResponse" name="getUserResponse"></wsdl:output>
@@ -199,6 +184,21 @@
     <wsdl:operation name="getUsers">
       <wsdl:input message="ns1:getUsers" name="getUsers"></wsdl:input>
       <wsdl:output message="ns1:getUsersResponse" name="getUsersResponse"></wsdl:output>
+      <wsdl:fault message="ns1:ServiceException" name="ServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createUser">
+      <wsdl:input message="ns1:createUser" name="createUser"></wsdl:input>
+      <wsdl:output message="ns1:createUserResponse" name="createUserResponse"></wsdl:output>
+      <wsdl:fault message="ns1:ServiceException" name="ServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateUser">
+      <wsdl:input message="ns1:updateUser" name="updateUser"></wsdl:input>
+      <wsdl:output message="ns1:updateUserResponse" name="updateUserResponse"></wsdl:output>
+      <wsdl:fault message="ns1:ServiceException" name="ServiceException"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteUser">
+      <wsdl:input message="ns1:deleteUser" name="deleteUser"></wsdl:input>
+      <wsdl:output message="ns1:deleteUserResponse" name="deleteUserResponse"></wsdl:output>
       <wsdl:fault message="ns1:ServiceException" name="ServiceException"></wsdl:fault>
     </wsdl:operation>
   </wsdl:portType>
@@ -242,7 +242,7 @@
          </user>
       </ns:updateUser>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/updateClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="e3dcf5e8-34d3-4f9a-b33c-2d46de8d9d76" wsaVersion="NONE" name="FileServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.luin.dev/}FileServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/file?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/file?wsdl"><con:part><con:url>http://localhost:8080/service/file?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FileServiceImplService" targetNamespace="http://service.core.fs.luin.dev/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.luin.dev/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns3="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://luin.dev/fs/core/1.0">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSAdminService/updateClient"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="e3dcf5e8-34d3-4f9a-b33c-2d46de8d9d76" wsaVersion="NONE" name="FileServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://service.core.fs.luin.dev/}FileServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/service/file?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/service/file?wsdl"><con:part><con:url>http://localhost:8080/service/file?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FileServiceImplService" targetNamespace="http://service.core.fs.luin.dev/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.core.fs.luin.dev/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://luin.dev/fs/core/1.0">
   <wsdl:import location="http://localhost:8080/service/file?wsdl=FileService.wsdl" namespace="http://luin.dev/fs/core/1.0"></wsdl:import>
   <wsdl:binding name="FileServiceImplServiceSoapBinding" type="ns1:FileService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -312,9 +312,9 @@
       <soap:address location="http://localhost:8080/service/file"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/file?wsdl=FileService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FileService" targetNamespace="http://luin.dev/fs/core/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns2="http://luin.dev/fs/core/1.0" xmlns:ns1="http://luin.dev/fs/core/1.0">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/service/file?wsdl=FileService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="FileService" targetNamespace="http://luin.dev/fs/core/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://luin.dev/fs/core/1.0">
   <wsdl:types>
-    <xs:schema elementFormDefault="unqualified" targetNamespace="http://luin.dev/fs/core/1.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://luin.dev/fs/core/1.0">
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://luin.dev/fs/core/1.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://luin.dev/fs/core/1.0">
       <xs:element name="deleteFile" type="tns:deleteFile"/>
       <xs:element name="deleteFileResponse" type="tns:deleteFileResponse"/>
       <xs:element name="downloadFile" type="tns:downloadFile"/>
@@ -340,7 +340,7 @@
       <xs:complexType name="fileInfo">
         <xs:sequence>
           <xs:element name="path" type="xs:string"/>
-          <xs:element name="filename" type="xs:string"/>
+          <xs:element name="name" type="xs:string"/>
           <xs:element name="contentType" type="xs:string"/>
           <xs:element name="md5Checksum" type="xs:string"/>
           <xs:element name="sha256Checksum" type="xs:string"/>
@@ -399,15 +399,13 @@
           <xs:element minOccurs="0" name="file" type="tns:file"/>
         </xs:sequence>
       </xs:complexType>
+      <xs:element name="ServiceException" type="tns:ServiceException"/>
+      <xs:complexType name="ServiceException">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
     </xs:schema>
-    <xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://luin.dev/fs/core/1.0" xmlns:tns="http://luin.dev/fs/core/1.0">
-      <xsd:element name="ServiceException" type="tns:ServiceException"/>
-      <xsd:complexType name="ServiceException">
-        <xsd:sequence>
-          <xsd:element minOccurs="0" name="message" type="xsd:string"/>
-        </xsd:sequence>
-      </xsd:complexType>
-    </xsd:schema>
   </wsdl:types>
   <wsdl:message name="getFileInfo">
     <wsdl:part element="ns1:getFileInfo" name="parameters"></wsdl:part>
@@ -422,7 +420,7 @@
     <wsdl:part element="ns1:getFileInfoResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="ServiceException">
-    <wsdl:part element="ns2:ServiceException" name="ServiceException"></wsdl:part>
+    <wsdl:part element="ns1:ServiceException" name="ServiceException"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="downloadFileResponse">
     <wsdl:part element="ns1:downloadFileResponse" name="parameters"></wsdl:part>
@@ -513,7 +511,7 @@
    <soapenv:Header/>
    <soapenv:Body>
       <ns:downloadFile>
-         <path>/MJNYwFL5ea9u0WxmZO0GfcPV8cR9Vf025rV9KFVbv2N7y5VRESENBE1lD1rydspdjVUHQ61hKVKEOkd6dNh5wzcm5SjwI5ppVm4Wi95iQ5rsZzBdtmmCrWiXFMal6RPy</path>
+         <path>/QsVukt4hIhycMkO3JJKs60bSzAwHsxe6arNEOQrwK2QbTonwO8nMd0unRAm3P1Dn8n9qBYmXFT4QAzl5HDaPx362R8XahfpOdK06kt74RPvSicWapZEqfMJANvr6CHBC</path>
       </ns:downloadFile>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.core.fs.eluinstra.bitbucket.org/FSService/downloadFile"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="1d6ced99-1a72-4f24-b337-293f0d6c8155" isOneWay="false" action="" name="getFiles" bindingOperationName="getFiles" type="Request-Response" outputName="getFilesResponse" inputName="getFiles" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="dff7c185-1dd7-47a7-af25-8ff3989505a0" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/service/file</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://luin.dev/fs/core/1.0">
@@ -668,7 +666,7 @@
    <soapenv:Header/>
    <soapenv:Body>
       <ns:getExternalDataReference>
-         <path>/MJNYwFL5ea9u0WxmZO0GfcPV8cR9Vf025rV9KFVbv2N7y5VRESENBE1lD1rydspdjVUHQ61hKVKEOkd6dNh5wzcm5SjwI5ppVm4Wi95iQ5rsZzBdtmmCrWiXFMal6RPy</path>
+         <path>/fDmuxgOBDso1FdLzMnV9bO2Ou72gieWVW7mnL0KVw0KcxpBXpUv0rVTYz5I0KMKMqa6hA7jYHpNeej8RZXb9PTRO3GrvP27MJHzpxQ0mdmEDDNoIqFLHk3DlwVSNAkae</path>
       </ns:getExternalDataReference>
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.gb.digikoppeling.eluinstra.bitbucket.org/GBService/getExternalDataReference"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
