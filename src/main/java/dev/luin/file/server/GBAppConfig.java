@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.luin.fs;
+package dev.luin.file.server;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,15 +23,15 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import dev.luin.digikoppeling.gb.service.GBServiceConfig;
-import dev.luin.fs.core.datasource.DataSourceConfig;
-import dev.luin.fs.core.file.FileSystemConfig;
-import dev.luin.fs.core.querydsl.QueryDSLConfig;
-import dev.luin.fs.core.server.download.DownloadServerConfig;
-import dev.luin.fs.core.server.upload.UploadServerConfig;
-import dev.luin.fs.core.service.ServiceConfig;
-import dev.luin.fs.core.transaction.TransactionManagerConfig;
-import dev.luin.fs.core.user.UserManagerConfig;
-import dev.luin.fs.web.GBWebConfig;
+import dev.luin.file.server.core.datasource.DataSourceConfig;
+import dev.luin.file.server.core.file.FileSystemConfig;
+import dev.luin.file.server.core.querydsl.QueryDSLConfig;
+import dev.luin.file.server.core.server.download.DownloadServerConfig;
+import dev.luin.file.server.core.server.upload.UploadServerConfig;
+import dev.luin.file.server.core.service.ServiceConfig;
+import dev.luin.file.server.core.transaction.TransactionManagerConfig;
+import dev.luin.file.server.core.user.UserManagerConfig;
+import dev.luin.file.server.web.GBWebConfig;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -50,11 +50,11 @@ import lombok.experimental.FieldDefaults;
 	UploadServerConfig.class
 })
 @PropertySource(value = {
-		"classpath:dev/luin/fs/core/default.properties",
+		"classpath:dev/luin/file/server/core/default.properties",
 		"classpath:dev/luin/digikoppeling/gb/default.properties",
-		"classpath:dev/luin/fs/default.properties",
-		"file:${fs.configDir}file-server.advanced.properties",
-		"file:${fs.configDir}file-server.properties"},
+		"classpath:dev/luin/file/server/default.properties",
+		"file:${server.configDir}file-server.advanced.properties",
+		"file:${server.configDir}file-server.properties"},
 		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GBAppConfig
@@ -64,11 +64,11 @@ public class GBAppConfig
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{
 		val result = new PropertySourcesPlaceholderConfigurer();
-		val configDir = System.getProperty("fs.configDir");
+		val configDir = System.getProperty("server.configDir");
 		val resources = new Resource[]{
-				new ClassPathResource("dev/luin/fs/core/default.properties"),
+				new ClassPathResource("dev/luin/file/server/core/default.properties"),
 				new ClassPathResource("dev/luin/digikoppeling/gb/default.properties"),
-				new ClassPathResource("dev/luin/fs/default.properties"),
+				new ClassPathResource("dev/luin/file/server/default.properties"),
 				new FileSystemResource(configDir + "file-server.advanced.properties"),
 				new FileSystemResource(configDir + "file-server.properties")};
 		result.setLocations(resources);

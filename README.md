@@ -23,7 +23,7 @@ The FileServer uses SSL clientAuthentication, so the user must authenticate itse
 
 ### Start the FileServer
 
-    java -Djavax.net.ssl.trustStore= -cp file-server-1.0.0-M1.jar dev.luin.fs.StartGB -hsqldb -soap -headless
+    java -Djavax.net.ssl.trustStore= -cp file-server-1.0.0-M1.jar dev.luin.file.server.StartGB -hsqldb -soap -headless
 
 ## Example
 

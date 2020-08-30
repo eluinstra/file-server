@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.luin.fs.web.configuration;
+package dev.luin.file.server.web.configuration;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import dev.luin.fs.core.KeyStoreManager.KeyStoreType;
+import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
 import lombok.NonNull;
 import lombok.val;
 

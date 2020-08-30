@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.luin.fs.web.configuration;
+package dev.luin.file.server.web.configuration;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,5 +29,5 @@ public class JdbcURL
 {
 	String host = "localhost";
 	Integer port = 9001;
-	String database = "fs";
+	String database = "file_server";
 }

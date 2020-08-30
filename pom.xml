@@ -21,7 +21,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>dev.luin.fs</groupId>
+	<groupId>dev.luin.file.server</groupId>
 	<artifactId>file-server</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0-SNAPSHOT</version>
@@ -155,8 +155,8 @@
 			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>dev.luin.fs</groupId>
-			<artifactId>fs-core</artifactId>
+			<groupId>dev.luin.file.server</groupId>
+			<artifactId>file-server-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -315,7 +315,7 @@
 							<resource>ECLIPSEF.RSA</resource>
 						</transformer>
 						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>dev.luin.fs.Start</mainClass>
+							<mainClass>dev.luin.file.server.Start</mainClass>
 						</transformer>
 						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>META-INF/spring.handlers</resource>
@@ -404,7 +404,7 @@
 					<linkXref>true</linkXref>
 					<targetJdk>${jdk.version}</targetJdk>
 					<!--excludes>
-						<exclude>dev/luin/fs/model/**/*.java</exclude>
+						<exclude>dev/luin/file/server/model/**/*.java</exclude>
 					</excludes-->
 				</configuration>
 			</plugin>
@@ -420,7 +420,7 @@
 				<configuration>
 					<instrumentation>
 						<ignores>
-							<ignore>dev.luin.fs.dao.*</ignore>
+							<ignore>dev.luin.file.server.dao.*</ignore>
 						</ignores>
 					</instrumentation>
 					<systemProperties>

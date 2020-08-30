@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.luin.fs.web;
+package dev.luin.file.server.web;
 
 import java.util.Collections;
 
@@ -22,21 +22,20 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingFeature;
-import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import dev.luin.digikoppeling.gb.service.GBService;
-import dev.luin.fs.core.service.FileService;
-import dev.luin.fs.core.service.UserService;
+import dev.luin.file.server.core.service.FileService;
+import dev.luin.file.server.core.service.UserService;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GBWebConfig
+public class GBWebConfig extends WebConfig
 {
 	@Autowired
 	UserService userService;
@@ -48,21 +47,22 @@ public class GBWebConfig
 	@Bean
 	public Endpoint userServiceEndpoint()
 	{
-		return publishEndpoint(userService,"/user");
+		return publishEndpoint(userService,"/user","http://luin.dev/file/server/1.0","UserService","UserServicePort");
 	}
 
 	@Bean
 	public Endpoint fileServiceEndpoint()
 	{
-		val result = publishEndpoint(fileService,"/file");
-		((SOAPBinding)result.getBinding()).setMTOMEnabled(true);
+		val result = publishEndpoint(fileService,"/file","http://luin.dev/file/server/1.0","FileService","FileServicePort");
+		val binding = (SOAPBinding)result.getBinding();
+		binding.setMTOMEnabled(true);
 		return result;
 	}
 
 	@Bean
 	public Endpoint gbServiceEndpoint()
 	{
-		return publishEndpoint(gbService,"/gb");
+		return publishEndpoint(gbService,"/gb","http://luin.dev/digikoppeling/gb/1.0","GBService","GBServicePort");
 	}
 
 	@Bean
@@ -72,14 +72,6 @@ public class GBWebConfig
 		val f = new LoggingFeature();
 		f.setPrettyLogging(true);
 		result.setFeatures(Collections.singletonList(f));
-		return result;
-	}
-
-	private Endpoint publishEndpoint(Object service, String address)
-	{
-		val result = new EndpointImpl(cxf(),service);
-		result.setAddress(address);
-		result.publish();
 		return result;
 	}
 }

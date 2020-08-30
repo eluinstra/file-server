@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.luin.fs;
+package dev.luin.file.server;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -72,9 +72,9 @@ import org.hsqldb.server.ServiceProperties;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import dev.luin.fs.common.SecurityUtils;
-import dev.luin.fs.core.KeyStoreManager.KeyStoreType;
-import dev.luin.fs.web.configuration.JdbcURL;
+import dev.luin.file.server.common.SecurityUtils;
+import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
+import dev.luin.file.server.web.configuration.JdbcURL;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -110,7 +110,7 @@ public class Start
 		val properties = getProperties();
 		startHSQLDB(cmd,properties);
 		initWebServer(cmd,server);
-		initFSServer(properties,server);
+		initFileServer(properties,server);
 		initJMX(cmd,server);
 
 		try (val context = new AnnotationConfigWebApplicationContext())
@@ -119,9 +119,9 @@ public class Start
 			val contextLoaderListener = new ContextLoaderListener(context);
 			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
 				handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
-			handlerCollection.addHandler(createFSContextHandler(properties,contextLoaderListener));
+			handlerCollection.addHandler(createFileServerContextHandler(properties,contextLoaderListener));
 	
-			System.out.println("Starting web server...");
+			System.out.println("Starting Server...");
 	
 			try
 			{
@@ -133,7 +133,7 @@ public class Start
 				server.stop();
 				System.exit(1);
 			}
-			System.out.println("Web server started.");
+			System.out.println("Server started.");
 			server.join();
 		}
 	}
@@ -182,7 +182,7 @@ public class Start
 	protected void init(CommandLine cmd)
 	{
 		val configDir = cmd.getOptionValue("configDir","");
-		System.setProperty("fs.configDir",configDir);
+		System.setProperty("server.configDir",configDir);
 		System.out.println("Using config directory: " + configDir);
 	}
 
@@ -201,19 +201,19 @@ public class Start
 		val jdbcURL = getHsqlDbJdbcUrl(cmd,properties);
 		if (jdbcURL.isPresent())
 		{
-			System.out.println("Starting hsqldb...");
+			System.out.println("Starting HSQLDB Server...");
 			startHSQLDBServer(cmd,jdbcURL.get());
 		}
 	}
 
 	protected Optional<JdbcURL> getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException
 	{
-		if ("org.hsqldb.jdbcDriver".equals(properties.getProperty("fs.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
+		if ("org.hsqldb.jdbcDriver".equals(properties.getProperty("jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
-			val jdbcURL = dev.luin.fs.web.configuration.Utils.parseJdbcURL(properties.getProperty("fs.jdbc.url"),new JdbcURL());
+			val jdbcURL = dev.luin.file.server.web.configuration.Utils.parseJdbcURL(properties.getProperty("jdbc.url"),new JdbcURL());
 			if (!jdbcURL.getHost().matches("(localhost|127.0.0.1)"))
 			{
-				System.out.println("Cannot start server on " + jdbcURL.getHost());
+				System.out.println("Cannot start HSQLDB Server on " + jdbcURL.getHost());
 				System.exit(1);
 			}
 			return Optional.of(jdbcURL);
@@ -249,7 +249,7 @@ public class Start
 	{
 		if (cmd.hasOption("jmx"))
 		{
-			System.out.println("Starting jmx server...");
+			System.out.println("Starting JMX Server...");
 			val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 			server.addBean(mBeanContainer);
 			server.addBean(Log.getLog());
@@ -257,7 +257,7 @@ public class Start
 			//val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
 			val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");//,sslContextFactory);
 			server.addBean(jmxServer);
-			System.out.println("Jmx server configured on " + jmxURL);
+			System.out.println("JMX Server configured on " + jmxURL);
 		}
 	}
 
@@ -289,9 +289,9 @@ public class Start
 		result.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 		result.setName("web");
 		if (!cmd.hasOption("headless"))
-			System.out.println("Web server configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
+			System.out.println("Web Server configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
-			System.out.println("SOAP service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + "/service");
+			System.out.println("SOAP Service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + "/service");
 		return result;
 	}
 
@@ -326,7 +326,7 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: keyStore " + keyStorePath + " not found!");
+			System.out.println("Web Server not available: keyStore " + keyStorePath + " not found!");
 			System.exit(1);
 		}
 	}
@@ -347,7 +347,7 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: trustStore " + trustStorePath + " not found!");
+			System.out.println("Web Server not available: trustStore " + trustStorePath + " not found!");
 			System.exit(1);
 		}
 	}
@@ -359,9 +359,9 @@ public class Start
 		connector.setPort(cmd.getOptionValue("port") == null ? 8443 : Integer.parseInt(cmd.getOptionValue("port")));
 		connector.setName("web");
 		if (!cmd.hasOption("headless"))
-			System.out.println("Web server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
+			System.out.println("Web Server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
-			System.out.println("SOAP service configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
+			System.out.println("SOAP Service configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
 		return connector;
 	}
 
@@ -380,7 +380,7 @@ public class Start
 		{
 			if (!cmd.hasOption("clientAuthentication"))
 			{
-				System.out.println("Configuring web server basic authentication:");
+				System.out.println("Configuring Web Server basic authentication:");
 				val file = new File(REALM_FILE);
 				if (file.exists())
 					System.out.println("Using file " + file.getAbsoluteFile());
@@ -458,15 +458,15 @@ public class Start
 
 	protected FilterHolder createClientCertificateManagerFilterHolder(CommandLine cmd)
 	{
-		val result = new FilterHolder(dev.luin.fs.core.server.servlet.ClientCertificateManagerFilter.class); 
+		val result = new FilterHolder(dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter.class); 
 		result.setInitParameter("x509CertificateHeader",cmd.getOptionValue("clientCertificateHeader"));
 		return result;
 	}
 
 	protected FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
 	{
-		System.out.println("Configuring web server client certificate authentication:");
-		val result = new FilterHolder(dev.luin.fs.core.service.servlet.ClientCertificateAuthenticationFilter.class); 
+		System.out.println("Configuring Web Server client certificate authentication:");
+		val result = new FilterHolder(dev.luin.file.server.core.service.servlet.ClientCertificateAuthenticationFilter.class); 
 		val clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
 		val clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
 		val clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
@@ -481,7 +481,7 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: clientTrustStore " + clientTrustStorePath + " not found!");
+			System.out.println("Web Server not available: clientTrustStore " + clientTrustStorePath + " not found!");
 			System.exit(1);
 			return null;
 		}
@@ -496,58 +496,58 @@ public class Start
 		return result;
 	}
 
-	protected void initFSServer(Properties properties, Server server) throws MalformedURLException, IOException
+	protected void initFileServer(Properties properties, Server server) throws MalformedURLException, IOException
 	{
-		if (!"true".equals(properties.getProperty("fs.ssl")))
+		if (!"true".equals(properties.getProperty("server.ssl")))
 		{
-			server.addConnector(createFSHttpConnector(properties,server));
+			server.addConnector(createFileServerHttpConnector(properties,server));
 		}
 		else
 		{
-			val factory = createFSSslContextFactory(properties);
-			server.addConnector(createFSHttpsConnector(properties,server,factory));
+			val factory = createFileServerSslContextFactory(properties);
+			server.addConnector(createFileServerHttpsConnector(properties,server,factory));
 		}
 	}
 
-	protected ServerConnector createFSHttpConnector(Properties properties, Server server)
+	protected ServerConnector createFileServerHttpConnector(Properties properties, Server server)
 	{
 		val result = new ServerConnector(server);
-		result.setHost(StringUtils.isEmpty(properties.getProperty("fs.host")) ? "0.0.0.0" : properties.getProperty("fs.host"));
-		result.setPort(StringUtils.isEmpty(properties.getProperty("fs.port"))  ? 8888 : Integer.parseInt(properties.getProperty("fs.port")));
-		result.setName("fs");
-		System.out.println("FS Service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("fs.path"));
+		result.setHost(StringUtils.isEmpty(properties.getProperty("server.host")) ? "0.0.0.0" : properties.getProperty("server.host"));
+		result.setPort(StringUtils.isEmpty(properties.getProperty("server.port"))  ? 8888 : Integer.parseInt(properties.getProperty("server.port")));
+		result.setName("server");
+		System.out.println("File Server configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("server.path"));
 		return result;
 	}
 
-	protected SslContextFactory createFSSslContextFactory(Properties properties) throws MalformedURLException, IOException
+	protected SslContextFactory createFileServerSslContextFactory(Properties properties) throws MalformedURLException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		addFSKeyStore(properties,result);
-		addFSTrustStore(properties,result);
+		addFileServerKeyStore(properties,result);
+		addFileServerTrustStore(properties,result);
 		return result;
 	}
 
-	protected void addFSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	protected void addFileServerKeyStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStore = getResource(properties.getProperty("keystore.path"));
 		if (keyStore != null && keyStore.exists())
 		{
-			if (!StringUtils.isEmpty(properties.getProperty("https.protocols")))
-				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols"),',')));
-			if (!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")))
-				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites"),',')));
+			if (!StringUtils.isEmpty(properties.getProperty("server.protocols")))
+				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty("server.protocols"),',')));
+			if (!StringUtils.isEmpty(properties.getProperty("server.cipherSuites")))
+				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty("server.cipherSuites"),',')));
 			sslContextFactory.setKeyStoreType(properties.getProperty("keystore.type"));
 			sslContextFactory.setKeyStoreResource(keyStore);
 			sslContextFactory.setKeyStorePassword(properties.getProperty("keystore.password"));
 		}
 		else
 		{
-			System.out.println("FS Service not available: keystore " + properties.getProperty("keystore.path") + " not found!");
+			System.out.println("File Server not available: keystore " + properties.getProperty("keystore.path") + " not found!");
 			System.exit(1);
 		}
 	}
 
-	protected void addFSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	protected void addFileServerTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStore = getResource(properties.getProperty("truststore.path"));
 		if (trustStore != null && trustStore.exists())
@@ -559,37 +559,37 @@ public class Start
 		}
 		else
 		{
-			System.out.println("FS Service not available: truststore " + properties.getProperty("truststore.path") + " not found!");
+			System.out.println("File Server not available: truststore " + properties.getProperty("truststore.path") + " not found!");
 			System.exit(1);
 		}
 	}
 
-	protected ServerConnector createFSHttpsConnector(Properties properties, Server server, SslContextFactory factory)
+	protected ServerConnector createFileServerHttpsConnector(Properties properties, Server server, SslContextFactory factory)
 	{
 		val result = new ServerConnector(server,factory);
-		result.setHost(StringUtils.isEmpty(properties.getProperty("fs.host")) ? "0.0.0.0" : properties.getProperty("fs.host"));
-		result.setPort(StringUtils.isEmpty(properties.getProperty("fs.port"))  ? 8888 : Integer.parseInt(properties.getProperty("fs.port")));
-		result.setName("fs");
-		System.out.println("FS Service configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("fs.path"));
+		result.setHost(StringUtils.isEmpty(properties.getProperty("server.host")) ? "0.0.0.0" : properties.getProperty("server.host"));
+		result.setPort(StringUtils.isEmpty(properties.getProperty("server.port"))  ? 8888 : Integer.parseInt(properties.getProperty("server.port")));
+		result.setName("server");
+		System.out.println("File Server configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("server.path"));
 		return result;
 	}
 
-	protected Handler createFSContextHandler(Properties properties, ContextLoaderListener contextLoaderListener)
+	protected Handler createFileServerContextHandler(Properties properties, ContextLoaderListener contextLoaderListener)
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@fs"});
+		result.setVirtualHosts(new String[] {"@server"});
 		result.setContextPath("/");
 		result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(dev.luin.fs.core.server.servlet.Download.class,properties.getProperty("fs.path") + "/download/*");
-		result.addServlet(dev.luin.fs.core.server.servlet.Upload.class,properties.getProperty("fs.path") + "/upload/*");
+		result.addServlet(dev.luin.file.server.core.server.servlet.Download.class,properties.getProperty("server.path") + "/download/*");
+		result.addServlet(dev.luin.file.server.core.server.servlet.Upload.class,properties.getProperty("server.path") + "/upload/*");
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}
 
 	protected FilterHolder createClientCertificateManagerFilterHolder(Properties properties)
 	{
-		val result = new FilterHolder(dev.luin.fs.core.server.servlet.ClientCertificateManagerFilter.class); 
-		result.setInitParameter("x509CertificateHeader",properties.getProperty("https.clientCertificateHeader"));
+		val result = new FilterHolder(dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter.class); 
+		result.setInitParameter("x509CertificateHeader",properties.getProperty("server.clientCertificateHeader"));
 		return result;
 	}
 

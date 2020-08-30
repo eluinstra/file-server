@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.luin.fs;
+package dev.luin.file.server;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -35,7 +35,7 @@ import lombok.experimental.FieldDefaults;
 
 public class DBMigrate
 {
-	public static final String BASEPATH = "classpath:/dev/luin/fs/db/migration/";
+	public static final String BASEPATH = "classpath:/dev/luin/file/server/core/db/migration/";
 
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	@AllArgsConstructor
