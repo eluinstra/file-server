@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
@@ -81,8 +83,8 @@ import dev.luin.file.server.core.server.servlet.Download;
 import dev.luin.file.server.core.server.servlet.Health;
 import dev.luin.file.server.core.server.servlet.Upload;
 import dev.luin.file.server.core.service.servlet.ClientCertificateAuthenticationFilter;
-import dev.luin.file.server.web.configuration.JdbcURL;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
@@ -219,7 +221,7 @@ public class Start implements SystemInterface
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.getProperty("jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
-			val jdbcURL = dev.luin.file.server.web.configuration.Utils.parseJdbcURL(properties.getProperty("jdbc.url"),new JdbcURL());
+			val jdbcURL = parseJdbcURL(properties.getProperty("jdbc.url"),new JdbcURL());
 			if (!jdbcURL.getHost().matches("(localhost|127.0.0.1)"))
 			{
 				println("Cannot start HSQLDB Server on " + jdbcURL.getHost());
@@ -228,6 +230,28 @@ public class Start implements SystemInterface
 			return Optional.of(jdbcURL);
 		}
 		return Optional.empty();
+	}
+
+	private JdbcURL parseJdbcURL(@NonNull final String jdbcURL, @NonNull final JdbcURL model) throws MalformedURLException
+	{
+		try (val scanner = new Scanner(jdbcURL))
+		{
+			val protocol = scanner.findInLine("(://|@|:@//)");
+			if (protocol != null)
+			{
+				val urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
+				scanner.findInLine("(/|:|;databaseName=)");
+				val database = scanner.findInLine("[^;]*");
+				if (urlString != null)
+				{
+					val url = new URL("http://" + urlString);
+					model.setHost(url.getHost());
+					model.setPort(url.getPort() == -1 ? null : url.getPort());
+					model.setDatabase(database);
+				}
+			}
+			return model;
+		}
 	}
 
 	protected org.hsqldb.server.Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
