@@ -115,6 +115,7 @@ public class Start implements SystemInterface
 		val server = new Server();
 		val handlerCollection = new ContextHandlerCollection();
 		server.setHandler(handlerCollection);
+		server.addBean(new CustomErrorHandler());
 		val properties = getProperties();
 		startHSQLDB(cmd,properties);
 		initJMX(cmd,server);

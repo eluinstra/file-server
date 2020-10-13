@@ -15,20 +15,17 @@
  */
 package dev.luin.file.server;
 
-public interface SystemInterface
+import java.io.IOException;
+import java.io.Writer;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.jetty.server.handler.ErrorHandler;
+
+public class CustomErrorHandler extends ErrorHandler
 {
-	default void setProperty(String key, String value)
+	protected void writeErrorPage(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks) throws IOException
 	{
-		System.setProperty(key,value);
-	}
-
-	default void println(String s)
-	{
-		System.out.println(s);
-	}
-
-	default void exit(int status)
-	{
-		System.exit(status);
+		
 	}
 }
