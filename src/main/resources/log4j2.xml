@@ -40,6 +40,7 @@
 		<AsyncLogger name="dev.luin.file.server.core.server.download" level="DEBUG" />
 		<AsyncLogger name="dev.luin.file.server.core.service" level="DEBUG" />
 		<AsyncLogger name="dev.luin.digikoppeling.gb.service" level="DEBUG" />
+		<AsyncLogger name="org.apache.cxf.services" level="WARN" />
 		<AsyncLogger name="org.springframework.beans.factory" level="WARN" />
 		<AsyncLogger name="org.springframework.jdbc" level="WARN" />
 	</Loggers>

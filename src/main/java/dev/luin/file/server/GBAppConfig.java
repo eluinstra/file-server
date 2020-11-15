@@ -22,7 +22,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import dev.luin.digikoppeling.gb.service.GBServiceConfig;
+import dev.luin.digikoppeling.gb.server.service.GBServiceConfig;
 import dev.luin.file.server.core.datasource.DataSourceConfig;
 import dev.luin.file.server.core.file.FileSystemConfig;
 import dev.luin.file.server.core.querydsl.QueryDSLConfig;
@@ -51,7 +51,7 @@ import lombok.experimental.FieldDefaults;
 })
 @PropertySource(value = {
 		"classpath:dev/luin/file/server/core/default.properties",
-		"classpath:dev/luin/digikoppeling/gb/default.properties",
+		"classpath:dev/luin/digikoppeling/gb/server/default.properties",
 		"classpath:dev/luin/file/server/default.properties",
 		"file:${server.configDir}file-server.advanced.properties",
 		"file:${server.configDir}file-server.properties"},
@@ -67,7 +67,7 @@ public class GBAppConfig
 		val configDir = System.getProperty("server.configDir");
 		val resources = new Resource[]{
 				new ClassPathResource("dev/luin/file/server/core/default.properties"),
-				new ClassPathResource("dev/luin/digikoppeling/gb/default.properties"),
+				new ClassPathResource("dev/luin/digikoppeling/gb/server/default.properties"),
 				new ClassPathResource("dev/luin/file/server/default.properties"),
 				new FileSystemResource(configDir + "file-server.advanced.properties"),
 				new FileSystemResource(configDir + "file-server.properties")};

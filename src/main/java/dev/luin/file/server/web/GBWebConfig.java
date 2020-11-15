@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import dev.luin.digikoppeling.gb.service.GBService;
+import dev.luin.digikoppeling.gb.server.service.GBService;
 import dev.luin.file.server.core.service.FileService;
 import dev.luin.file.server.core.service.UserService;
 import lombok.AccessLevel;
@@ -62,7 +62,7 @@ public class GBWebConfig extends WebConfig
 	@Bean
 	public Endpoint gbServiceEndpoint()
 	{
-		return publishEndpoint(gbService,"/gb","http://luin.dev/digikoppeling/gb/1.0","GBService","GBServicePort");
+		return publishEndpoint(gbService,"/gb","http://luin.dev/digikoppeling/gb/server/1.0","GBService","GBServicePort");
 	}
 
 	@Bean
