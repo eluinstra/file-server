@@ -8,6 +8,7 @@ hooks
 *.jar
 *.log
 *.vgc
+*.svg
 /.settings
 /.classpath
 /.project
