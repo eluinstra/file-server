@@ -78,10 +78,10 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
+import dev.luin.file.server.core.server.download.http.DownloadServlet;
 import dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter;
-import dev.luin.file.server.core.server.servlet.Download;
-import dev.luin.file.server.core.server.servlet.Health;
-import dev.luin.file.server.core.server.servlet.Upload;
+import dev.luin.file.server.core.server.servlet.HealthServlet;
+import dev.luin.file.server.core.server.upload.http.UploadServlet;
 import dev.luin.file.server.core.service.servlet.ClientCertificateAuthenticationFilter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -700,8 +700,8 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[] {"@" + SERVER_CONNECTOR_NAME});
 		result.setContextPath("/");
 		result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(Download.class,properties.getProperty(ServerProperties.SERVER_PATH.name) + "/download/*");
-		result.addServlet(Upload.class,properties.getProperty(ServerProperties.SERVER_PATH.name) + "/upload/*");
+		result.addServlet(DownloadServlet.class,properties.getProperty(ServerProperties.SERVER_PATH.name) + "/download/*");
+		result.addServlet(UploadServlet.class,properties.getProperty(ServerProperties.SERVER_PATH.name) + "/upload/*");
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}
@@ -735,7 +735,7 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[] {"@" + HEALTH_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath("/");
-		result.addServlet(Health.class,HEALTH_PATH + "/*");
+		result.addServlet(HealthServlet.class,HEALTH_PATH + "/*");
 		return result;
 	}
 
