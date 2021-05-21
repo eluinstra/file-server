@@ -27,8 +27,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import dev.luin.digikoppeling.gb.server.service.GBService;
-import dev.luin.file.server.core.service.FileService;
-import dev.luin.file.server.core.service.UserService;
+import dev.luin.file.server.core.service.file.FileService;
+import dev.luin.file.server.core.service.user.UserService;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;

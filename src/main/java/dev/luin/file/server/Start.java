@@ -79,10 +79,10 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
 import dev.luin.file.server.core.server.download.http.DownloadServlet;
+import dev.luin.file.server.core.server.servlet.ClientCertificateAuthenticationFilter;
 import dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter;
 import dev.luin.file.server.core.server.servlet.HealthServlet;
 import dev.luin.file.server.core.server.upload.http.UploadServlet;
-import dev.luin.file.server.core.service.servlet.ClientCertificateAuthenticationFilter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -28,9 +28,9 @@ import dev.luin.file.server.core.file.FileSystemConfig;
 import dev.luin.file.server.core.querydsl.QueryDSLConfig;
 import dev.luin.file.server.core.server.download.DownloadServerConfig;
 import dev.luin.file.server.core.server.upload.UploadServerConfig;
-import dev.luin.file.server.core.service.ServiceConfig;
+import dev.luin.file.server.core.service.file.FileServiceConfig;
+import dev.luin.file.server.core.service.user.UserServiceConfig;
 import dev.luin.file.server.core.transaction.TransactionManagerConfig;
-import dev.luin.file.server.core.user.UserManagerConfig;
 import dev.luin.file.server.web.GBWebConfig;
 import lombok.AccessLevel;
 import lombok.val;
@@ -38,14 +38,14 @@ import lombok.experimental.FieldDefaults;
 
 @Configuration
 @Import({
-	UserManagerConfig.class,
+	UserServiceConfig.class,
 	DataSourceConfig.class,
 	DownloadServerConfig.class,
 	FileSystemConfig.class,
 	GBServiceConfig.class,
 	GBWebConfig.class,
 	QueryDSLConfig.class,
-	ServiceConfig.class,
+	FileServiceConfig.class,
 	TransactionManagerConfig.class,
 	UploadServerConfig.class
 })
