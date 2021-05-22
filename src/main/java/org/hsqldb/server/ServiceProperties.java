@@ -15,10 +15,29 @@
  */
 package org.hsqldb.server;
 
+import org.hsqldb.persist.HsqlProperties;
+
+import lombok.val;
+
 public class ServiceProperties extends ServerProperties
 {
 	public ServiceProperties(int protocol)
 	{
 		super(protocol);
+	}
+
+	public static ServiceProperties of(final HsqlProperties argProps)
+	{
+		val props = new ServiceProperties(ServerConstants.SC_PROTOCOL_HSQL);
+		props.addProperties(argProps);
+		translateProperties(props);
+		return props;
+	}
+
+	private static void translateProperties(ServiceProperties props)
+	{
+		ServerConfiguration.translateDefaultDatabaseProperty(props);
+		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
+		ServerConfiguration.translateAddressProperty(props);
 	}
 }

@@ -1,29 +1,22 @@
 package dev.luin.file.server.web;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Scanner;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.ServerConfiguration;
-import org.hsqldb.server.ServerConstants;
-import org.hsqldb.server.ServiceProperties;
 import org.hsqldb.server.Server;
 import org.hsqldb.server.ServerAcl.AclFormatException;
+import org.hsqldb.server.ServiceProperties;
 
-import dev.luin.file.server.JdbcURL;
 import dev.luin.file.server.SystemInterface;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
@@ -66,8 +59,9 @@ public class HsqlDb implements SystemInterface
 			val jdbcURL = getHsqlDbJdbcUrl(cmd,properties);
 			if (jdbcURL.isPresent())
 			{
+				val server = createHSQLDBServer(cmd,jdbcURL.get());
 				println("Starting HSQLDB Server...");
-				startHSQLDBServer(cmd,jdbcURL.get());
+				server.start();
 			}
 			else
 				exit(1);
@@ -76,7 +70,7 @@ public class HsqlDb implements SystemInterface
 
 	private Optional<JdbcURL> getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException
 	{
-		val jdbcURL = parseJdbcURL(properties.getProperty("jdbc.url"),new JdbcURL());
+		val jdbcURL = JdbcURL.of(properties.getProperty("jdbc.url"));
 		val allowedHosts = "localhost|127.0.0.1";
 		if (!jdbcURL.getHost().matches("^(" + allowedHosts + ")$"))
 		{
@@ -86,50 +80,34 @@ public class HsqlDb implements SystemInterface
 		return Optional.of(jdbcURL);
 	}
 
-	private JdbcURL parseJdbcURL(@NonNull final String jdbcURL, @NonNull final JdbcURL model) throws MalformedURLException
+	private Server createHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
-		try (val scanner = new Scanner(jdbcURL))
-		{
-			val protocol = scanner.findInLine("(://|@|:@//)");
-			if (protocol != null)
-			{
-				val urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
-				scanner.findInLine("(/|:|;databaseName=)");
-				val database = scanner.findInLine("[^;]*");
-				if (urlString != null)
-				{
-					val url = new URL("http://" + urlString);
-					model.setHost(url.getHost());
-					model.setPort(url.getPort() == -1 ? null : url.getPort());
-					model.setDatabase(database);
-				}
-			}
-			return model;
-		}
+		val options = createOptions(cmd,jdbcURL);
+		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]), "server");
+		val props = ServiceProperties.of(argProps);
+		return createServer(props);
 	}
 
-	private Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
+	private ArrayList<Object> createOptions(CommandLine cmd, JdbcURL jdbcURL)
 	{
-		val options = new ArrayList<>();
-		options.add("-database.0");
-		options.add((cmd.hasOption(Option.HSQLDB_DIR.name) ? "file:" + cmd.getOptionValue(Option.HSQLDB_DIR.name) : "file:" + DefaultValue.HSQLDB_DIR.value) + "/" + jdbcURL.getDatabase());
-		options.add("-dbname.0");
-		options.add(jdbcURL.getDatabase());
+		val result = new ArrayList<>();
+		result.add("-database.0");
+		result.add((cmd.hasOption(Option.HSQLDB_DIR.name) ? "file:" + cmd.getOptionValue(Option.HSQLDB_DIR.name) : "file:" + DefaultValue.HSQLDB_DIR.value) + "/" + jdbcURL.getDatabase());
+		result.add("-dbname.0");
+		result.add(jdbcURL.getDatabase());
 		if (jdbcURL.getPort() != null)
 		{
-			options.add("-port");
-			options.add(jdbcURL.getPort().toString());
+			result.add("-port");
+			result.add(jdbcURL.getPort().toString());
 		}
-		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]), "server");
-		val props = new ServiceProperties(ServerConstants.SC_PROTOCOL_HSQL);
-		props.addProperties(argProps);
-		ServerConfiguration.translateDefaultDatabaseProperty(props);
-		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
-		ServerConfiguration.translateAddressProperty(props);
-		val server = new org.hsqldb.server.Server();
-		server.setProperties(props);
-		server.start();
-		return server;
+		return result;
+	}
+
+	private Server createServer(final ServiceProperties props) throws IOException, AclFormatException
+	{
+		val result = new Server();
+		result.setProperties(props);
+		return result;
 	}
 
 }
