@@ -8,6 +8,7 @@ import java.util.Properties;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -48,39 +49,26 @@ public class FileServer implements Config, SystemInterface
 		TRUSTSTORE_TYPE("truststore.type"),
 		TRUSTSTORE_PATH("truststore.path"),
 		TRUSTSTORE_PASSWORD("truststore.password"),
-		SERVER_CLIENT_CERTIFICATE_HEADER("server.clientCertificateHeader");
+		SERVER_CLIENT_CERTIFICATE_HEADER("server.clientCertificateHeader"),
+		SERVER_CONNECTION_LIMIT("server.connectionLimit");
 
 		String name;
 	}
 
+	private static final String SERVER_CONNECTOR_NAME = "server";
 	private static final String TRUE = "true";
 	Properties properties;
-	String serverConnectorName;
 
-	public void initFileServer(Server server) throws MalformedURLException, IOException
+	public void init(Server server) throws MalformedURLException, IOException
 	{
-		if (!TRUE.equals(properties.getProperty(ServerProperties.SERVER_SSL.name)))
-		{
-			server.addConnector(createFileServerHttpConnector(server));
-		}
-		else
-		{
-			val factory = createFileServerSslContextFactory();
-			server.addConnector(createFileServerHttpsConnector(server,factory));
-		}
+		val connector = TRUE.equals(properties.getProperty(ServerProperties.SERVER_SSL.name))
+				? createFileServerHttpsConnector(server,createFileServerSslContextFactory())
+				: createFileServerHttpConnector(server);
+		server.addConnector(connector);
+		initConnectionLimit(server,connector);
 	}
 
-	protected ServerConnector createFileServerHttpConnector(Server server)
-	{
-		val result = new ServerConnector(server);
-		result.setHost(properties.getProperty(ServerProperties.SERVER_HOST.name));
-		result.setPort(Integer.parseInt(properties.getProperty(ServerProperties.SERVER_PORT.name)));
-		result.setName(serverConnectorName);
-		println("File Server configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty(ServerProperties.SERVER_PATH.name));
-		return result;
-	}
-
-	protected SslContextFactory createFileServerSslContextFactory() throws MalformedURLException, IOException
+	private SslContextFactory createFileServerSslContextFactory() throws MalformedURLException, IOException
 	{
 		val result = new SslContextFactory.Server();
 		addKeyStore(result);
@@ -88,20 +76,36 @@ public class FileServer implements Config, SystemInterface
 		return result;
 	}
 
-	protected ServerConnector createFileServerHttpsConnector(Server server, SslContextFactory factory)
+	private ServerConnector createFileServerHttpsConnector(Server server, SslContextFactory factory)
 	{
 		val result = new ServerConnector(server,factory);
 		result.setHost(properties.getProperty(ServerProperties.SERVER_HOST.name));
 		result.setPort(Integer.parseInt(properties.getProperty(ServerProperties.SERVER_PORT.name)));
-		result.setName(serverConnectorName);
+		result.setName(SERVER_CONNECTOR_NAME);
 		println("File Server configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty(ServerProperties.SERVER_PATH.name));
 		return result;
 	}
 
-	public Handler createFileServerContextHandler(ContextLoaderListener contextLoaderListener)
+	private ServerConnector createFileServerHttpConnector(Server server)
+	{
+		val result = new ServerConnector(server);
+		result.setHost(properties.getProperty(ServerProperties.SERVER_HOST.name));
+		result.setPort(Integer.parseInt(properties.getProperty(ServerProperties.SERVER_PORT.name)));
+		result.setName(SERVER_CONNECTOR_NAME);
+		println("File Server configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty(ServerProperties.SERVER_PATH.name));
+		return result;
+	}
+
+	private void initConnectionLimit(Server server, final org.eclipse.jetty.server.ServerConnector connector)
+	{
+		if (properties.containsKey(ServerProperties.SERVER_CONNECTION_LIMIT.name))
+			server.addBean(new ConnectionLimit(Integer.parseInt(properties.getProperty(ServerProperties.SERVER_CONNECTION_LIMIT.name)),connector));
+	}
+
+	public Handler createContextHandler(ContextLoaderListener contextLoaderListener)
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@" + serverConnectorName});
+		result.setVirtualHosts(new String[] {"@" + SERVER_CONNECTOR_NAME});
 		result.setContextPath("/");
 		result.addFilter(createClientCertificateManagerFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		result.addServlet(DownloadServlet.class,properties.getProperty(ServerProperties.SERVER_PATH.name) + "/download/*");
@@ -110,7 +114,7 @@ public class FileServer implements Config, SystemInterface
 		return result;
 	}
 
-	public void addKeyStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addKeyStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStore = getResource(properties.getProperty(ServerProperties.KEYSTORE_PATH.name));
 		if (keyStore != null && keyStore.exists())
@@ -130,7 +134,7 @@ public class FileServer implements Config, SystemInterface
 		}
 	}
 
-	public void addFileServerTrustStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addFileServerTrustStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStore = getResource(properties.getProperty(ServerProperties.TRUSTSTORE_PATH.name));
 		if (trustStore != null && trustStore.exists())
@@ -147,10 +151,11 @@ public class FileServer implements Config, SystemInterface
 		}
 	}
 
-	public FilterHolder createClientCertificateManagerFilterHolder()
+	private FilterHolder createClientCertificateManagerFilterHolder()
 	{
 		val result = new FilterHolder(ClientCertificateManagerFilter.class); 
 		result.setInitParameter("x509CertificateHeader",properties.getProperty(ServerProperties.SERVER_CLIENT_CERTIFICATE_HEADER.name));
 		return result;
 	}
+
 }

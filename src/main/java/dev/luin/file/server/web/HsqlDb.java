@@ -52,8 +52,6 @@ public class HsqlDb implements SystemInterface
 		String value;
 	}
 
-	String serverConnectorName;
-
 	public static Options addOptions(Options result)
 	{
 		result.addOption(Option.HSQLDB.name,false,"start HSQLDB server");
@@ -122,7 +120,7 @@ public class HsqlDb implements SystemInterface
 			options.add("-port");
 			options.add(jdbcURL.getPort().toString());
 		}
-		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]), serverConnectorName);
+		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]), "server");
 		val props = new ServiceProperties(ServerConstants.SC_PROTOCOL_HSQL);
 		props.addProperties(argProps);
 		ServerConfiguration.translateDefaultDatabaseProperty(props);

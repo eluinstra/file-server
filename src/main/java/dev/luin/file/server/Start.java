@@ -26,6 +26,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.logging.Slf4jLogger;
 import org.eclipse.jetty.server.Server;
@@ -47,6 +48,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
+@AllArgsConstructor
 public class Start implements SystemInterface
 {
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -70,89 +72,128 @@ public class Start implements SystemInterface
 		String value;
 	}
 
-	private static final String WEB_CONNECTOR_NAME = "web";
-	private static final String SERVER_CONNECTOR_NAME = "server";
-	private static final String HEALTH_CONNECTOR_NAME = "health";
+	CommandLine cmd;
+	Properties properties;
+	Server server;
 
 	public static void main(String[] args) throws Exception
 	{
-		LogUtils.setLoggerClass(Slf4jLogger.class);
-		val app = new Start();
-		app.startService(args);
+		initLogger();
+		val options = createOptions();
+		val cmd = createCmd(args,options);
+		if (showUsage(cmd))
+			printUsage(options);
+		else
+			startService(cmd);
 	}
 
-	protected void startService(String[] args) throws ParseException, IOException, AclFormatException, URISyntaxException, MalformedURLException, Exception, NoSuchAlgorithmException, InterruptedException
+	protected static void initLogger()
 	{
-		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
-		if (cmd.hasOption("h"))
-			printUsage(options);
-		init(cmd);
-		val server = new Server();
-		val handlerCollection = new ContextHandlerCollection();
-		server.setHandler(handlerCollection);
-		server.addBean(new CustomErrorHandler());
+		LogUtils.setLoggerClass(Slf4jLogger.class);
+	}
+
+	protected static Options createOptions()
+	{
+		val result = new Options();
+		Start.addOptions(result);
+		WebServer.addOptions(result);
+		WebAuthentication.addOptions(result);
+		HsqlDb.addOptions(result);
+		HealthServer.addOptions(result);
+		Jmx.addOptions(result);
+		return result;
+	}
+
+	private static void addOptions(final org.apache.commons.cli.Options result)
+	{
+		result.addOption(Option.HELP.name,false,"print this message");
+		result.addOption(Option.CONFIG_DIR.name,true,"set config directory [default: <startup_directory>]");
+	}
+	
+	protected static CommandLine createCmd(String[] args, final Options options) throws ParseException
+	{
+		return new DefaultParser().parse(options,args);
+	}
+
+	protected static boolean showUsage(CommandLine cmd)
+	{
+		return cmd.hasOption("h");
+	}
+
+	protected static void printUsage(Options options)
+	{
+		val formatter = new HelpFormatter();
+		formatter.printHelp("Start",options,true);
+	}
+
+	private static void startService(final org.apache.commons.cli.CommandLine cmd) throws ParseException, IOException, Exception
+	{
+		val app = Start.of(cmd);
+		app.startService();
+	}
+
+	public static Start of(CommandLine cmd) throws ParseException, IOException
+	{
 		val properties = getProperties();
-		new HsqlDb(SERVER_CONNECTOR_NAME).startHSQLDB(cmd,properties);
-		new Jmx().init(cmd,server);
+		val server = new Server();
+		return new Start(cmd,properties,server);
+	}
+
+	private static Properties getProperties() throws IOException
+	{
+		return AppConfig.PROPERTY_SOURCE.getProperties();
+	}
+
+	protected void startService() throws Exception
+	{
+		initConfig();
+		initServer();
+		startServer();
+	}
+
+	private void initConfig()
+	{
+		val configDir = cmd.getOptionValue(Option.CONFIG_DIR.name,"");
+		setProperty("server.configDir",configDir);
+		println("Using config directory: " + (StringUtils.isEmpty(configDir) ? "." : configDir));
+	}
+
+	private void initServer() throws Exception
+	{
+		val handlerCollection = createHandlerCollection();
+		initErrorHandler();
+		initHsqlDb();
+		initJmx();
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			registerConfig(context);
 			val contextLoaderListener = new ContextLoaderListener(context);
-			WebServer webServer = new WebServer(cmd,WEB_CONNECTOR_NAME);
-			webServer.initWebServer(server);
-			handlerCollection.addHandler(new WebAuthentication(cmd).createWebContextHandler(contextLoaderListener,webServer));
-			FileServer fileServer = new FileServer(properties,SERVER_CONNECTOR_NAME);
-			fileServer.initFileServer(server);
-			handlerCollection.addHandler(fileServer.createFileServerContextHandler(contextLoaderListener));
-			if (cmd.hasOption("health"))
-			{
-				val health = new HealthServer(HEALTH_CONNECTOR_NAME);
-				health.init(cmd,server);
-				handlerCollection.addHandler(health.createHealthContextHandler(cmd,contextLoaderListener));
-			}
-			println("Starting Server...");
-	
-			try
-			{
-				server.start();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				server.stop();
-				exit(1);
-			}
-			println("Server started.");
-			server.join();
+			WebServer webServer = initWebServer(handlerCollection,contextLoaderListener);
+			initFileServer(handlerCollection,contextLoaderListener);
+			initHealthServer(handlerCollection,contextLoaderListener,webServer);
 		}
 	}
 
-	private Options createOptions()
+	private ContextHandlerCollection createHandlerCollection()
 	{
-		val result = new Options();
-		result.addOption(Option.HELP.name,false,"print this message");
-		HealthServer.addOptions(result);
-		WebServer.addOptions(result);
-		WebAuthentication.addOptions(result);
-		result.addOption(Option.CONFIG_DIR.name,true,"set config directory [default: <startup_directory>]");
-		Jmx.addOptions(result);
-		HsqlDb.addOptions(result);
-		return result;
-	}
-	
-	private void printUsage(Options options)
-	{
-		val formatter = new HelpFormatter();
-		formatter.printHelp("Start",options,true);
-		exit(0);
+		val handlerCollection = new ContextHandlerCollection();
+		server.setHandler(handlerCollection);
+		return handlerCollection;
 	}
 
-	private void init(CommandLine cmd)
+	private void initErrorHandler()
 	{
-		val configDir = cmd.getOptionValue(Option.CONFIG_DIR.name,"");
-		setProperty("server.configDir",configDir);
-		println("Using config directory: " + configDir);
+		server.addBean(new CustomErrorHandler());
+	}
+
+	private void initHsqlDb() throws IOException, AclFormatException, URISyntaxException
+	{
+		new HsqlDb().startHSQLDB(cmd,properties);
+	}
+
+	private void initJmx() throws Exception
+	{
+		new Jmx().init(cmd,server);
 	}
 
 	protected void registerConfig(AnnotationConfigWebApplicationContext context)
@@ -160,9 +201,45 @@ public class Start implements SystemInterface
 		context.register(AppConfig.class);
 	}
 
-	protected Properties getProperties(String...files) throws IOException
+	private WebServer initWebServer(final ContextHandlerCollection handlerCollection, final ContextLoaderListener contextLoaderListener) throws MalformedURLException, IOException, NoSuchAlgorithmException
 	{
-		return AppConfig.PROPERTY_SOURCE.getProperties();
+		WebServer webServer = new WebServer(cmd);
+		webServer.init(server);
+		handlerCollection.addHandler(new WebAuthentication(cmd,webServer).createContextHandler(contextLoaderListener));
+		return webServer;
 	}
 
+	private void initFileServer(final ContextHandlerCollection handlerCollection, final ContextLoaderListener contextLoaderListener) throws MalformedURLException, IOException
+	{
+		FileServer fileServer = new FileServer(properties);
+		fileServer.init(server);
+		handlerCollection.addHandler(fileServer.createContextHandler(contextLoaderListener));
+	}
+
+	private void initHealthServer(final ContextHandlerCollection handlerCollection, final ContextLoaderListener contextLoaderListener, WebServer webServer) throws MalformedURLException, IOException, Exception
+	{
+		if (cmd.hasOption("health"))
+		{
+			val health = new HealthServer(cmd,webServer);
+			health.init(server);
+			handlerCollection.addHandler(health.createContextHandler(contextLoaderListener));
+		}
+	}
+
+	private void startServer() throws Exception
+	{
+		println("Starting Server...");
+		try
+		{
+			server.start();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			server.stop();
+			exit(1);
+		}
+		println("Server started.");
+		server.join();
+	}
 }

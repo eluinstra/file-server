@@ -65,11 +65,9 @@ public class WebServer implements Config, SystemInterface
 		String value;
 	}
 
-	static final String SOAP_PATH = "/service";
-	static final String NONE = "<none>";
+	private static final String WEB_CONNECTOR_NAME = "web";
+	private static final String SOAP_PATH = "/service";
 	CommandLine cmd;
-	@Getter
-	String webConnectorName;
 
 	public static Options addOptions(Options result)
 	{
@@ -90,52 +88,41 @@ public class WebServer implements Config, SystemInterface
 		return result;
 	}
 
-	public void initWebServer(Server server) throws MalformedURLException, IOException
+	public void init(Server server) throws MalformedURLException, IOException
 	{
-		val connector = isSSLEnabled(cmd) ? createHttpsConnector(cmd,server,createSslContextFactory(cmd)) : createHttpConnector(cmd,server);
+		val connector = isSSLEnabled()
+				? createHttpsConnector(cmd,server,createSslContextFactory())
+				: createHttpConnector(cmd,server);
 		server.addConnector(connector);
-		if (cmd.hasOption(Option.CONNECTION_LIMIT.name))
-			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(Option.CONNECTION_LIMIT.name)),connector));
+		initConnectionLimit(server,connector);
 	}
 
-	public ServerConnector createHttpConnector(CommandLine cmd, Server server)
-	{
-		val httpConfig = new HttpConfiguration();
-		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
-		result.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
-		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.PORT.value : cmd.getOptionValue(Option.PORT.name)));
-		result.setName(webConnectorName);
-		println("SOAP Service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + SOAP_PATH);
-		return result;
-	}
-
-	protected ServerConnector createHttpsConnector(CommandLine cmd, Server server, SslContextFactory factory)
+	private ServerConnector createHttpsConnector(CommandLine cmd, Server server, SslContextFactory factory)
 	{
 		val connector = new ServerConnector(server,factory);
 		connector.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
 		connector.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.SSL_PORT.value : cmd.getOptionValue(Option.PORT.name)));
-		connector.setName(webConnectorName);
+		connector.setName(WEB_CONNECTOR_NAME);
 		println("SOAP Service configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + SOAP_PATH);
 		return connector;
 	}
 
-	protected String getPath(CommandLine cmd)
+	String getPath(CommandLine cmd)
 	{
 		return cmd.getOptionValue(Option.PATH.name) == null ? DefaultValue.PATH.value : cmd.getOptionValue(Option.PATH.name);
 	}
 
-	public SslContextFactory createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
+	private SslContextFactory createSslContextFactory() throws MalformedURLException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		addKeyStore(cmd,result);
+		addKeyStore(result);
 		if (cmd.hasOption(Option.CLIENT_AUTHENTICATION.name))
-			addTrustStore(cmd,result);
+			addTrustStore(result);
 		result.setExcludeCipherSuites();
 		return result;
 	}
 
-	private void addKeyStore(CommandLine cmd, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	private void addKeyStore(SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStoreType = cmd.getOptionValue(Option.KEY_STORE_TYPE.name, DefaultValue.KEYSTORE_TYPE.value);
 		val keyStorePath = cmd.getOptionValue(Option.KEY_STORE_PATH.name,DefaultValue.KEYSTORE_FILE.value);
@@ -161,7 +148,7 @@ public class WebServer implements Config, SystemInterface
 		}
 	}
 
-	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStoreType = cmd.getOptionValue(Option.TRUST_STORE_TYPE.name,DefaultValue.KEYSTORE_TYPE.value);
 		val trustStorePath = cmd.getOptionValue(Option.TRUST_STORE_PATH.name);
@@ -182,13 +169,46 @@ public class WebServer implements Config, SystemInterface
 		}
 	}
 
-	public boolean isSSLEnabled(CommandLine cmd)
+	private ServerConnector createHttpConnector(CommandLine cmd, Server server)
+	{
+		val httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
+		result.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.PORT.value : cmd.getOptionValue(Option.PORT.name)));
+		result.setName(WEB_CONNECTOR_NAME);
+		println("SOAP Service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + SOAP_PATH);
+		return result;
+	}
+
+	private void initConnectionLimit(Server server, final org.eclipse.jetty.server.ServerConnector connector)
+	{
+		if (cmd.hasOption(Option.CONNECTION_LIMIT.name))
+			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(Option.CONNECTION_LIMIT.name)),connector));
+	}
+
+	public boolean isSSLEnabled()
 	{
 		return cmd.hasOption(Option.SSL.name);
 	}
 
-	public boolean isClientAuthenticationEnabled(CommandLine cmd)
+	public boolean isClientAuthenticationEnabled()
 	{
 		return cmd.hasOption(Option.CLIENT_AUTHENTICATION.name);
+	}
+
+	public String getSoapPath()
+	{
+		return SOAP_PATH;
+	}
+
+	public String getWebConnectorName()
+	{
+		return WEB_CONNECTOR_NAME;
+	}
+
+	public String getHost()
+	{
+		return cmd.getOptionValue(Option.HOST.name,DefaultValue.HOST.value);
 	}
 }

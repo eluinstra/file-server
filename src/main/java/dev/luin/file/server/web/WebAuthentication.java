@@ -72,9 +72,9 @@ public class WebAuthentication implements Config, SystemInterface
 
 	private static final String REALM = "Realm";
 	private static final String REALM_FILE = "realm.properties";
-	private static final String NONE = "<none>";
 	TextIO textIO = TextIoFactory.getTextIO();
 	CommandLine cmd;
+	WebServer webServer;
 
 	public static Options addOptions(Options result)
 	{
@@ -86,7 +86,7 @@ public class WebAuthentication implements Config, SystemInterface
 		return result;
 	}
 	
-	public Handler createWebContextHandler(ContextLoaderListener contextLoaderListener, WebServer webServer) throws NoSuchAlgorithmException, IOException
+	public Handler createContextHandler(ContextLoaderListener contextLoaderListener) throws NoSuchAlgorithmException, IOException
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@" + webServer.getWebConnectorName()});
@@ -94,7 +94,7 @@ public class WebAuthentication implements Config, SystemInterface
 		result.setContextPath(webServer.getPath(cmd));
 		if (cmd.hasOption(Option.AUTHENTICATION.name))
 		{
-			if (!webServer.isClientAuthenticationEnabled(cmd))
+			if (!webServer.isClientAuthenticationEnabled())
 			{
 				println("Configuring Web Server basic authentication:");
 				val file = new File(REALM_FILE);
@@ -104,13 +104,13 @@ public class WebAuthentication implements Config, SystemInterface
 					createRealmFile(file);
 				result.setSecurityHandler(getSecurityHandler());
 			}
-			else if (webServer.isSSLEnabled(cmd) && webServer.isClientAuthenticationEnabled(cmd))
+			else if (webServer.isSSLEnabled() && webServer.isClientAuthenticationEnabled())
 			{
 				result.addFilter(createClientCertificateManagerFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 			}
 		}
-		result.addServlet(CXFServlet.class,WebServer.SOAP_PATH + "/*");
+		result.addServlet(CXFServlet.class,webServer.getSoapPath() + "/*");
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;

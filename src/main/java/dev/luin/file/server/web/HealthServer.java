@@ -28,7 +28,6 @@ public class HealthServer implements Config, SystemInterface
 	@Getter
 	private enum Option
 	{
-		HOST("host"),
 		HEALTH("health"),
 		HEALTH_PORT("healthPort");
 
@@ -40,14 +39,15 @@ public class HealthServer implements Config, SystemInterface
 	@Getter
 	private enum DefaultValue
 	{
-		HOST("0.0.0.0"),
 		HEALTH_PORT("8008");
 
 		String value;
 	}
 
+	private static final String HEALTH_CONNECTOR_NAME = "health";
 	private static final String HEALTH_PATH = "/health";
-	String healthConnectorName;
+	CommandLine cmd;
+	WebServer webServer;
 
 	public static Options addOptions(Options result)
 	{
@@ -56,26 +56,26 @@ public class HealthServer implements Config, SystemInterface
 		return result;
 	}
 
-	public void init(CommandLine cmd, Server server) throws MalformedURLException, IOException
+	public void init(Server server) throws MalformedURLException, IOException
 	{
-		val connector = createHealthConnector(cmd, server, healthConnectorName);
+		val connector = createHealthConnector(server);
 		server.addConnector(connector);
 	}
 
-	private ServerConnector createHealthConnector(CommandLine cmd, Server server, String healthConnectorName)
+	private ServerConnector createHealthConnector(Server server)
 	{
 		val result = new ServerConnector(server);
-		result.setHost(cmd.getOptionValue(Option.HOST.name,DefaultValue.HOST.value));
+		result.setHost(webServer.getHost());
 		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.HEALTH_PORT.name,DefaultValue.HEALTH_PORT.value)));
-		result.setName(healthConnectorName);
+		result.setName(HEALTH_CONNECTOR_NAME);
 		println("Health service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + HEALTH_PATH);
 		return result;
 	}
 
-	public ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
+	public ServletContextHandler createContextHandler(ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@" + healthConnectorName});
+		result.setVirtualHosts(new String[] {"@" + HEALTH_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath("/");
 		result.addServlet(HealthServlet.class,HEALTH_PATH + "/*");

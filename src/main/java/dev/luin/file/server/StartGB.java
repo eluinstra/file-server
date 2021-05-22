@@ -18,7 +18,9 @@ package dev.luin.file.server;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.cxf.common.logging.LogUtils;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
+import org.eclipse.jetty.server.Server;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import lombok.AccessLevel;
@@ -30,20 +32,41 @@ public class StartGB extends Start
 {
 	public static void main(String[] args) throws Exception
 	{
-		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
-		val app = new StartGB();
-		app.startService(args);
+		initLogger();
+		val options = createOptions();
+		val cmd = createCmd(args,options);
+		if (showUsage(cmd))
+			printUsage(options);
+		else
+			startService(cmd);
 	}
 	
+	private static void startService(final org.apache.commons.cli.CommandLine cmd) throws ParseException, IOException, Exception
+	{
+		val app = StartGB.of(cmd);
+		app.startService();
+	}
+
+	public static Start of(CommandLine cmd) throws ParseException, IOException
+	{
+		val properties = getProperties();
+		val server = new Server();
+		return new StartGB(cmd,properties,server);
+	}
+
+	private static Properties getProperties() throws IOException
+	{
+		return GBAppConfig.PROPERTY_SOURCE.getProperties();
+	}
+
+	private StartGB(CommandLine cmd, Properties properties, Server server)
+	{
+		super(cmd,properties,server);
+	}
+
 	@Override
 	protected void registerConfig(AnnotationConfigWebApplicationContext context)
 	{
 		context.register(GBAppConfig.class);
-	}
-
-	@Override
-	protected Properties getProperties(String...files) throws IOException
-	{
-		return GBAppConfig.PROPERTY_SOURCE.getProperties();
 	}
 }

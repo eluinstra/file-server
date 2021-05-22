@@ -9,6 +9,8 @@ import lombok.val;
 
 public interface Config
 {
+	static final String NONE = "<none>";
+
 	default String getHost(String host)
 	{
 		return "0.0.0.0".equals(host) ? "localhost" : host;

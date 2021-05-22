@@ -13,13 +13,14 @@ import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.log.Log;
 
+import dev.luin.file.server.Config;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
-public class Jmx
+public class Jmx implements Config
 {
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	@AllArgsConstructor
@@ -43,8 +44,6 @@ public class Jmx
 
 		String value;
 	}
-
-	private static final String NONE = "<none>";
 
 	public static Options addOptions(Options result)
 	{
