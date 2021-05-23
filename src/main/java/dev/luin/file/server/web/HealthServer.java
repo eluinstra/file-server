@@ -49,20 +49,25 @@ public class HealthServer implements Config, SystemInterface
 	CommandLine cmd;
 	WebServer webServer;
 
-	public static Options addOptions(Options result)
+	public static String getHealthOption()
 	{
-		result.addOption(Option.HEALTH.name,false,"start health service");
-		result.addOption(Option.HEALTH_PORT.name,true,"set health service port [default: " + DefaultValue.HEALTH_PORT.value + "]");
-		return result;
+		return Option.HEALTH.name;
 	}
 
-	public void init(Server server) throws MalformedURLException, IOException
+	public static Options addOptions(final Options options)
+	{
+		options.addOption(Option.HEALTH.name,false,"start health service");
+		options.addOption(Option.HEALTH_PORT.name,true,"set health service port [default: " + DefaultValue.HEALTH_PORT.value + "]");
+		return options;
+	}
+
+	public void init(final Server server) throws MalformedURLException, IOException
 	{
 		val connector = createHealthConnector(server);
 		server.addConnector(connector);
 	}
 
-	private ServerConnector createHealthConnector(Server server)
+	private ServerConnector createHealthConnector(final Server server)
 	{
 		val result = new ServerConnector(server);
 		result.setHost(webServer.getHost());
@@ -72,7 +77,7 @@ public class HealthServer implements Config, SystemInterface
 		return result;
 	}
 
-	public ServletContextHandler createContextHandler(ContextLoaderListener contextLoaderListener) throws Exception
+	public ServletContextHandler createContextHandler(final ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@" + HEALTH_CONNECTOR_NAME});

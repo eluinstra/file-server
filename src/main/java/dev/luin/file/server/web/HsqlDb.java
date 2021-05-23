@@ -45,11 +45,11 @@ public class HsqlDb implements SystemInterface
 		String value;
 	}
 
-	public static Options addOptions(Options result)
+	public static Options addOptions(Options options)
 	{
-		result.addOption(Option.HSQLDB.name,false,"start HSQLDB server");
-		result.addOption(Option.HSQLDB_DIR.name,true,"set HSQLDB location [default: " + DefaultValue.HSQLDB_DIR.value + "]");
-		return result;
+		options.addOption(Option.HSQLDB.name,false,"start HSQLDB server");
+		options.addOption(Option.HSQLDB_DIR.name,true,"set HSQLDB location [default: " + DefaultValue.HSQLDB_DIR.value + "]");
+		return options;
 	}
 
 	public void startHSQLDB(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException

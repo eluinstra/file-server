@@ -99,15 +99,15 @@ public class Start implements SystemInterface
 		WebServer.addOptions(result);
 		WebAuthentication.addOptions(result);
 		HsqlDb.addOptions(result);
-		HealthServer.addOptions(result);
 		Jmx.addOptions(result);
+		HealthServer.addOptions(result);
 		return result;
 	}
 
-	private static void addOptions(final org.apache.commons.cli.Options result)
+	private static void addOptions(final Options options)
 	{
-		result.addOption(Option.HELP.name,false,"print this message");
-		result.addOption(Option.CONFIG_DIR.name,true,"set config directory [default: <startup_directory>]");
+		options.addOption(Option.HELP.name,false,"print this message");
+		options.addOption(Option.CONFIG_DIR.name,true,"set config directory [default: <startup_directory>]");
 	}
 	
 	protected static CommandLine createCmd(String[] args, final Options options) throws ParseException
@@ -126,7 +126,7 @@ public class Start implements SystemInterface
 		formatter.printHelp("Start",options,true);
 	}
 
-	private static void startService(final org.apache.commons.cli.CommandLine cmd) throws ParseException, IOException, Exception
+	private static void startService(final CommandLine cmd) throws ParseException, IOException, Exception
 	{
 		val app = Start.of(cmd);
 		app.startService();
@@ -153,7 +153,7 @@ public class Start implements SystemInterface
 
 	private void initConfig()
 	{
-		val configDir = cmd.getOptionValue(Option.CONFIG_DIR.name,"");
+		val configDir = cmd.getOptionValue(Option.CONFIG_DIR.name,DefaultValue.CONFIG_DIR.value);
 		setProperty("server.configDir",configDir);
 		println("Using config directory: " + (StringUtils.isEmpty(configDir) ? "." : configDir));
 	}
@@ -218,7 +218,7 @@ public class Start implements SystemInterface
 
 	private void initHealthServer(final ContextHandlerCollection handlerCollection, final ContextLoaderListener contextLoaderListener, WebServer webServer) throws MalformedURLException, IOException, Exception
 	{
-		if (cmd.hasOption("health"))
+		if (cmd.hasOption(HealthServer.getHealthOption()))
 		{
 			val health = new HealthServer(cmd,webServer);
 			health.init(server);

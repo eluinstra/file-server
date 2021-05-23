@@ -45,13 +45,13 @@ public class Jmx implements Config
 		String value;
 	}
 
-	public static Options addOptions(Options result)
+	public static Options addOptions(Options options)
 	{
-		result.addOption(Option.JMX.name,false,"start JMX server");
-		result.addOption(Option.JMX_PORT.name,true,"set JMX port [default: " + DefaultValue.JMS_PORT.value + "]");
-		result.addOption(Option.JMX_ACCESS_FILE.name,true,"set JMX access file [default: " + NONE + "]");
-		result.addOption(Option.JMX_PASSWORD_FILE.name,true,"set JMX password file [default: " + NONE + "]");
-		return result;
+		options.addOption(Option.JMX.name,false,"start JMX server");
+		options.addOption(Option.JMX_PORT.name,true,"set JMX port [default: " + DefaultValue.JMS_PORT.value + "]");
+		options.addOption(Option.JMX_ACCESS_FILE.name,true,"set JMX access file [default: " + NONE + "]");
+		options.addOption(Option.JMX_PASSWORD_FILE.name,true,"set JMX password file [default: " + NONE + "]");
+		return options;
 	}
 
 	public void init(CommandLine cmd, Server server) throws Exception

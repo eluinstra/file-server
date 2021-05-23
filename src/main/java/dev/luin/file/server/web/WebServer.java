@@ -69,23 +69,23 @@ public class WebServer implements Config, SystemInterface
 	private static final String SOAP_PATH = "/service";
 	CommandLine cmd;
 
-	public static Options addOptions(Options result)
+	public static Options addOptions(Options options)
 	{
-		result.addOption(Option.HOST.name,true,"set host [default: " + DefaultValue.HOST.value + "]");
-		result.addOption(Option.PORT.name,true,"set port [default: <" + DefaultValue.PORT.value + "|" + DefaultValue.SSL_PORT.value + ">]");
-		result.addOption(Option.PATH.name,true,"set path [default: " + DefaultValue.PATH.value + "]");
-		result.addOption(Option.SSL.name,false,"enable SSL");
-		result.addOption(Option.PROTOCOLS.name,true,"set SSL Protocols [default: " + NONE + "]");
-		result.addOption(Option.CIPHER_SUITES.name,true,"set SSL CipherSuites [default: " + NONE + "]");
-		result.addOption(Option.KEY_STORE_TYPE.name,true,"set keystore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
-		result.addOption(Option.KEY_STORE_PATH.name,true,"set keystore path [default: " + DefaultValue.KEYSTORE_FILE.value + "]");
-		result.addOption(Option.KEY_STORE_PASSWORD.name,true,"set keystore password [default: " + DefaultValue.KEYSTORE_PASSWORD.value + "]");
-		result.addOption(Option.CLIENT_AUTHENTICATION.name,false,"enable SSL client authentication");
-		result.addOption(Option.TRUST_STORE_TYPE.name,true,"set truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
-		result.addOption(Option.TRUST_STORE_PATH.name,true,"set truststore path [default: " + NONE + "]");
-		result.addOption(Option.TRUST_STORE_PASSWORD.name,true,"set truststore password [default: " + NONE + "]");
-		result.addOption(Option.CONNECTION_LIMIT.name,true,"set connection limit [default: " + NONE + "]");
-		return result;
+		options.addOption(Option.HOST.name,true,"set host [default: " + DefaultValue.HOST.value + "]");
+		options.addOption(Option.PORT.name,true,"set port [default: <" + DefaultValue.PORT.value + "|" + DefaultValue.SSL_PORT.value + ">]");
+		options.addOption(Option.PATH.name,true,"set path [default: " + DefaultValue.PATH.value + "]");
+		options.addOption(Option.SSL.name,false,"enable SSL");
+		options.addOption(Option.PROTOCOLS.name,true,"set SSL Protocols [default: " + NONE + "]");
+		options.addOption(Option.CIPHER_SUITES.name,true,"set SSL CipherSuites [default: " + NONE + "]");
+		options.addOption(Option.KEY_STORE_TYPE.name,true,"set keystore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
+		options.addOption(Option.KEY_STORE_PATH.name,true,"set keystore path [default: " + DefaultValue.KEYSTORE_FILE.value + "]");
+		options.addOption(Option.KEY_STORE_PASSWORD.name,true,"set keystore password [default: " + DefaultValue.KEYSTORE_PASSWORD.value + "]");
+		options.addOption(Option.CLIENT_AUTHENTICATION.name,false,"enable SSL client authentication");
+		options.addOption(Option.TRUST_STORE_TYPE.name,true,"set truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
+		options.addOption(Option.TRUST_STORE_PATH.name,true,"set truststore path [default: " + NONE + "]");
+		options.addOption(Option.TRUST_STORE_PASSWORD.name,true,"set truststore password [default: " + NONE + "]");
+		options.addOption(Option.CONNECTION_LIMIT.name,true,"set connection limit [default: " + NONE + "]");
+		return options;
 	}
 
 	public void init(Server server) throws MalformedURLException, IOException
@@ -97,14 +97,16 @@ public class WebServer implements Config, SystemInterface
 		initConnectionLimit(server,connector);
 	}
 
-	private ServerConnector createHttpsConnector(CommandLine cmd, Server server, SslContextFactory factory)
+	private ServerConnector createHttpsConnector(CommandLine cmd, Server server, SslContextFactory sslContextFactory)
 	{
-		val connector = new ServerConnector(server,factory);
-		connector.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
-		connector.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.SSL_PORT.value : cmd.getOptionValue(Option.PORT.name)));
-		connector.setName(WEB_CONNECTOR_NAME);
-		println("SOAP Service configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + SOAP_PATH);
-		return connector;
+		val httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		val result = new ServerConnector(server,sslContextFactory,new HttpConnectionFactory(httpConfig));
+		result.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.SSL_PORT.value : cmd.getOptionValue(Option.PORT.name)));
+		result.setName(WEB_CONNECTOR_NAME);
+		println("SOAP Service configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + SOAP_PATH);
+		return result;
 	}
 
 	String getPath(CommandLine cmd)

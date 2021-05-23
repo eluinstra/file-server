@@ -76,14 +76,14 @@ public class WebAuthentication implements Config, SystemInterface
 	CommandLine cmd;
 	WebServer webServer;
 
-	public static Options addOptions(Options result)
+	public static Options addOptions(Options options)
 	{
-		result.addOption(Option.CLIENT_CERTIFICATE_HEADER.name,true,"set client certificate header [default: " + NONE + "]");
-		result.addOption(Option.AUTHENTICATION.name,false,"enable basic | client certificate authentication");
-		result.addOption(Option.CLIENT_TRUST_STORE_TYPE.name,true,"set client truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
-		result.addOption(Option.CLIENT_TRUST_STORE_PATH.name,true,"set client truststore path [default: " + NONE + "]");
-		result.addOption(Option.CLIENT_TRUST_STORE_PASSWORD.name,true,"set client truststore password [default: " + NONE + "]");
-		return result;
+		options.addOption(Option.CLIENT_CERTIFICATE_HEADER.name,true,"set client certificate header [default: " + NONE + "]");
+		options.addOption(Option.AUTHENTICATION.name,false,"enable basic | client certificate authentication");
+		options.addOption(Option.CLIENT_TRUST_STORE_TYPE.name,true,"set client truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
+		options.addOption(Option.CLIENT_TRUST_STORE_PATH.name,true,"set client truststore path [default: " + NONE + "]");
+		options.addOption(Option.CLIENT_TRUST_STORE_PASSWORD.name,true,"set client truststore password [default: " + NONE + "]");
+		return options;
 	}
 	
 	public Handler createContextHandler(ContextLoaderListener contextLoaderListener) throws NoSuchAlgorithmException, IOException
@@ -160,19 +160,19 @@ public class WebAuthentication implements Config, SystemInterface
 
 	private Constraint createSecurityConstraint()
 	{
-		val constraint = new Constraint();
-		constraint.setName("auth");
-		constraint.setAuthenticate(true);
-		constraint.setRoles(new String[]{"user","admin"});
-		return constraint;
+		val result = new Constraint();
+		result.setName("auth");
+		result.setAuthenticate(true);
+		result.setRoles(new String[]{"user","admin"});
+		return result;
 	}
 
 	private ConstraintMapping createSecurityConstraintMapping(final Constraint constraint)
 	{
-		val mapping = new ConstraintMapping();
-		mapping.setPathSpec("/*");
-		mapping.setConstraint(constraint);
-		return mapping;
+		val result = new ConstraintMapping();
+		result.setPathSpec("/*");
+		result.setConstraint(constraint);
+		return result;
 	}
 
 	private ErrorPageErrorHandler createErrorHandler()

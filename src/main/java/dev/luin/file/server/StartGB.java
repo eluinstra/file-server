@@ -41,7 +41,7 @@ public class StartGB extends Start
 			startService(cmd);
 	}
 	
-	private static void startService(final org.apache.commons.cli.CommandLine cmd) throws ParseException, IOException, Exception
+	private static void startService(final CommandLine cmd) throws Exception
 	{
 		val app = StartGB.of(cmd);
 		app.startService();
