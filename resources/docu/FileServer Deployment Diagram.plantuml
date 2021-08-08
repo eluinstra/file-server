@@ -1,18 +1,17 @@
 @startuml
+right footer FileServer Deployment Diagram
 
+[Application]
 [FileServer]
 file "file-server.properties" as file.properties
-file keystore.p12
-file truststore.p12
 folder FileSystem
 database "FileServer\nDatabase" as Database
 cloud cloud
 
-FileServer -left-> file.properties
-FileServer -up-> truststore.p12
-FileServer -up-> keystore.p12
-FileServer -right-> cloud
-FileServer --> FileSystem
-FileServer --> Database
+Application -right-> FileServer : SOAP/HTTPS
+FileServer -up-> file.properties
+FileServer -right-> cloud : HTTPS
+FileServer --> FileSystem : FILE
+FileServer --> Database : JDBC
 
 @enduml
