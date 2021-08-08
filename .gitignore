@@ -17,6 +17,9 @@ hooks
 dependency-reduced-pom.xml
 /hsqldb
 /files
+/.apt_generated/
+/.apt_generated_tests/
+/.factorypath
 
 # IntelliJ IDEA
 .idea
