@@ -1,0 +1,124 @@
+openapi: '3.0.2'
+info:
+  title: File Server
+  version: '1.0'
+servers:
+  - url: http://localhost:8080/service/rest/v1
+  - url: https://localhost:8443/service/rest/v1
+
+components:
+  schemas:
+    Error:
+      type: string
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        certificate:
+          type: string
+          format: byte
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        certificate:
+          type: string
+          format: byte
+paths:
+  /users:
+    get:
+      description: Returns a list of all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserInfo'
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      description: Creates a new user
+      operationId: createUser
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: OK
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{id}:
+    get:
+      description: Returns a list of all users
+      operationId: getUser
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      description: Updates the user
+      operationId: updateUser
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: OK
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Deletes the user
+      operationId: deleteUser
+      responses:
+        '200':
+          description: OK
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+    parameters:
+      - name: id
+        in: path
+        description: userId
+        required: true
+        schema:
+          type: number
+
+
