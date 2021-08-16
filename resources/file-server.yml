@@ -10,6 +10,11 @@ components:
   schemas:
     Error:
       type: string
+    ExternalDataReference:
+      type: object
+      properties:
+        property:
+          type: integer
     User:
       type: object
       properties:
@@ -18,6 +23,48 @@ components:
         certificate:
           type: string
           format: byte
+      required:
+        - name
+        - certificate
+    FileInfo:
+      type: object
+      properties:
+        path:
+          type: string
+        name:
+          type: string
+        contentType:
+          type: string
+        md5Checksum:
+          type: string
+        sha256Checksum:
+          type: string
+        timestamp:
+          type: string
+          format: dateTime
+        startDate:
+          type: string
+          format: dateTime
+        endDate:
+          type: string
+          format: dateTime
+        userId:
+          type: number
+        length:
+          type: number
+        lastModified:
+          type: string
+          format: dateTime
+      required:
+        - path
+        - name
+        - contentType
+        - md5Checksum
+        - sha256Checksum
+        - timestamp
+        - userId
+        - length
+        - lastModified
     UserInfo:
       type: object
       properties:
@@ -28,9 +75,15 @@ components:
         certificate:
           type: string
           format: byte
+      required:
+        - id
+        - name
+        - certificate
 paths:
   /users:
     get:
+      tags:
+        - Users
       description: Returns a list of all users
       operationId: getUsers
       responses:
@@ -50,6 +103,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     post:
+      tags:
+        - Users
       description: Creates a new user
       operationId: createUser
       requestBody:
@@ -69,6 +124,8 @@ paths:
 
   /users/{id}:
     get:
+      tags:
+        - Users
       description: Returns a list of all users
       operationId: getUser
       responses:
@@ -85,6 +142,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     put:
+      tags:
+        - Users
       description: Updates the user
       operationId: updateUser
       requestBody:
@@ -102,6 +161,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     delete:
+      tags:
+        - Users
       description: Deletes the user
       operationId: deleteUser
       responses:
@@ -116,9 +177,160 @@ paths:
     parameters:
       - name: id
         in: path
-        description: userId
         required: true
         schema:
           type: number
-
-
+  /files/user/{userId}:
+    get:
+      tags:
+        - Files
+      description: Uploads file for user userId
+      operationId: uploadFile
+      requestBody:
+        content:
+          'multipart/form-data':
+            schema:
+              type: object
+              properties:
+                sha256Checksum:
+                  type: string
+                startDate:
+                  type: string
+                  format: dateTime
+                endDate:
+                  type: string
+                  format: dateTime
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: The file path
+          content:
+            'text/plain':
+              schema:
+                type: string
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: number
+  /files:
+    get:
+      tags:
+        - Files
+      description: Returns a list of all fileIds
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: string
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /files/{path}:
+    get:
+      tags:
+        - Files
+      description: Returns a file
+      operationId: downloadFile
+      responses:
+        '200':
+          description: The file
+          content:
+            'multipart/mixed':
+              schema:
+                type: object
+                properties:
+                  sha256Checksum:
+                    type: string
+                  file:
+                    type: string
+                    format: binary
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+  /files/{path}?force={force}:
+    delete:
+      tags:
+        - Files
+      description: Deletes a file
+      operationId: downloadFile
+      responses:
+        '200':
+          description: OK
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: force
+          in: query
+          required: false
+          schema:
+            type: boolean
+  /files/{path}/info:
+    get:
+      tags:
+        - Files
+      description: Returns file info
+      operationId: downloadFile
+      responses:
+        '200':
+          description: The fileInfp
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        default:
+          description: Error
+          content:
+            'text/html':
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+  /gb/externalDataReference/{paths}:
+    get:
+      description: Returns the externalDataReference for path path
+      responses:
+        '200':
+          description: The externalDataReference
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ExternalDataReference'
