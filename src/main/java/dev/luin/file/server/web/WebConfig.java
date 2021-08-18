@@ -15,6 +15,7 @@
  */
 package dev.luin.file.server.web;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
@@ -35,6 +36,7 @@ import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
+import org.apache.cxf.jaxrs.openapi.OpenApiFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -101,6 +103,7 @@ public class WebConfig
 		sf.setBus(springBus());
 		sf.setAddress("/rest/v1");
 		sf.setProvider(createJacksonJsonProvider());
+		sf.setFeatures(Arrays.asList(new OpenApiFeature()));
 		registerResources(sf);
 		registerBindingFactory(sf);
 		return sf.create();
