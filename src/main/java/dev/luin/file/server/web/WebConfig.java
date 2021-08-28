@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.soap.SOAPBinding;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
+import org.apache.cxf.Bus;
 import org.apache.cxf.binding.BindingFactoryManager;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
@@ -46,9 +48,6 @@ import dev.luin.file.server.core.service.file.FileService;
 import dev.luin.file.server.core.service.file.FileServiceImpl;
 import dev.luin.file.server.core.service.user.UserService;
 import dev.luin.file.server.core.service.user.UserServiceImpl;
-import io.vavr.Tuple;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.Map;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -80,9 +79,14 @@ public class WebConfig
 	public SpringBus springBus()
 	{
 		val result = new SpringBus();
-		val f = new LoggingFeature();
-		f.setPrettyLogging(true);
-		result.setFeatures(Collections.singletonList(f));
+		result.setFeatures(Collections.singletonList(createLoggingFeature()));
+		return result;
+	}
+
+	private LoggingFeature createLoggingFeature()
+	{
+		val result = new LoggingFeature();
+		result.setPrettyLogging(true);
 		return result;
 	}
 
@@ -97,15 +101,26 @@ public class WebConfig
 	}
 
 	@Bean
-	public Server createJAXRSServer()
+	public Server createUserJAXRSServer()
+	{
+		return createJAXRSServer(UserServiceImpl.class,userService,"/users");
+	}
+
+	@Bean
+	public Server createFileJAXRSServer()
+	{
+		return createJAXRSServer(FileServiceImpl.class,fileService,"/files");
+	}
+
+	protected Server createJAXRSServer(Class<?> resourceClass, Object resourceObject, String path)
 	{
 		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(springBus());
-		sf.setAddress("/rest/v1");
+		sf.setAddress("/rest/v1" + path);
 		sf.setProvider(createJacksonJsonProvider());
-		sf.setFeatures(Arrays.asList(new OpenApiFeature()));
-		registerResources(sf);
-		registerBindingFactory(sf);
+		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
+		createResource(sf,resourceClass,resourceObject);
+		registerBindingFactory(sf.getBus());
 		return sf.create();
 	}
 
@@ -116,38 +131,36 @@ public class WebConfig
 		return result;
 	}
 
-	protected ObjectMapper createObjectMapper() {
+	protected ObjectMapper createObjectMapper()
+	{
 		val result = new ObjectMapper();
 		result.registerModule(new JavaTimeModule());
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new SimpleModule());
 		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
+		result.setSerializationInclusion(Include.NON_NULL);
 		return result;
 	}
 
-	protected void registerResources(final JAXRSServerFactoryBean sf)
+	protected OpenApiFeature createOpenApiFeature()
 	{
-		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
-		getResourceClasses().forEach((resourceClass,resourceObject) -> createResourceProvider(sf, resourceClass, resourceObject));
-	}
-
-	protected Map<Class<?>,Object> getResourceClasses()
-	{
-		val result = HashMap.<Class<?>,Object>ofEntries(
-			Tuple.of(UserServiceImpl.class, userService),
-			Tuple.of(FileServiceImpl.class, fileService));
+		val result = new OpenApiFeature();
+		result.setUseContextBasedConfig(true);
+		result.setScan(false);
+		result.setSupportSwaggerUi(false);
 		return result;
 	}
 
-	protected void createResourceProvider(JAXRSServerFactoryBean sf, Class<?> resourceClass, Object resourceObject)
+	protected void createResource(final JAXRSServerFactoryBean sf, Class<?> resourceClass, Object resourceObject)
 	{
-		sf.setResourceProvider(resourceClass, new SingletonResourceProvider(resourceObject));
+		sf.setResourceClasses(resourceClass);
+		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
 	}
 
-	protected void registerBindingFactory(final JAXRSServerFactoryBean sf)
+	protected void registerBindingFactory(final Bus bus)
 	{
-		val manager = sf.getBus().getExtension(BindingFactoryManager.class);
-		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,new JAXRSBindingFactory(sf.getBus()));
+		val manager = bus.getExtension(BindingFactoryManager.class);
+		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,new JAXRSBindingFactory(bus));
 	}
 
 }
