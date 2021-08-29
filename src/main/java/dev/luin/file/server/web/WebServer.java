@@ -1,7 +1,21 @@
+/**
+ * Copyright 2020 E.Luinstra
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package dev.luin.file.server.web;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -88,7 +102,7 @@ public class WebServer implements Config, SystemInterface
 		return options;
 	}
 
-	public void init(Server server) throws MalformedURLException, IOException
+	public void init(Server server) throws IOException
 	{
 		val connector = isSSLEnabled()
 				? createHttpsConnector(cmd,server,createSslContextFactory())
@@ -114,7 +128,7 @@ public class WebServer implements Config, SystemInterface
 		return cmd.getOptionValue(Option.PATH.name) == null ? DefaultValue.PATH.value : cmd.getOptionValue(Option.PATH.name);
 	}
 
-	private SslContextFactory createSslContextFactory() throws MalformedURLException, IOException
+	private SslContextFactory createSslContextFactory() throws IOException
 	{
 		val result = new SslContextFactory.Server();
 		addKeyStore(result);
@@ -124,7 +138,7 @@ public class WebServer implements Config, SystemInterface
 		return result;
 	}
 
-	private void addKeyStore(SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	private void addKeyStore(SslContextFactory sslContextFactory) throws IOException
 	{
 		val keyStoreType = cmd.getOptionValue(Option.KEY_STORE_TYPE.name, DefaultValue.KEYSTORE_TYPE.value);
 		val keyStorePath = cmd.getOptionValue(Option.KEY_STORE_PATH.name,DefaultValue.KEYSTORE_FILE.value);
@@ -133,10 +147,10 @@ public class WebServer implements Config, SystemInterface
 		if (keyStore != null && keyStore.exists())
 		{
 			println("Using keyStore " + keyStore.getURI());
-			String protocols = cmd.getOptionValue(Option.PROTOCOLS.name);
+			val protocols = cmd.getOptionValue(Option.PROTOCOLS.name);
 			if (!StringUtils.isEmpty(protocols))
 				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
-			String cipherSuites = cmd.getOptionValue(Option.CIPHER_SUITES.name);
+			val cipherSuites = cmd.getOptionValue(Option.CIPHER_SUITES.name);
 			if (!StringUtils.isEmpty(cipherSuites))
 				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
 			sslContextFactory.setKeyStoreType(keyStoreType);
@@ -150,7 +164,7 @@ public class WebServer implements Config, SystemInterface
 		}
 	}
 
-	private void addTrustStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(SslContextFactory.Server sslContextFactory) throws IOException
 	{
 		val trustStoreType = cmd.getOptionValue(Option.TRUST_STORE_TYPE.name,DefaultValue.KEYSTORE_TYPE.value);
 		val trustStorePath = cmd.getOptionValue(Option.TRUST_STORE_PATH.name);

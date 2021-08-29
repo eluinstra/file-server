@@ -1,7 +1,21 @@
+/**
+ * Copyright 2020 E.Luinstra
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package dev.luin.file.server.file;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.EnumSet;
 import java.util.Properties;
 
@@ -59,7 +73,7 @@ public class FileServer implements Config, SystemInterface
 	private static final String TRUE = "true";
 	Properties properties;
 
-	public void init(Server server) throws MalformedURLException, IOException
+	public void init(Server server) throws IOException
 	{
 		val connector = TRUE.equals(properties.getProperty(ServerProperties.SERVER_SSL.name))
 				? createFileServerHttpsConnector(server,createFileServerSslContextFactory())
@@ -68,7 +82,7 @@ public class FileServer implements Config, SystemInterface
 		initConnectionLimit(server,connector);
 	}
 
-	private SslContextFactory createFileServerSslContextFactory() throws MalformedURLException, IOException
+	private SslContextFactory createFileServerSslContextFactory() throws IOException
 	{
 		val result = new SslContextFactory.Server();
 		addKeyStore(result);
@@ -114,7 +128,7 @@ public class FileServer implements Config, SystemInterface
 		return result;
 	}
 
-	private void addKeyStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addKeyStore(SslContextFactory.Server sslContextFactory) throws IOException
 	{
 		val keyStore = getResource(properties.getProperty(ServerProperties.KEYSTORE_PATH.name));
 		if (keyStore != null && keyStore.exists())
@@ -134,7 +148,7 @@ public class FileServer implements Config, SystemInterface
 		}
 	}
 
-	private void addFileServerTrustStore(SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addFileServerTrustStore(SslContextFactory.Server sslContextFactory) throws IOException
 	{
 		val trustStore = getResource(properties.getProperty(ServerProperties.TRUSTSTORE_PATH.name));
 		if (trustStore != null && trustStore.exists())

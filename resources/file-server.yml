@@ -203,6 +203,8 @@ paths:
                 file:
                   type: string
                   format: binary
+              required:
+                - "file"
       responses:
         '200':
           description: The file path
@@ -252,7 +254,7 @@ paths:
         '200':
           description: The file
           content:
-            'multipart/mixed':
+            'multipart/form-data':
               schema:
                 type: object
                 properties:
@@ -261,6 +263,9 @@ paths:
                   file:
                     type: string
                     format: binary
+                required:
+                  - "file"
+                  - "sha256Checksum"
         default:
           description: Error
           content:

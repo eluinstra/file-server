@@ -15,10 +15,14 @@
  */
 package dev.luin.file.server.web;
 
-import java.net.MalformedURLException;
+import static io.vavr.API.For;
+
 import java.net.URL;
 import java.util.Scanner;
 
+import io.vavr.Function1;
+import io.vavr.control.Option;
+import io.vavr.control.Try;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -32,34 +36,37 @@ public class JdbcURL
 	Integer port;
 	String database;
 
-	public static JdbcURL of(@NonNull final String jdbcURL) throws MalformedURLException
+	public static JdbcURL of(@NonNull final String jdbcURL)
 	{
 		try (val scanner = new Scanner(jdbcURL))
 		{
-			val protocol = scanner.findInLine("(://|@|:@//)");
-			if (protocol != null)
+			val lineScanner = createLineScanner(scanner);
+			return For(
+				lineScanner.apply("(://|@|:@//)"),
+				lineScanner.apply("[^/:]+(:\\d+){0,1}"),
+				lineScanner.apply("(/|:|;databaseName=)"),
+				lineScanner.apply("[^;]*")
+			).yield((protocol,urlString,databaseNameDeclaration,database) ->
 			{
-				val urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
-				if (urlString != null)
-				{
-					val databaseNameDeclaration = scanner.findInLine("(/|:|;databaseName=)");
-					if (databaseNameDeclaration != null)
-					{
-						val database = scanner.findInLine("[^;]*");
-						if (database != null)
-						{
-							val url = new URL("http://" + urlString);
-							return JdbcURL.builder()
-								.host(url.getHost())
-								.port(url.getPort() == -1 ? null : url.getPort())
-								.database(database)
-								.build();
-						}
-					}
-				}
-			}
-			throw new MalformedURLException("Unable to parse JDBC URL " + jdbcURL);
+				val url = toUrl(urlString).getOrElseThrow(e -> new IllegalStateException(e));
+				return JdbcURL.builder()
+						.host(url.getHost())
+						.port(url.getPort() == -1 ? null : url.getPort())
+						.database(database)
+						.build();
+			})
+			.getOrElseThrow(() -> new IllegalStateException("Unable to parse JDBC URL " + jdbcURL));
 		}
+	}
+
+	private static Try<URL> toUrl(String urlString)
+	{
+		return Try.of(() -> new URL("http://" + urlString));
+	}
+
+	private static Function1<String,Option<String>> createLineScanner(Scanner scanner)
+	{
+		return line -> Option.of(scanner.findInLine(line));
 	}
 
 }

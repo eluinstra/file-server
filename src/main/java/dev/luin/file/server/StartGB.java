@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.server.Server;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -47,7 +46,7 @@ public class StartGB extends Start
 		app.startService();
 	}
 
-	public static Start of(CommandLine cmd) throws ParseException, IOException
+	public static Start of(CommandLine cmd) throws IOException
 	{
 		val properties = getProperties();
 		val server = new Server();
