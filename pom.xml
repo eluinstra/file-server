@@ -24,7 +24,7 @@
 	<groupId>dev.luin.file.server</groupId>
 	<artifactId>file-server</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0-M4</version>
+	<version>1.0.0</version>
 	<name>FileServer</name>
 	<description>FileServer for secure upload and download</description>
 	<url>git@github.com:eluinstra/file-server.git</url>
@@ -203,12 +203,12 @@
 		<dependency>
 			<groupId>dev.luin.file.server</groupId>
 			<artifactId>file-server-core</artifactId>
-			<version>1.0.0-M4</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.luin.digikoppeling.gb</groupId>
 			<artifactId>gb-server</artifactId>
-			<version>1.0.0-M4</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
@@ -240,7 +240,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.3.1</version>
+			<version>42.3.3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
