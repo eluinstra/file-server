@@ -46,7 +46,7 @@
 		<jdk.version>1.8</jdk.version>
 		<junit.jupiter.version>5.8.2</junit.jupiter.version>
 		<jetty.version>9.4.44.v20210927</jetty.version>
-		<spring.version>5.3.15</spring.version>
+		<spring.version>6.0.0</spring.version>
 		<cxf.version>3.5.0</cxf.version>
 		<log4j.version>2.17.1</log4j.version>
 		<checkstyle.config.location>${basedir}/resources/reporting/checkstyle.xml</checkstyle.config.location>
