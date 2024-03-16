@@ -17,12 +17,11 @@ package dev.luin.file.server.web;
 
 import static io.vavr.API.For;
 
-import java.net.URL;
-import java.util.Scanner;
-
 import io.vavr.Function1;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import java.net.URL;
+import java.util.Scanner;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -42,20 +41,14 @@ public class JdbcURL
 		{
 			val lineScanner = createLineScanner(scanner);
 			return For(
-				lineScanner.apply("(://|@|:@//)"),
-				lineScanner.apply("[^/:]+(:\\d+){0,1}"),
-				lineScanner.apply("(/|:|;databaseName=)"),
-				lineScanner.apply("[^;]*")
-			).yield((protocol,urlString,databaseNameDeclaration,database) ->
-			{
-				val url = toUrl(urlString).getOrElseThrow(e -> new IllegalStateException(e));
-				return JdbcURL.builder()
-						.host(url.getHost())
-						.port(url.getPort() == -1 ? null : url.getPort())
-						.database(database)
-						.build();
-			})
-			.getOrElseThrow(() -> new IllegalStateException("Unable to parse JDBC URL " + jdbcURL));
+					lineScanner.apply("(://|@|:@//)"),
+					lineScanner.apply("[^/:]+(:\\d+){0,1}"),
+					lineScanner.apply("(/|:|;databaseName=)"),
+					lineScanner.apply("[^;]*")).yield((protocol, urlString, databaseNameDeclaration, database) ->
+					{
+						val url = toUrl(urlString).getOrElseThrow(e -> new IllegalStateException(e));
+						return JdbcURL.builder().host(url.getHost()).port(url.getPort() == -1 ? null : url.getPort()).database(database).build();
+					}).getOrElseThrow(() -> new IllegalStateException("Unable to parse JDBC URL " + jdbcURL));
 		}
 	}
 
@@ -64,7 +57,7 @@ public class JdbcURL
 		return Try.of(() -> new URL("http://" + urlString));
 	}
 
-	private static Function1<String,Option<String>> createLineScanner(Scanner scanner)
+	private static Function1<String, Option<String>> createLineScanner(Scanner scanner)
 	{
 		return line -> Option.of(scanner.findInLine(line));
 	}

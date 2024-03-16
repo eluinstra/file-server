@@ -15,6 +15,12 @@
  */
 package dev.luin.file.server.web;
 
+import dev.luin.file.server.Config;
+import dev.luin.file.server.SystemInterface;
+import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
+import dev.luin.file.server.core.server.servlet.ClientCertificateAuthenticationFilter;
+import dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter;
+import jakarta.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -22,9 +28,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-
-import javax.servlet.DispatcherType;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -43,17 +51,6 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
 import org.springframework.web.context.ContextLoaderListener;
-
-import dev.luin.file.server.Config;
-import dev.luin.file.server.SystemInterface;
-import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
-import dev.luin.file.server.core.server.servlet.ClientCertificateAuthenticationFilter;
-import dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -91,19 +88,19 @@ public class WebAuthentication implements Config, SystemInterface
 
 	public static Options addOptions(Options options)
 	{
-		options.addOption(Option.CLIENT_CERTIFICATE_HEADER.name,true,"set client certificate header [default: " + NONE + "]");
-		options.addOption(Option.AUTHENTICATION.name,false,"enable basic | client certificate authentication");
-		options.addOption(Option.CLIENT_TRUST_STORE_TYPE.name,true,"set client truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
-		options.addOption(Option.CLIENT_TRUST_STORE_PATH.name,true,"set client truststore path [default: " + NONE + "]");
-		options.addOption(Option.CLIENT_TRUST_STORE_PASSWORD.name,true,"set client truststore password [default: " + NONE + "]");
+		options.addOption(Option.CLIENT_CERTIFICATE_HEADER.name, true, "set client certificate header [default: " + NONE + "]");
+		options.addOption(Option.AUTHENTICATION.name, false, "enable basic | client certificate authentication");
+		options.addOption(Option.CLIENT_TRUST_STORE_TYPE.name, true, "set client truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
+		options.addOption(Option.CLIENT_TRUST_STORE_PATH.name, true, "set client truststore path [default: " + NONE + "]");
+		options.addOption(Option.CLIENT_TRUST_STORE_PASSWORD.name, true, "set client truststore password [default: " + NONE + "]");
 		return options;
 	}
-	
+
 	public Handler createContextHandler(ContextLoaderListener contextLoaderListener) throws NoSuchAlgorithmException, IOException
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@" + webServer.getWebConnectorName()});
-		result.setInitParameter("configuration","deployment");
+		result.setVirtualHosts(new String[]{"@" + webServer.getWebConnectorName()});
+		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(webServer.getPath(cmd));
 		if (cmd.hasOption(Option.AUTHENTICATION.name))
 		{
@@ -119,11 +116,11 @@ public class WebAuthentication implements Config, SystemInterface
 			}
 			else if (webServer.isSSLEnabled() && webServer.isClientAuthenticationEnabled())
 			{
-				result.addFilter(createClientCertificateManagerFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+				result.addFilter(createClientCertificateManagerFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 			}
 		}
-		result.addServlet(CXFServlet.class,webServer.getSoapPath() + "/*");
+		result.addServlet(CXFServlet.class, webServer.getSoapPath() + "/*");
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
@@ -131,19 +128,15 @@ public class WebAuthentication implements Config, SystemInterface
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
 	{
-		val username = textIO.newStringInputReader()
-				.withDefaultValue("admin")
-				.read("enter username");
+		val username = textIO.newStringInputReader().withDefaultValue("admin").read("enter username");
 		val password = readPassword();
 		println("Writing to file: " + file.getAbsoluteFile());
-		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
+		FileUtils.writeStringToFile(file, username + ": " + password + ",user", Charset.defaultCharset(), false);
 	}
 
 	private String readPassword() throws IOException, NoSuchAlgorithmException
 	{
-		val reader = textIO.newStringInputReader()
-				.withMinLength(8)
-				.withInputMasking(true);
+		val reader = textIO.newStringInputReader().withMinLength(8).withInputMasking(true);
 		while (true)
 		{
 			val result = toMD5(reader.read("enter password"));
@@ -154,7 +147,7 @@ public class WebAuthentication implements Config, SystemInterface
 				println("Passwords don't match! Try again.");
 		}
 	}
-	
+
 	private String toMD5(String s)
 	{
 		return "MD5:" + DigestUtils.md5Hex(s);
@@ -167,7 +160,7 @@ public class WebAuthentication implements Config, SystemInterface
 		val mapping = createSecurityConstraintMapping(constraint);
 		result.setConstraintMappings(Collections.singletonList(mapping));
 		result.setAuthenticator(new BasicAuthenticator());
-		result.setLoginService(new HashLoginService(REALM,REALM_FILE));
+		result.setLoginService(new HashLoginService(REALM, REALM_FILE));
 		return result;
 	}
 
@@ -176,7 +169,7 @@ public class WebAuthentication implements Config, SystemInterface
 		val result = new Constraint();
 		result.setName("auth");
 		result.setAuthenticate(true);
-		result.setRoles(new String[]{"user","admin"});
+		result.setRoles(new String[]{"user", "admin"});
 		return result;
 	}
 
@@ -191,33 +184,33 @@ public class WebAuthentication implements Config, SystemInterface
 	private ErrorPageErrorHandler createErrorHandler()
 	{
 		val result = new ErrorPageErrorHandler();
-		val errorPages = new HashMap<String,String>();
-		errorPages.put("404","/404");
+		val errorPages = new HashMap<String, String>();
+		errorPages.put("404", "/404");
 		result.setErrorPages(errorPages);
 		return result;
 	}
 
 	protected FilterHolder createClientCertificateManagerFilterHolder(CommandLine cmd)
 	{
-		val result = new FilterHolder(ClientCertificateManagerFilter.class); 
-		result.setInitParameter("x509CertificateHeader",cmd.getOptionValue(Option.CLIENT_CERTIFICATE_HEADER.name));
+		val result = new FilterHolder(ClientCertificateManagerFilter.class);
+		result.setInitParameter("x509CertificateHeader", cmd.getOptionValue(Option.CLIENT_CERTIFICATE_HEADER.name));
 		return result;
 	}
 
 	protected FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws IOException
 	{
 		println("Configuring Web Server client certificate authentication:");
-		val result = new FilterHolder(ClientCertificateAuthenticationFilter.class); 
-		val clientTrustStoreType = cmd.getOptionValue(Option.CLIENT_TRUST_STORE_TYPE.name,DefaultValue.KEYSTORE_TYPE.value);
+		val result = new FilterHolder(ClientCertificateAuthenticationFilter.class);
+		val clientTrustStoreType = cmd.getOptionValue(Option.CLIENT_TRUST_STORE_TYPE.name, DefaultValue.KEYSTORE_TYPE.value);
 		val clientTrustStorePath = cmd.getOptionValue(Option.CLIENT_TRUST_STORE_PATH.name);
 		val clientTrustStorePassword = cmd.getOptionValue(Option.CLIENT_TRUST_STORE_PASSWORD.name);
 		val trustStore = getResource(clientTrustStorePath);
 		println("Using clientTrustStore " + trustStore.getURI());
 		if (trustStore.exists())
 		{
-			result.setInitParameter("trustStoreType",clientTrustStoreType);
-			result.setInitParameter("trustStorePath",clientTrustStorePath);
-			result.setInitParameter("trustStorePassword",clientTrustStorePassword);
+			result.setInitParameter("trustStoreType", clientTrustStoreType);
+			result.setInitParameter("trustStorePath", clientTrustStorePath);
+			result.setInitParameter("trustStorePassword", clientTrustStorePassword);
 			return result;
 		}
 		else

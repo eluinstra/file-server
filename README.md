@@ -1,13 +1,14 @@
 # Secure File Server
-With the Secure FileServer users can up and download files using their SSL client certificates for authentication. The FileServer is managed through a SOAP interface. Files can be downloaded over HTTPS using HTTP GET (Ranges are supported). Files can be uploaded using the tus protocol. The FileServer can also be used for Grote Berichten file transfer.  
+
+With the Secure FileServer users can up and download files using their SSL client certificates for authentication. The FileServer is managed through a SOAP interface. Files can be downloaded over HTTPS using HTTP GET (Ranges are supported). Files can be uploaded using the tus protocol. The FileServer can also be used for Grote Berichten file transfer.
 
 ## Overview
-   
+
 ### Steps to configure a user and offer a file to download
 
-1. create a user with its SSL clientCertificate on the FileServer using the SOAP action createUser from the UserService  
-2. upload a file for the created user to the FileServer using the SOAP action uploadFile from the FileService and receive the path to the download file  
-3. the user can download the file from the FileServer in a browser using the path and is authenticated with its SSL certificate. Therefore the user must have its SSL keystore installed in the browser   
+1. create a user with its SSL clientCertificate on the FileServer using the SOAP action createUser from the UserService
+2. upload a file for the created user to the FileServer using the SOAP action uploadFile from the FileService and receive the path to the download file
+3. the user can download the file from the FileServer in a browser using the path and is authenticated with its SSL certificate. Therefore the user must have its SSL keystore installed in the browser
 4. Optional: download the external-data-reference for Grote Berichten file transfer  
    Note: The external-data-reference contains the full download url to the file
 
@@ -66,20 +67,24 @@ java -cp file-client-1.0.0.jar dev.luin.file.client.StartGB -hsqldb -port 8000
 2. upload file `Lorem Ipsum.txt` for user `user` to the FileServer  
    run in SoapUI `file-server -> FileServiceSoapBinding -> uploadFile -> Upload Lorem Ipsum.txt`  
    The response contains the `path` of the file download in `xpath://Envelope/Header/Body/uploadFileResponse/path`
+
 3. download Grote Berichten external-data-reference  
    run in SoapUI using `path` from step 2 in `file-server -> GBServiceSoapBinding -> getExternalDataReference -> Request 1`
    The response contains the `URL` of the file download in `xpath://Envelope/Header/Body/getExternalDataReferenceResponse/external-data-reference/data-reference/transport/location/senderUrl`
 
 4. download the file `Lorem Ipsum.txt` from the FileServer using the FileClient
-   run in SoapUI using `URL` from step 3 in `file-client -> FileServiceSoapBinding -> downloadFile -> Request 1`  
+   run in SoapUI using `URL` from step 3 in `file-client -> FileServiceSoapBinding -> downloadFile -> Request 1`
+
 5. download the file `Lorem Ipsum.txt` from the FileClient
-   run in SoapUI `file-client -> FileServiceSoapBinding -> getFile -> Request 1`  
+   run in SoapUI `file-client -> FileServiceSoapBinding -> getFile -> Request 1`
 
 6. upload the file `Mauris nisl.txt` to the FileServer using the FileClient
-   run in SoapUI `file-client -> FileServiceSoapBinding -> uploadFile -> Upload Mauris nisl.txt`  
+   run in SoapUI `file-client -> FileServiceSoapBinding -> uploadFile -> Upload Mauris nisl.txt`
+
 7. download Grote Berichten external-data-reference  
    run in SoapUI `file-client -> GBServiceSoapBinding -> getExternalDataReference -> Request 1`
    The response contains the `URL` of the file download in `xpath://Envelope/Header/Body/getExternalDataReferenceResponse/external-data-reference/data-reference/transport/location/receiverUrl`
 
 8. download the file `Mauris nisl.txt` from the FileServer
-   run in SoapUI using the path portion from `URL` (so minus the base upload portion https://localhost:8443/files/upload) from step 7 as `path` in `file-server -> FileServiceSoapBinding -> downloadFile -> Request 1`  
+   run in SoapUI using the path portion from `URL` (so minus the base upload portion https://localhost:8443/files/upload) from step 7 as `path` in `file-server -> FileServiceSoapBinding -> downloadFile -> Request 1`
+

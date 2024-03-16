@@ -15,11 +15,9 @@
  */
 package dev.luin.file.server;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Writer;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.jetty.server.handler.ErrorHandler;
 
 public class CustomErrorHandler extends ErrorHandler

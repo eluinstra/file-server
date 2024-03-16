@@ -15,12 +15,22 @@
  */
 package dev.luin.file.server;
 
+import dev.luin.file.server.file.FileServer;
+import dev.luin.file.server.web.HealthServer;
+import dev.luin.file.server.web.HsqlDb;
+import dev.luin.file.server.web.Jmx;
+import dev.luin.file.server.web.WebAuthentication;
+import dev.luin.file.server.web.WebServer;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -35,19 +45,7 @@ import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import dev.luin.file.server.file.FileServer;
-import dev.luin.file.server.web.HealthServer;
-import dev.luin.file.server.web.HsqlDb;
-import dev.luin.file.server.web.Jmx;
-import dev.luin.file.server.web.WebAuthentication;
-import dev.luin.file.server.web.WebServer;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-
-@FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
 public class Start implements SystemInterface
 {
@@ -56,8 +54,7 @@ public class Start implements SystemInterface
 	@Getter
 	private enum Option
 	{
-		HELP("h"),
-		CONFIG_DIR("configDir");
+		HELP("h"), CONFIG_DIR("configDir");
 
 		String name;
 	}
@@ -80,7 +77,7 @@ public class Start implements SystemInterface
 	{
 		initLogger();
 		val options = createOptions();
-		val cmd = createCmd(args,options);
+		val cmd = createCmd(args, options);
 		if (showUsage(cmd))
 			printUsage(options);
 		else
@@ -106,13 +103,13 @@ public class Start implements SystemInterface
 
 	private static void addOptions(final Options options)
 	{
-		options.addOption(Option.HELP.name,false,"print this message");
-		options.addOption(Option.CONFIG_DIR.name,true,"set config directory [default: <startup_directory>]");
+		options.addOption(Option.HELP.name, false, "print this message");
+		options.addOption(Option.CONFIG_DIR.name, true, "set config directory [default: <startup_directory>]");
 	}
-	
+
 	protected static CommandLine createCmd(String[] args, final Options options) throws ParseException
 	{
-		return new DefaultParser().parse(options,args);
+		return new DefaultParser().parse(options, args);
 	}
 
 	protected static boolean showUsage(CommandLine cmd)
@@ -123,7 +120,7 @@ public class Start implements SystemInterface
 	protected static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp("Start",options,true);
+		formatter.printHelp("Start", options, true);
 	}
 
 	private static void startService(final CommandLine cmd) throws Exception
@@ -136,7 +133,7 @@ public class Start implements SystemInterface
 	{
 		val properties = getProperties();
 		val server = new Server();
-		return new Start(cmd,properties,server);
+		return new Start(cmd, properties, server);
 	}
 
 	private static Properties getProperties() throws IOException
@@ -153,8 +150,8 @@ public class Start implements SystemInterface
 
 	private void initConfig()
 	{
-		val configDir = cmd.getOptionValue(Option.CONFIG_DIR.name,DefaultValue.CONFIG_DIR.value);
-		setProperty("server.configDir",configDir);
+		val configDir = cmd.getOptionValue(Option.CONFIG_DIR.name, DefaultValue.CONFIG_DIR.value);
+		setProperty("server.configDir", configDir);
 		println("Using config directory: " + (StringUtils.isEmpty(configDir) ? "." : configDir));
 	}
 
@@ -168,9 +165,9 @@ public class Start implements SystemInterface
 		{
 			registerConfig(context);
 			val contextLoaderListener = new ContextLoaderListener(context);
-			val webServer = initWebServer(handlerCollection,contextLoaderListener);
-			initFileServer(handlerCollection,contextLoaderListener);
-			initHealthServer(handlerCollection,webServer);
+			val webServer = initWebServer(handlerCollection, contextLoaderListener);
+			initFileServer(handlerCollection, contextLoaderListener);
+			initHealthServer(handlerCollection, webServer);
 		}
 	}
 
@@ -188,12 +185,12 @@ public class Start implements SystemInterface
 
 	private void initHsqlDb() throws IOException, AclFormatException, URISyntaxException
 	{
-		new HsqlDb().startHSQLDB(cmd,properties);
+		new HsqlDb().startHSQLDB(cmd, properties);
 	}
 
 	private void initJmx() throws NumberFormatException, MalformedURLException
 	{
-		new Jmx().init(cmd,server);
+		new Jmx().init(cmd, server);
 	}
 
 	protected void registerConfig(AnnotationConfigWebApplicationContext context)
@@ -201,11 +198,12 @@ public class Start implements SystemInterface
 		context.register(AppConfig.class);
 	}
 
-	private WebServer initWebServer(final ContextHandlerCollection handlerCollection, final ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
+	private WebServer initWebServer(final ContextHandlerCollection handlerCollection, final ContextLoaderListener contextLoaderListener)
+			throws IOException, NoSuchAlgorithmException
 	{
 		WebServer webServer = new WebServer(cmd);
 		webServer.init(server);
-		handlerCollection.addHandler(new WebAuthentication(cmd,webServer).createContextHandler(contextLoaderListener));
+		handlerCollection.addHandler(new WebAuthentication(cmd, webServer).createContextHandler(contextLoaderListener));
 		return webServer;
 	}
 
@@ -220,7 +218,7 @@ public class Start implements SystemInterface
 	{
 		if (cmd.hasOption(HealthServer.getHealthOption()))
 		{
-			val health = new HealthServer(cmd,webServer);
+			val health = new HealthServer(cmd, webServer);
 			health.init(server);
 			handlerCollection.addHandler(health.createContextHandler());
 		}

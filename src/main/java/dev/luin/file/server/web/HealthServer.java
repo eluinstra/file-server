@@ -15,20 +15,19 @@
  */
 package dev.luin.file.server.web;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-
 import dev.luin.file.server.Config;
 import dev.luin.file.server.SystemInterface;
 import dev.luin.file.server.core.server.servlet.HealthServlet;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -39,8 +38,7 @@ public class HealthServer implements Config, SystemInterface
 	@Getter
 	private enum Option
 	{
-		HEALTH("health"),
-		HEALTH_PORT("healthPort");
+		HEALTH("health"), HEALTH_PORT("healthPort");
 
 		String name;
 	}
@@ -67,8 +65,8 @@ public class HealthServer implements Config, SystemInterface
 
 	public static Options addOptions(final Options options)
 	{
-		options.addOption(Option.HEALTH.name,false,"start health service");
-		options.addOption(Option.HEALTH_PORT.name,true,"set health service port [default: " + DefaultValue.HEALTH_PORT.value + "]");
+		options.addOption(Option.HEALTH.name, false, "start health service");
+		options.addOption(Option.HEALTH_PORT.name, true, "set health service port [default: " + DefaultValue.HEALTH_PORT.value + "]");
 		return options;
 	}
 
@@ -82,7 +80,7 @@ public class HealthServer implements Config, SystemInterface
 	{
 		val result = new ServerConnector(server);
 		result.setHost(webServer.getHost());
-		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.HEALTH_PORT.name,DefaultValue.HEALTH_PORT.value)));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.HEALTH_PORT.name, DefaultValue.HEALTH_PORT.value)));
 		result.setName(HEALTH_CONNECTOR_NAME);
 		println("Health service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + HEALTH_PATH);
 		return result;
@@ -91,10 +89,10 @@ public class HealthServer implements Config, SystemInterface
 	public ServletContextHandler createContextHandler()
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@" + HEALTH_CONNECTOR_NAME});
-		result.setInitParameter("configuration","deployment");
+		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
+		result.setInitParameter("configuration", "deployment");
 		result.setContextPath("/");
-		result.addServlet(HealthServlet.class,HEALTH_PATH + "/*");
+		result.addServlet(HealthServlet.class, HEALTH_PATH + "/*");
 		return result;
 	}
 

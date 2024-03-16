@@ -15,17 +15,15 @@
  */
 package dev.luin.file.server.web;
 
-import javax.xml.ws.Endpoint;
-
+import dev.luin.digikoppeling.gb.server.service.GBService;
+import dev.luin.digikoppeling.gb.server.service.GBServiceImpl;
+import jakarta.xml.ws.Endpoint;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.apache.cxf.endpoint.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import dev.luin.digikoppeling.gb.server.service.GBService;
-import dev.luin.digikoppeling.gb.server.service.GBServiceImpl;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -37,12 +35,12 @@ public class GBWebConfig extends WebConfig
 	@Bean
 	public Endpoint gbServiceEndpoint()
 	{
-		return publishEndpoint(gbService,"/gb","http://luin.dev/digikoppeling/gb/server/1.0","GBService","GBServicePort");
+		return publishEndpoint(gbService, "/gb", "http://luin.dev/digikoppeling/gb/server/1.0", "GBService", "GBServicePort");
 	}
 
 	@Bean
 	public Server createGBJAXRSServer()
 	{
-		return createJAXRSServer(GBServiceImpl.class,gbService,"/gb");
+		return createJAXRSServer(GBServiceImpl.class, gbService, "/gb");
 	}
 }

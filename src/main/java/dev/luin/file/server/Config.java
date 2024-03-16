@@ -16,10 +16,8 @@
 package dev.luin.file.server;
 
 import java.io.IOException;
-
-import org.eclipse.jetty.util.resource.Resource;
-
 import lombok.val;
+import org.eclipse.jetty.util.resource.Resource;
 
 public interface Config
 {

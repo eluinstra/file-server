@@ -17,29 +17,27 @@ package dev.luin.file.server;
 
 import java.io.IOException;
 import java.util.Properties;
-
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.eclipse.jetty.server.Server;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-
-@FieldDefaults(level=AccessLevel.PROTECTED, makeFinal=true)
+@FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 public class StartGB extends Start
 {
 	public static void main(String[] args) throws Exception
 	{
 		initLogger();
 		val options = createOptions();
-		val cmd = createCmd(args,options);
+		val cmd = createCmd(args, options);
 		if (showUsage(cmd))
 			printUsage(options);
 		else
 			startService(cmd);
 	}
-	
+
 	private static void startService(final CommandLine cmd) throws Exception
 	{
 		val app = StartGB.of(cmd);
@@ -50,7 +48,7 @@ public class StartGB extends Start
 	{
 		val properties = getProperties();
 		val server = new Server();
-		return new StartGB(cmd,properties,server);
+		return new StartGB(cmd, properties, server);
 	}
 
 	private static Properties getProperties() throws IOException
@@ -60,7 +58,7 @@ public class StartGB extends Start
 
 	private StartGB(CommandLine cmd, Properties properties, Server server)
 	{
-		super(cmd,properties,server);
+		super(cmd, properties, server);
 	}
 
 	@Override
