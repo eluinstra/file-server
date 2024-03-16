@@ -15,21 +15,25 @@
  */
 package dev.luin.file.server.web;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import javax.xml.namespace.QName;
-import javax.xml.ws.Endpoint;
-import javax.xml.ws.soap.SOAPBinding;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
+import dev.luin.file.server.core.service.file.FileService;
+import dev.luin.file.server.core.service.file.FileServiceImpl;
+import dev.luin.file.server.core.service.user.UserService;
+import dev.luin.file.server.core.service.user.UserServiceImpl;
+import jakarta.xml.ws.Endpoint;
+import jakarta.xml.ws.soap.SOAPBinding;
+import java.util.Arrays;
+import java.util.Collections;
+import javax.xml.namespace.QName;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.BindingFactoryManager;
 import org.apache.cxf.bus.spring.SpringBus;
@@ -44,14 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import dev.luin.file.server.core.service.file.FileService;
-import dev.luin.file.server.core.service.file.FileServiceImpl;
-import dev.luin.file.server.core.service.user.UserService;
-import dev.luin.file.server.core.service.user.UserServiceImpl;
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WebConfig
@@ -64,18 +60,18 @@ public class WebConfig
 	@Bean
 	public Endpoint userServiceEndpoint()
 	{
-		return publishEndpoint(userService,"/user","http://luin.dev/file/server/1.0","UserService","UserServicePort");
+		return publishEndpoint(userService, "/user", "http://luin.dev/file/server/1.0", "UserService", "UserServicePort");
 	}
 
 	@Bean
 	public Endpoint fileServiceEndpoint()
 	{
-		val result = publishEndpoint(fileService,"/file","http://luin.dev/file/server/1.0","FileService","FileServicePort");
+		val result = publishEndpoint(fileService, "/file", "http://luin.dev/file/server/1.0", "FileService", "FileServicePort");
 		((SOAPBinding)result.getBinding()).setMTOMEnabled(true);
 		return result;
 	}
 
-	@Bean(name="cxf")
+	@Bean(name = "cxf")
 	public SpringBus springBus()
 	{
 		val result = new SpringBus();
@@ -92,10 +88,10 @@ public class WebConfig
 
 	protected Endpoint publishEndpoint(Object service, String address, String namespaceUri, String serviceName, String endpointName)
 	{
-		val result = new EndpointImpl(springBus(),service);
+		val result = new EndpointImpl(springBus(), service);
 		result.setAddress(address);
-		result.setServiceName(new QName(namespaceUri,serviceName));
-		result.setEndpointName(new QName(namespaceUri,endpointName));
+		result.setServiceName(new QName(namespaceUri, serviceName));
+		result.setEndpointName(new QName(namespaceUri, endpointName));
 		result.publish();
 		return result;
 	}
@@ -103,13 +99,13 @@ public class WebConfig
 	@Bean
 	public Server createUserJAXRSServer()
 	{
-		return createJAXRSServer(UserServiceImpl.class,userService,"/users");
+		return createJAXRSServer(UserServiceImpl.class, userService, "/users");
 	}
 
 	@Bean
 	public Server createFileJAXRSServer()
 	{
-		return createJAXRSServer(FileServiceImpl.class,fileService,"/files");
+		return createJAXRSServer(FileServiceImpl.class, fileService, "/files");
 	}
 
 	protected Server createJAXRSServer(Class<?> resourceClass, Object resourceObject, String path)
@@ -119,7 +115,7 @@ public class WebConfig
 		sf.setAddress("/rest/v1" + path);
 		sf.setProvider(createJacksonJsonProvider());
 		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
-		createResource(sf,resourceClass,resourceObject);
+		createResource(sf, resourceClass, resourceObject);
 		registerBindingFactory(sf.getBus());
 		return sf.create();
 	}
@@ -137,7 +133,7 @@ public class WebConfig
 		result.registerModule(new JavaTimeModule());
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new SimpleModule());
-		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
+		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		result.setSerializationInclusion(Include.NON_NULL);
 		return result;
 	}
@@ -154,13 +150,13 @@ public class WebConfig
 	protected void createResource(final JAXRSServerFactoryBean sf, Class<?> resourceClass, Object resourceObject)
 	{
 		sf.setResourceClasses(resourceClass);
-		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
+		sf.setResourceProvider(resourceClass, new SingletonResourceProvider(resourceObject));
 	}
 
 	protected void registerBindingFactory(final Bus bus)
 	{
 		val manager = bus.getExtension(BindingFactoryManager.class);
-		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,new JAXRSBindingFactory(bus));
+		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID, new JAXRSBindingFactory(bus));
 	}
 
 }

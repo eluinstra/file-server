@@ -15,8 +15,15 @@
  */
 package dev.luin.file.server.web;
 
+import dev.luin.file.server.Config;
+import dev.luin.file.server.SystemInterface;
+import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
 import java.io.IOException;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
@@ -26,15 +33,6 @@ import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-
-import dev.luin.file.server.Config;
-import dev.luin.file.server.SystemInterface;
-import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -85,37 +83,35 @@ public class WebServer implements Config, SystemInterface
 
 	public static Options addOptions(Options options)
 	{
-		options.addOption(Option.HOST.name,true,"set host [default: " + DefaultValue.HOST.value + "]");
-		options.addOption(Option.PORT.name,true,"set port [default: <" + DefaultValue.PORT.value + "|" + DefaultValue.SSL_PORT.value + ">]");
-		options.addOption(Option.PATH.name,true,"set path [default: " + DefaultValue.PATH.value + "]");
-		options.addOption(Option.SSL.name,false,"enable SSL");
-		options.addOption(Option.PROTOCOLS.name,true,"set SSL Protocols [default: " + NONE + "]");
-		options.addOption(Option.CIPHER_SUITES.name,true,"set SSL CipherSuites [default: " + NONE + "]");
-		options.addOption(Option.KEY_STORE_TYPE.name,true,"set keystore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
-		options.addOption(Option.KEY_STORE_PATH.name,true,"set keystore path [default: " + DefaultValue.KEYSTORE_FILE.value + "]");
-		options.addOption(Option.KEY_STORE_PASSWORD.name,true,"set keystore password [default: " + DefaultValue.KEYSTORE_PASSWORD.value + "]");
-		options.addOption(Option.CLIENT_AUTHENTICATION.name,false,"enable SSL client authentication");
-		options.addOption(Option.TRUST_STORE_TYPE.name,true,"set truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
-		options.addOption(Option.TRUST_STORE_PATH.name,true,"set truststore path [default: " + NONE + "]");
-		options.addOption(Option.TRUST_STORE_PASSWORD.name,true,"set truststore password [default: " + NONE + "]");
-		options.addOption(Option.CONNECTION_LIMIT.name,true,"set connection limit [default: " + NONE + "]");
+		options.addOption(Option.HOST.name, true, "set host [default: " + DefaultValue.HOST.value + "]");
+		options.addOption(Option.PORT.name, true, "set port [default: <" + DefaultValue.PORT.value + "|" + DefaultValue.SSL_PORT.value + ">]");
+		options.addOption(Option.PATH.name, true, "set path [default: " + DefaultValue.PATH.value + "]");
+		options.addOption(Option.SSL.name, false, "enable SSL");
+		options.addOption(Option.PROTOCOLS.name, true, "set SSL Protocols [default: " + NONE + "]");
+		options.addOption(Option.CIPHER_SUITES.name, true, "set SSL CipherSuites [default: " + NONE + "]");
+		options.addOption(Option.KEY_STORE_TYPE.name, true, "set keystore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
+		options.addOption(Option.KEY_STORE_PATH.name, true, "set keystore path [default: " + DefaultValue.KEYSTORE_FILE.value + "]");
+		options.addOption(Option.KEY_STORE_PASSWORD.name, true, "set keystore password [default: " + DefaultValue.KEYSTORE_PASSWORD.value + "]");
+		options.addOption(Option.CLIENT_AUTHENTICATION.name, false, "enable SSL client authentication");
+		options.addOption(Option.TRUST_STORE_TYPE.name, true, "set truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
+		options.addOption(Option.TRUST_STORE_PATH.name, true, "set truststore path [default: " + NONE + "]");
+		options.addOption(Option.TRUST_STORE_PASSWORD.name, true, "set truststore password [default: " + NONE + "]");
+		options.addOption(Option.CONNECTION_LIMIT.name, true, "set connection limit [default: " + NONE + "]");
 		return options;
 	}
 
 	public void init(Server server) throws IOException
 	{
-		val connector = isSSLEnabled()
-				? createHttpsConnector(cmd,server,createSslContextFactory())
-				: createHttpConnector(cmd,server);
+		val connector = isSSLEnabled() ? createHttpsConnector(cmd, server, createSslContextFactory()) : createHttpConnector(cmd, server);
 		server.addConnector(connector);
-		initConnectionLimit(server,connector);
+		initConnectionLimit(server, connector);
 	}
 
-	private ServerConnector createHttpsConnector(CommandLine cmd, Server server, SslContextFactory sslContextFactory)
+	private ServerConnector createHttpsConnector(CommandLine cmd, Server server, SslContextFactory.Server sslContextFactory)
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server,sslContextFactory,new HttpConnectionFactory(httpConfig));
+		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.SSL_PORT.value : cmd.getOptionValue(Option.PORT.name)));
 		result.setName(WEB_CONNECTOR_NAME);
@@ -128,7 +124,7 @@ public class WebServer implements Config, SystemInterface
 		return cmd.getOptionValue(Option.PATH.name) == null ? DefaultValue.PATH.value : cmd.getOptionValue(Option.PATH.name);
 	}
 
-	private SslContextFactory createSslContextFactory() throws IOException
+	private SslContextFactory.Server createSslContextFactory() throws IOException
 	{
 		val result = new SslContextFactory.Server();
 		addKeyStore(result);
@@ -141,18 +137,18 @@ public class WebServer implements Config, SystemInterface
 	private void addKeyStore(SslContextFactory sslContextFactory) throws IOException
 	{
 		val keyStoreType = cmd.getOptionValue(Option.KEY_STORE_TYPE.name, DefaultValue.KEYSTORE_TYPE.value);
-		val keyStorePath = cmd.getOptionValue(Option.KEY_STORE_PATH.name,DefaultValue.KEYSTORE_FILE.value);
-		val keyStorePassword = cmd.getOptionValue(Option.KEY_STORE_PASSWORD.name,DefaultValue.KEYSTORE_PASSWORD.value);
+		val keyStorePath = cmd.getOptionValue(Option.KEY_STORE_PATH.name, DefaultValue.KEYSTORE_FILE.value);
+		val keyStorePassword = cmd.getOptionValue(Option.KEY_STORE_PASSWORD.name, DefaultValue.KEYSTORE_PASSWORD.value);
 		val keyStore = getResource(keyStorePath);
 		if (keyStore != null && keyStore.exists())
 		{
 			println("Using keyStore " + keyStore.getURI());
 			val protocols = cmd.getOptionValue(Option.PROTOCOLS.name);
 			if (!StringUtils.isEmpty(protocols))
-				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
+				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols, ',')));
 			val cipherSuites = cmd.getOptionValue(Option.CIPHER_SUITES.name);
 			if (!StringUtils.isEmpty(cipherSuites))
-				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
+				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites, ',')));
 			sslContextFactory.setKeyStoreType(keyStoreType);
 			sslContextFactory.setKeyStoreResource(keyStore);
 			sslContextFactory.setKeyStorePassword(keyStorePassword);
@@ -166,7 +162,7 @@ public class WebServer implements Config, SystemInterface
 
 	private void addTrustStore(SslContextFactory.Server sslContextFactory) throws IOException
 	{
-		val trustStoreType = cmd.getOptionValue(Option.TRUST_STORE_TYPE.name,DefaultValue.KEYSTORE_TYPE.value);
+		val trustStoreType = cmd.getOptionValue(Option.TRUST_STORE_TYPE.name, DefaultValue.KEYSTORE_TYPE.value);
 		val trustStorePath = cmd.getOptionValue(Option.TRUST_STORE_PATH.name);
 		val trustStorePassword = cmd.getOptionValue(Option.TRUST_STORE_PASSWORD.name);
 		val trustStore = getResource(trustStorePath);
@@ -189,7 +185,7 @@ public class WebServer implements Config, SystemInterface
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
+		val result = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.PORT.value : cmd.getOptionValue(Option.PORT.name)));
 		result.setName(WEB_CONNECTOR_NAME);
@@ -200,7 +196,7 @@ public class WebServer implements Config, SystemInterface
 	private void initConnectionLimit(Server server, final org.eclipse.jetty.server.ServerConnector connector)
 	{
 		if (cmd.hasOption(Option.CONNECTION_LIMIT.name))
-			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(Option.CONNECTION_LIMIT.name)),connector));
+			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(Option.CONNECTION_LIMIT.name)), connector));
 	}
 
 	public boolean isSSLEnabled()
@@ -225,6 +221,6 @@ public class WebServer implements Config, SystemInterface
 
 	public String getHost()
 	{
-		return cmd.getOptionValue(Option.HOST.name,DefaultValue.HOST.value);
+		return cmd.getOptionValue(Option.HOST.name, DefaultValue.HOST.value);
 	}
 }

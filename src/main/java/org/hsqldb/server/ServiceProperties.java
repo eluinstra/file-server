@@ -15,9 +15,8 @@
  */
 package org.hsqldb.server;
 
-import org.hsqldb.persist.HsqlProperties;
-
 import lombok.val;
+import org.hsqldb.persist.HsqlProperties;
 
 public class ServiceProperties extends ServerProperties
 {

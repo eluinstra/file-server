@@ -19,15 +19,13 @@ import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Properties;
 import java.util.stream.Collectors;
-
-import org.springframework.core.io.Resource;
-
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
+import org.springframework.core.io.Resource;
 
-@FieldDefaults(level=AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 public class PropertySourcesPlaceholderConfigurer extends org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 {
@@ -39,21 +37,32 @@ public class PropertySourcesPlaceholderConfigurer extends org.springframework.co
 		overridePropertiesFile = locations[locations.length - 1];
 		super.setLocations(locations);
 	}
-	
+
 	public Resource getOverridePropertiesFile()
 	{
 		return overridePropertiesFile;
 	}
-	
+
 	public Properties getProperties() throws IOException
 	{
 		val properties = mergeProperties();
 		val result = new Properties();
-		result.putAll(properties.entrySet().stream()
-				.map(e -> System.getProperty((String)e.getKey()) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getProperty((String)e.getKey())))
-				.map(e -> System.getenv((String)e.getKey()) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getenv((String)e.getKey())))
-				.map(e -> System.getenv(((String)e.getKey()).replaceAll("\\.","_")) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getenv(((String)e.getKey()).replaceAll("\\.","_"))))
-				.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue())));
+		result.putAll(
+				properties.entrySet()
+						.stream()
+						.map(
+								e -> System.getProperty((String)e.getKey()) == null
+										? e
+										: new AbstractMap.SimpleEntry<String, String>((String)e.getKey(), System.getProperty((String)e.getKey())))
+						.map(
+								e -> System.getenv((String)e.getKey()) == null
+										? e
+										: new AbstractMap.SimpleEntry<String, String>((String)e.getKey(), System.getenv((String)e.getKey())))
+						.map(
+								e -> System.getenv(((String)e.getKey()).replaceAll("\\.", "_")) == null
+										? e
+										: new AbstractMap.SimpleEntry<String, String>((String)e.getKey(), System.getenv(((String)e.getKey()).replaceAll("\\.", "_"))))
+						.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue())));
 		return result;
 	}
 }

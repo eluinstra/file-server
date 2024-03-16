@@ -15,25 +15,23 @@
  */
 package dev.luin.file.server.web;
 
+import dev.luin.file.server.SystemInterface;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Properties;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.Server;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServiceProperties;
-
-import dev.luin.file.server.SystemInterface;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -44,8 +42,7 @@ public class HsqlDb implements SystemInterface
 	@Getter
 	private enum Option
 	{
-		HSQLDB("hsqldb"),
-		HSQLDB_DIR("hsqldbDir");
+		HSQLDB("hsqldb"), HSQLDB_DIR("hsqldbDir");
 
 		String name;
 	}
@@ -62,8 +59,8 @@ public class HsqlDb implements SystemInterface
 
 	public static Options addOptions(Options options)
 	{
-		options.addOption(Option.HSQLDB.name,false,"start HSQLDB server");
-		options.addOption(Option.HSQLDB_DIR.name,true,"set HSQLDB location [default: " + DefaultValue.HSQLDB_DIR.value + "]");
+		options.addOption(Option.HSQLDB.name, false, "start HSQLDB server");
+		options.addOption(Option.HSQLDB_DIR.name, true, "set HSQLDB location [default: " + DefaultValue.HSQLDB_DIR.value + "]");
 		return options;
 	}
 
@@ -74,7 +71,7 @@ public class HsqlDb implements SystemInterface
 			val jdbcURL = getHsqlDbJdbcUrl(properties);
 			if (jdbcURL.isPresent())
 			{
-				val server = createHSQLDBServer(cmd,jdbcURL.get());
+				val server = createHSQLDBServer(cmd, jdbcURL.get());
 				println("Starting HSQLDB Server...");
 				server.start();
 			}
@@ -97,7 +94,7 @@ public class HsqlDb implements SystemInterface
 
 	private Server createHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
-		val options = createOptions(cmd,jdbcURL);
+		val options = createOptions(cmd, jdbcURL);
 		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]), "server");
 		val props = ServiceProperties.of(argProps);
 		return createServer(props);
@@ -107,7 +104,10 @@ public class HsqlDb implements SystemInterface
 	{
 		val result = new ArrayList<>();
 		result.add("-database.0");
-		result.add((cmd.hasOption(Option.HSQLDB_DIR.name) ? "file:" + cmd.getOptionValue(Option.HSQLDB_DIR.name) : "file:" + DefaultValue.HSQLDB_DIR.value) + "/" + jdbcURL.getDatabase());
+		result.add(
+				(cmd.hasOption(Option.HSQLDB_DIR.name) ? "file:" + cmd.getOptionValue(Option.HSQLDB_DIR.name) : "file:" + DefaultValue.HSQLDB_DIR.value)
+						+ "/"
+						+ jdbcURL.getDatabase());
 		result.add("-dbname.0");
 		result.add(jdbcURL.getDatabase());
 		if (jdbcURL.getPort() != null)
