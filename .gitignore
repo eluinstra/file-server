@@ -1,26 +1,20 @@
-# ignore hidden files/directories
-
-hooks
-.DS_Store
-*~
-\#*
-.#*
-*.jar
-*.log
-*.vgc
 *.svg
-/.settings
 /.classpath
-/.project
-/target
-/findbugs
-dependency-reduced-pom.xml
-/hsqldb
-/files
-/.apt_generated/
-/.apt_generated_tests/
 /.factorypath
+/.project
+/.settings
+/log4j2.xml
+/*.properties
+/target
+*.jar
+dependency-reduced-pom.xml
 
-# IntelliJ IDEA
+.vscode
+*.code-workspace
+
 .idea
 *.iml
+
+/files
+/hsqldb
+*.log
