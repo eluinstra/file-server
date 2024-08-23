@@ -31,7 +31,6 @@ import org.apache.commons.cli.Options;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.Server;
 import org.hsqldb.server.ServerAcl.AclFormatException;
-import org.hsqldb.server.ServiceProperties;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -95,8 +94,7 @@ public class HsqlDb implements SystemInterface
 	private Server createHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
 		val options = createOptions(cmd, jdbcURL);
-		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]), "server");
-		val props = ServiceProperties.of(argProps);
+		val props = HsqlProperties.argArrayToProps(options.toArray(new String[0]), "server");
 		return createServer(props);
 	}
 
@@ -118,7 +116,7 @@ public class HsqlDb implements SystemInterface
 		return result;
 	}
 
-	private Server createServer(final ServiceProperties props) throws IOException, AclFormatException
+	private Server createServer(final HsqlProperties props) throws IOException, AclFormatException
 	{
 		val result = new Server();
 		result.setProperties(props);
