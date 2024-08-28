@@ -2,11 +2,11 @@
 
 ### getUsers
 
-GET http://localhost:8080/service/rest/v1/users
+GET https://localhost:8080/service/rest/v1/users
 
 ### createUser
 
-POST http://localhost:8080/service/rest/v1/users
+POST https://localhost:8080/service/rest/v1/users
 Content-Type: application/json
 
 {
@@ -16,11 +16,11 @@ Content-Type: application/json
 
 ### getUser
 
-GET http://localhost:8080/service/rest/v1/users/0
+GET https://localhost:8080/service/rest/v1/users/0
 
 ### updateUser
 
-PUT http://localhost:8080/service/rest/v1/users/0
+PUT https://localhost:8080/service/rest/v1/users/0
 Content-Type: application/json
 
 {
@@ -30,13 +30,13 @@ Content-Type: application/json
 
 ### deleteUser
 
-DELETE http://localhost:8080/service/rest/v1/users/0
+DELETE https://localhost:8080/service/rest/v1/users/0
 
 ### Files
 
 ### uploadFile
 
-POST http://localhost:8080/service/rest/v1/files/user/0
+POST https://localhost:8080/service/rest/v1/files/user/0
 Content-Type: multipart/form-data; boundary=-=cTIBJ6SPK7J5=-
 
 ---=cTIBJ6SPK7J5=-
@@ -49,22 +49,22 @@ TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4gRXRp
 
 ### downloadFile
 
-GET http://localhost:8080/service/rest/v1/files/?
+GET https://localhost:8080/service/rest/v1/files/?
 
 ### getFiles
 
-GET http://localhost:8080/service/rest/v1/files
+GET https://localhost:8080/service/rest/v1/files
 
 ### getFileInfo
 
-GET http://localhost:8080/service/rest/v1/files/?/info
+GET https://localhost:8080/service/rest/v1/files/?/info
 
 ### deleteFile
 
-DELETE http://localhost:8080/service/rest/v1/files/?
+DELETE https://localhost:8080/service/rest/v1/files/?
 
 ### GB
 
 ### getExternalDataReference
 
-GET http://localhost:8080/service/rest/v1/gb/externalDataReference/?
+GET https://localhost:8080/service/rest/v1/gb/externalDataReference/?

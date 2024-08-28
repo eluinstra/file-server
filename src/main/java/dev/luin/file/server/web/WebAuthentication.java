@@ -114,7 +114,7 @@ public class WebAuthentication implements Config, SystemInterface
 					createRealmFile(file);
 				result.setSecurityHandler(getSecurityHandler());
 			}
-			else if (webServer.isSSLEnabled() && webServer.isClientAuthenticationEnabled())
+			else
 			{
 				result.addFilter(createClientCertificateManagerFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));

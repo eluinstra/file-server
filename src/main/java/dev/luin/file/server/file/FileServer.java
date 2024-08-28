@@ -51,9 +51,8 @@ public class FileServer implements Config, SystemInterface
 		SERVER_HOST("server.host"),
 		SERVER_PORT("server.port"),
 		SERVER_PATH("server.path"),
-		SERVER_SSL("server.ssl"),
-		SERVER_PROTOCOLS("server.protocols"),
-		SERVER_CIPHER_SUITES("server.cipherSuites"),
+		SERVER_PROTOCOLS("server.ssl.protocols"),
+		SERVER_CIPHER_SUITES("server.ssl.cipherSuites"),
 		KEYSTORE_TYPE("keystore.type"),
 		KEYSTORE_PATH("keystore.path"),
 		KEYSTORE_PASSWORD("keystore.password"),
@@ -67,14 +66,11 @@ public class FileServer implements Config, SystemInterface
 	}
 
 	private static final String SERVER_CONNECTOR_NAME = "server";
-	private static final String TRUE = "true";
 	Properties properties;
 
 	public void init(Server server) throws IOException
 	{
-		val connector = TRUE.equals(properties.getProperty(ServerProperties.SERVER_SSL.name))
-				? createFileServerHttpsConnector(server, createFileServerSslContextFactory())
-				: createFileServerHttpConnector(server);
+		val connector = createFileServerHttpsConnector(server, createFileServerSslContextFactory());
 		server.addConnector(connector);
 		initConnectionLimit(server, connector);
 	}
@@ -95,17 +91,6 @@ public class FileServer implements Config, SystemInterface
 		result.setName(SERVER_CONNECTOR_NAME);
 		println(
 				"File Server configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty(ServerProperties.SERVER_PATH.name));
-		return result;
-	}
-
-	private ServerConnector createFileServerHttpConnector(Server server)
-	{
-		val result = new ServerConnector(server);
-		result.setHost(properties.getProperty(ServerProperties.SERVER_HOST.name));
-		result.setPort(Integer.parseInt(properties.getProperty(ServerProperties.SERVER_PORT.name)));
-		result.setName(SERVER_CONNECTOR_NAME);
-		println(
-				"File Server configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty(ServerProperties.SERVER_PATH.name));
 		return result;
 	}
 

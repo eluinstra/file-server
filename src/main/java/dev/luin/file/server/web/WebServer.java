@@ -46,7 +46,6 @@ public class WebServer implements Config, SystemInterface
 		HOST("host"),
 		PORT("port"),
 		PATH("path"),
-		SSL("ssl"),
 		PROTOCOLS("protocols"),
 		CIPHER_SUITES("cipherSuites"),
 		KEY_STORE_TYPE("keyStoreType"),
@@ -68,8 +67,9 @@ public class WebServer implements Config, SystemInterface
 	{
 		HOST("0.0.0.0"),
 		PORT("8080"),
-		SSL_PORT("8443"),
 		PATH("/"),
+		PROTOCOLS("TLSv1.3,TLSv1.2"),
+		CIPHER_SUITES("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256"),
 		KEYSTORE_TYPE(KeyStoreType.PKCS12.name()),
 		KEYSTORE_FILE("dev/luin/file/server/core/keystore.p12"),
 		KEYSTORE_PASSWORD("password");
@@ -84,11 +84,10 @@ public class WebServer implements Config, SystemInterface
 	public static Options addOptions(Options options)
 	{
 		options.addOption(Option.HOST.name, true, "set host [default: " + DefaultValue.HOST.value + "]");
-		options.addOption(Option.PORT.name, true, "set port [default: <" + DefaultValue.PORT.value + "|" + DefaultValue.SSL_PORT.value + ">]");
+		options.addOption(Option.PORT.name, true, "set port [default: " + DefaultValue.PORT.value + "]");
 		options.addOption(Option.PATH.name, true, "set path [default: " + DefaultValue.PATH.value + "]");
-		options.addOption(Option.SSL.name, false, "enable SSL");
-		options.addOption(Option.PROTOCOLS.name, true, "set SSL Protocols [default: " + NONE + "]");
-		options.addOption(Option.CIPHER_SUITES.name, true, "set SSL CipherSuites [default: " + NONE + "]");
+		options.addOption(Option.PROTOCOLS.name, true, "set SSL Protocols [default: " + DefaultValue.PROTOCOLS.value + "]");
+		options.addOption(Option.CIPHER_SUITES.name, true, "set SSL CipherSuites [default: " + DefaultValue.CIPHER_SUITES.value + "]");
 		options.addOption(Option.KEY_STORE_TYPE.name, true, "set keystore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
 		options.addOption(Option.KEY_STORE_PATH.name, true, "set keystore path [default: " + DefaultValue.KEYSTORE_FILE.value + "]");
 		options.addOption(Option.KEY_STORE_PASSWORD.name, true, "set keystore password [default: " + DefaultValue.KEYSTORE_PASSWORD.value + "]");
@@ -102,7 +101,7 @@ public class WebServer implements Config, SystemInterface
 
 	public void init(Server server) throws IOException
 	{
-		val connector = isSSLEnabled() ? createHttpsConnector(cmd, server, createSslContextFactory()) : createHttpConnector(cmd, server);
+		val connector = createHttpsConnector(cmd, server, createSslContextFactory());
 		server.addConnector(connector);
 		initConnectionLimit(server, connector);
 	}
@@ -113,7 +112,7 @@ public class WebServer implements Config, SystemInterface
 		httpConfig.setSendServerVersion(false);
 		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
-		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.SSL_PORT.value : cmd.getOptionValue(Option.PORT.name)));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.PORT.value : cmd.getOptionValue(Option.PORT.name)));
 		result.setName(WEB_CONNECTOR_NAME);
 		println("SOAP Service configured on https://" + getHost(result.getHost()) + ":" + result.getPort() + SOAP_PATH);
 		return result;
@@ -130,7 +129,6 @@ public class WebServer implements Config, SystemInterface
 		addKeyStore(result);
 		if (cmd.hasOption(Option.CLIENT_AUTHENTICATION.name))
 			addTrustStore(result);
-		result.setExcludeCipherSuites();
 		return result;
 	}
 
@@ -144,10 +142,14 @@ public class WebServer implements Config, SystemInterface
 		{
 			println("Using keyStore " + keyStore.getURI());
 			val protocols = cmd.getOptionValue(Option.PROTOCOLS.name);
-			if (!StringUtils.isEmpty(protocols))
+			if (StringUtils.isEmpty(protocols))
+				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(DefaultValue.PROTOCOLS.value, ',')));
+			else
 				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols, ',')));
 			val cipherSuites = cmd.getOptionValue(Option.CIPHER_SUITES.name);
-			if (!StringUtils.isEmpty(cipherSuites))
+			if (StringUtils.isEmpty(cipherSuites))
+				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(DefaultValue.CIPHER_SUITES.value, ',')));
+			else
 				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites, ',')));
 			sslContextFactory.setKeyStoreType(keyStoreType);
 			sslContextFactory.setKeyStoreResource(keyStore);
@@ -181,27 +183,10 @@ public class WebServer implements Config, SystemInterface
 		}
 	}
 
-	private ServerConnector createHttpConnector(CommandLine cmd, Server server)
-	{
-		val httpConfig = new HttpConfiguration();
-		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-		result.setHost(cmd.getOptionValue(Option.HOST.name) == null ? DefaultValue.HOST.value : cmd.getOptionValue(Option.HOST.name));
-		result.setPort(Integer.parseInt(cmd.getOptionValue(Option.PORT.name) == null ? DefaultValue.PORT.value : cmd.getOptionValue(Option.PORT.name)));
-		result.setName(WEB_CONNECTOR_NAME);
-		println("SOAP Service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + SOAP_PATH);
-		return result;
-	}
-
 	private void initConnectionLimit(Server server, final org.eclipse.jetty.server.ServerConnector connector)
 	{
 		if (cmd.hasOption(Option.CONNECTION_LIMIT.name))
 			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(Option.CONNECTION_LIMIT.name)), connector));
-	}
-
-	public boolean isSSLEnabled()
-	{
-		return cmd.hasOption(Option.SSL.name);
 	}
 
 	public boolean isClientAuthenticationEnabled()
