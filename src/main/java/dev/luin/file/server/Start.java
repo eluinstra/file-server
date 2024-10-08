@@ -15,6 +15,7 @@
  */
 package dev.luin.file.server;
 
+import dev.luin.file.server.core.PluginProvider;
 import dev.luin.file.server.file.FileServer;
 import dev.luin.file.server.web.HealthServer;
 import dev.luin.file.server.web.HsqlDb;
@@ -25,7 +26,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -196,6 +200,17 @@ public class Start implements SystemInterface
 	protected void registerConfig(AnnotationConfigWebApplicationContext context)
 	{
 		context.register(AppConfig.class);
+		getPluginConfigClasses().forEach(context::register);
+		context.refresh();
+	}
+
+	protected List<Class<?>> getPluginConfigClasses()
+	{
+		return PluginProvider.get()
+				.stream()
+				.filter(p -> p.getSpringConfigurationClass() != null)
+				.map(PluginProvider::getSpringConfigurationClass)
+				.collect(Collectors.toList());
 	}
 
 	private WebServer initWebServer(final ContextHandlerCollection handlerCollection, final ContextLoaderListener contextLoaderListener)
