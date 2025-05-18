@@ -250,25 +250,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle.jdbc</groupId>
+			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
-			<version>18.3.0.0</version>
+			<version>23.8.0.25.04</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>maven.oracle.com</id>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<url>https://maven.oracle.com</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 	<build>
 		<resources>
 			<resource>
