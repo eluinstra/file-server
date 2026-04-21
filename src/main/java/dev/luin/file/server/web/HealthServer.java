@@ -25,9 +25,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -89,7 +89,7 @@ public class HealthServer implements Config, SystemInterface
 	public ServletContextHandler createContextHandler()
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
+		result.addVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath("/");
 		result.addServlet(HealthServlet.class, HEALTH_PATH + "/*");

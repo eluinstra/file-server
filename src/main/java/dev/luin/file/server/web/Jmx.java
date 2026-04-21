@@ -32,7 +32,6 @@ import org.apache.commons.cli.Options;
 import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.log.Log;
 
 public class Jmx implements Config, SystemInterface
 {
@@ -72,7 +71,6 @@ public class Jmx implements Config, SystemInterface
 			println("Starting JMX Server...");
 			val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 			server.addBean(mBeanContainer);
-			server.addBean(Log.getLog());
 			val jmxURL =
 					new JMXServiceURL("rmi", null, Integer.parseInt(cmd.getOptionValue(Option.JMX_PORT.name, DefaultValue.JMS_PORT.value)), "/jndi/rmi:///jmxrmi");
 			// val sslContextFactory = cmd.hasOption(Option.SSL.name) ? createSslContextFactory(cmd,false) : null;

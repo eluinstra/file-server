@@ -24,6 +24,7 @@ import jakarta.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -40,16 +41,20 @@ import org.apache.commons.io.FileUtils;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.Constraint;
+import org.eclipse.jetty.security.Constraint.Authorization;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.springframework.web.context.ContextLoaderListener;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -99,7 +104,7 @@ public class WebAuthentication implements Config, SystemInterface
 	public Handler createContextHandler(ContextLoaderListener contextLoaderListener) throws NoSuchAlgorithmException, IOException
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + webServer.getWebConnectorName()});
+		result.addVirtualHosts(new String[]{"@" + webServer.getWebConnectorName()});
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(webServer.getPath(cmd));
 		if (cmd.hasOption(Option.AUTHENTICATION.name))
@@ -160,17 +165,18 @@ public class WebAuthentication implements Config, SystemInterface
 		val mapping = createSecurityConstraintMapping(constraint);
 		result.setConstraintMappings(Collections.singletonList(mapping));
 		result.setAuthenticator(new BasicAuthenticator());
-		result.setLoginService(new HashLoginService(REALM, REALM_FILE));
+		result.setLoginService(new HashLoginService(REALM, createResource(REALM_FILE)));
 		return result;
+	}
+
+	private Resource createResource(String realmFile)
+	{
+		return ResourceFactory.of(new ResourceHandler()).newResource(Path.of(realmFile));
 	}
 
 	private Constraint createSecurityConstraint()
 	{
-		val result = new Constraint();
-		result.setName("auth");
-		result.setAuthenticate(true);
-		result.setRoles(new String[]{"user", "admin"});
-		return result;
+		return new Constraint.Builder().name("auth").roles("user", "admin").authorization(Authorization.FORBIDDEN).build();
 	}
 
 	private ConstraintMapping createSecurityConstraintMapping(final Constraint constraint)

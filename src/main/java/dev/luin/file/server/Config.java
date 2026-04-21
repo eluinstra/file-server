@@ -17,7 +17,9 @@ package dev.luin.file.server;
 
 import java.io.IOException;
 import lombok.val;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 
 public interface Config
 {
@@ -30,9 +32,8 @@ public interface Config
 
 	default Resource getResource(String path) throws IOException
 	{
-		try (val result = Resource.newResource(path))
-		{
-			return result.exists() ? result : Resource.newClassPathResource(path);
-		}
+		val rh = new ResourceHandler();
+		val result = ResourceFactory.of(rh).newResource(path);
+		return result.exists() ? result : ResourceFactory.of(rh).newClassLoaderResource(path);
 	}
 }

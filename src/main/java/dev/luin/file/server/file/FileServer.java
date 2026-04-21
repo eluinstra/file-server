@@ -30,12 +30,12 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 
@@ -103,7 +103,7 @@ public class FileServer implements Config, SystemInterface
 	public Handler createContextHandler(ContextLoaderListener contextLoaderListener)
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + SERVER_CONNECTOR_NAME});
+		result.addVirtualHosts(new String[]{"@" + SERVER_CONNECTOR_NAME});
 		result.setContextPath("/");
 		result.addFilter(createClientCertificateManagerFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
 		result.addServlet(DownloadServlet.class, properties.getProperty(ServerProperties.SERVER_PATH.name) + "/download/*");
