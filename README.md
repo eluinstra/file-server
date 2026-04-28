@@ -16,48 +16,13 @@ The FileServer uses SSL clientAuthentication, so the user must authenticate itse
 
 See https://github.com/eluinstra/file-client for the FileClient.
 
-### Prerequisites
-
-- install JDK/JRE 11
-- download and install SoapUI
-- download [file-server-1.0.0](https://github.com/eluinstra/file-server/releases/download/1.0.0/file-server-1.0.0.jar)
-- download [file-client-1.0.0](https://github.com/eluinstra/file-client/releases/download/1.0.0/file-client-1.0.0.jar)
-- download [file-server-soapui-project.xml](https://github.com/eluinstra/file-server/raw/master/resources/file-server-soapui-project.xml)
-- download [file-client-soapui-project.xml](https://github.com/eluinstra/file-client/raw/master/resources/file-client-soapui-project.xml)
-
-### Install the FileServer
-
-- create directory `file-server`
-- copy file-server-1.0.0 to file-server
-- cd file-server
-- create directory `files`
-
-### Install the FileClient
-
-- create directory `file-client`
-- copy file-client-1.0.0 to file-client
-- cd file-client
-- create directory `files`
-
-### Start the FileServer
-
-```
-java -cp file-server-1.0.0.jar dev.luin.file.server.StartGB -hsqldb
-```
-
-### Start the FileServer
-
-```
-java -cp file-client-1.0.0.jar dev.luin.file.client.StartGB -hsqldb -port 8000
-```
-
 ## Example
 
 ### Preparation
 
-- Download and install SoapUI to manage the FileServer and FileClient
-- import [file-server-1.0.0](https://github.com/eluinstra/file-server/releases/download/1.0.0/file-server-1.0.0.jar) and [file-client-1.0.0](https://github.com/eluinstra/file-client/releases/download/1.0.0/file-client-1.0.0.jar) into SoapUI (these projects already contain some predefined SOAP Requests)
-- Start the FileServer and FileClient
+- Download the docker-compose.yml from https://github.com/eluinstra/file-server-docker and place it in a directory
+- Start the FileServer and FileClient using `docker compose up`
+- Open file-server-soapui-project.xml and file-client-soapui-project.xml in SoapUI (or open file-server.rest and file-client.rest in VSCode using plugin https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
 
 ### Usage
 
