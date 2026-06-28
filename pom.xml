@@ -90,11 +90,6 @@
       <artifactId>flyway-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-database-hsqldb</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>dev.luin.digikoppeling.gb</groupId>
       <artifactId>gb-server</artifactId>
       <version>${project.parent.version}</version>
@@ -184,6 +179,11 @@
     <dependency>
       <groupId>org.beryx</groupId>
       <artifactId>text-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-hsqldb</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
