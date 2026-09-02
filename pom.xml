@@ -216,6 +216,12 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <properties>
+    <!-- Pre-existing checkstyle error baseline (see root pom). Lower this as
+         the debt below is fixed so the check keeps tightening. -->
+    <checkstyle.maxAllowedViolations>2</checkstyle.maxAllowedViolations>
+    <checkstyle.skip>false</checkstyle.skip>
+  </properties>
   <build>
     <plugins>
       <plugin>
