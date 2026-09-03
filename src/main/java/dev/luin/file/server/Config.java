@@ -23,7 +23,7 @@ import org.eclipse.jetty.util.resource.ResourceFactory;
 
 public interface Config
 {
-	static final String NONE = "<none>";
+	String NONE = "<none>";
 
 	default String getHost(String host)
 	{

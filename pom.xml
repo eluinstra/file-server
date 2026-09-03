@@ -217,9 +217,9 @@
     </dependency>
   </dependencies>
   <properties>
-    <!-- Pre-existing checkstyle error baseline (see root pom). Lower this as
-         the debt below is fixed so the check keeps tightening. -->
-    <checkstyle.maxAllowedViolations>2</checkstyle.maxAllowedViolations>
+    <!-- Checkstyle violation ceiling. Codebase is clean, so 0: the build fails on
+         any new violation (see root pom). -->
+    <checkstyle.maxAllowedViolations>0</checkstyle.maxAllowedViolations>
     <checkstyle.skip>false</checkstyle.skip>
   </properties>
   <build>
