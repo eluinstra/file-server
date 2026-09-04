@@ -25,6 +25,7 @@ public interface Config
 {
 	String NONE = "<none>";
 
+	@SuppressWarnings("PMD.AvoidUsingHardCodedIP")
 	default String getHost(String host)
 	{
 		return "0.0.0.0".equals(host) ? "localhost" : host;

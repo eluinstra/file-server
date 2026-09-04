@@ -221,6 +221,9 @@
          any new violation (see root pom). -->
     <checkstyle.maxAllowedViolations>0</checkstyle.maxAllowedViolations>
     <checkstyle.skip>false</checkstyle.skip>
+    <!-- Run PMD and SpotBugs for this module (the root aggregator has no source). -->
+    <pmd.skip>false</pmd.skip>
+    <spotbugs.skip>false</spotbugs.skip>
   </properties>
   <build>
     <plugins>

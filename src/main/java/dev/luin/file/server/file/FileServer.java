@@ -94,7 +94,7 @@ public class FileServer implements Config, SystemInterface
 		return result;
 	}
 
-	private void initConnectionLimit(Server server, final org.eclipse.jetty.server.ServerConnector connector)
+	private void initConnectionLimit(Server server, final ServerConnector connector)
 	{
 		if (properties.containsKey(ServerProperties.SERVER_CONNECTION_LIMIT.name))
 			server.addBean(new ConnectionLimit(Integer.parseInt(properties.getProperty(ServerProperties.SERVER_CONNECTION_LIMIT.name)), connector));

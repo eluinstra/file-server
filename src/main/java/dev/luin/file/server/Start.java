@@ -92,7 +92,7 @@ public class Start implements SystemInterface
 	protected static Options createOptions()
 	{
 		val result = new Options();
-		Start.addOptions(result);
+		addOptions(result);
 		WebServer.addOptions(result);
 		WebAuthentication.addOptions(result);
 		HsqlDb.addOptions(result);
@@ -125,7 +125,7 @@ public class Start implements SystemInterface
 
 	private static void startService(final CommandLine cmd) throws Exception
 	{
-		val app = Start.of(cmd);
+		val app = of(cmd);
 		app.startService();
 	}
 

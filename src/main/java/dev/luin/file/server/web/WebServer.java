@@ -63,6 +63,7 @@ public class WebServer implements Config, SystemInterface
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	@AllArgsConstructor
 	@Getter
+	@SuppressWarnings("PMD.AvoidUsingHardCodedIP")
 	private enum DefaultValue
 	{
 		HOST("0.0.0.0"),
@@ -184,7 +185,7 @@ public class WebServer implements Config, SystemInterface
 		}
 	}
 
-	private void initConnectionLimit(Server server, final org.eclipse.jetty.server.ServerConnector connector)
+	private void initConnectionLimit(Server server, final ServerConnector connector)
 	{
 		if (cmd.hasOption(Option.CONNECTION_LIMIT.name))
 			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(Option.CONNECTION_LIMIT.name)), connector));

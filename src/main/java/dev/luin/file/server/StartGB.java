@@ -40,7 +40,7 @@ public class StartGB extends Start
 
 	private static void startService(final CommandLine cmd) throws Exception
 	{
-		val app = StartGB.of(cmd);
+		val app = of(cmd);
 		app.startService();
 	}
 
