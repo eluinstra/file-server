@@ -21,11 +21,7 @@ import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
 import dev.luin.file.server.core.server.servlet.ClientCertificateAuthenticationFilter;
 import dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter;
 import jakarta.servlet.DispatcherType;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -36,8 +32,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
@@ -50,11 +44,9 @@ import org.eclipse.jetty.security.Constraint;
 import org.eclipse.jetty.security.Constraint.Authorization;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.springframework.web.context.ContextLoaderListener;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -86,7 +78,6 @@ public class WebAuthentication implements Config, SystemInterface
 	}
 
 	private static final String REALM = "Realm";
-	private static final String REALM_FILE = "realm.properties";
 	TextIO textIO = TextIoFactory.getTextIO();
 	CommandLine cmd;
 	WebServer webServer;
@@ -101,7 +92,7 @@ public class WebAuthentication implements Config, SystemInterface
 		return options;
 	}
 
-	public Handler createContextHandler(ContextLoaderListener contextLoaderListener) throws NoSuchAlgorithmException, IOException
+	public Handler createContextHandler(ContextLoaderListener contextLoaderListener) throws IOException
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.addVirtualHosts(new String[]{"@" + webServer.getWebConnectorName()});
@@ -111,13 +102,9 @@ public class WebAuthentication implements Config, SystemInterface
 		{
 			if (!webServer.isClientAuthenticationEnabled())
 			{
-				println("Configuring Web Server basic authentication:");
-				val file = new File(REALM_FILE);
-				if (file.exists())
-					println("Using file " + file.getAbsoluteFile());
-				else
-					createRealmFile(file);
-				result.setSecurityHandler(getSecurityHandler());
+				println("Configuring Web Server basic authentication (PBKDF2):");
+				val credential = createRealm();
+				result.setSecurityHandler(getSecurityHandler(credential));
 			}
 			else
 			{
@@ -131,47 +118,57 @@ public class WebAuthentication implements Config, SystemInterface
 		return result;
 	}
 
-	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
+	private RealmEntry createRealm()
 	{
 		val username = textIO.newStringInputReader().withDefaultValue("admin").read("enter username");
-		val password = readPassword();
-		println("Writing to file: " + file.getAbsoluteFile());
-		FileUtils.writeStringToFile(file, username + ": " + password + ",user", Charset.defaultCharset(), false);
+		val credential = readCredential();
+		println("Configured basic-auth user '" + username + "' with a PBKDF2 (salted) credential.");
+		return new RealmEntry(username, credential);
 	}
 
-	private String readPassword() throws IOException, NoSuchAlgorithmException
+	private Pbkdf2Credential readCredential()
 	{
 		val reader = textIO.newStringInputReader().withMinLength(8).withInputMasking(true);
 		while (true)
 		{
-			val result = toMD5(reader.read("enter password"));
-			val password = toMD5(reader.read("re-enter password"));
-			if (result.equals(password))
-				return result;
+			val first = reader.read("enter password");
+			val second = reader.read("re-enter password");
+			if (first.equals(second))
+				return Pbkdf2Credential.fromPassword(first);
 			else
 				println("Passwords don't match! Try again.");
 		}
 	}
 
-	private String toMD5(String s)
-	{
-		return "MD5:" + DigestUtils.md5Hex(s);
-	}
-
-	private SecurityHandler getSecurityHandler()
+	private SecurityHandler getSecurityHandler(final RealmEntry realmEntry)
 	{
 		val result = new ConstraintSecurityHandler();
 		val constraint = createSecurityConstraint();
 		val mapping = createSecurityConstraintMapping(constraint);
 		result.setConstraintMappings(Collections.singletonList(mapping));
 		result.setAuthenticator(new BasicAuthenticator());
-		result.setLoginService(new HashLoginService(REALM, createResource(REALM_FILE)));
+		val loginService = new HashLoginService(REALM);
+		val userStore = new UserStore();
+		userStore.addUser(realmEntry.username, realmEntry.credential, new String[]{"user"});
+		loginService.setUserStore(userStore);
+		result.setLoginService(loginService);
 		return result;
 	}
 
-	private Resource createResource(String realmFile)
+	/**
+	 * A basic-auth realm entry: the username together with the credential used to verify the
+	 * presented password.
+	 */
+	private static final class RealmEntry
 	{
-		return ResourceFactory.of(new ResourceHandler()).newResource(Path.of(realmFile));
+		final String username;
+		final org.eclipse.jetty.util.security.Credential credential;
+
+		RealmEntry(String username, org.eclipse.jetty.util.security.Credential credential)
+		{
+			this.username = username;
+			this.credential = credential;
+		}
 	}
 
 	private Constraint createSecurityConstraint()
