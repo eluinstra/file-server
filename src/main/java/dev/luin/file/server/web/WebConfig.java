@@ -18,6 +18,7 @@ package dev.luin.file.server.web;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -130,6 +131,9 @@ public class WebConfig
 	protected ObjectMapper createObjectMapper()
 	{
 		val result = new ObjectMapper();
+		// Deny-by-default polymorphic types: with no allow rules, any default typing added later cannot resolve
+		// classes, blocking gadget-based deserialization.
+		result.setPolymorphicTypeValidator(BasicPolymorphicTypeValidator.builder().build());
 		result.registerModule(new JavaTimeModule());
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new SimpleModule());
