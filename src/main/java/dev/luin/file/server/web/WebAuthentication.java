@@ -21,7 +21,10 @@ import dev.luin.file.server.core.KeyStoreManager.KeyStoreType;
 import dev.luin.file.server.core.server.servlet.ClientCertificateAuthenticationFilter;
 import dev.luin.file.server.core.server.servlet.ClientCertificateManagerFilter;
 import jakarta.servlet.DispatcherType;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -60,6 +63,7 @@ public class WebAuthentication implements Config, SystemInterface
 	{
 		CLIENT_CERTIFICATE_HEADER("clientCertificateHeader"),
 		AUTHENTICATION("authentication"),
+		NO_AUTHENTICATION("noAuthentication"),
 		CLIENT_TRUST_STORE_TYPE("clientTrustStoreType"),
 		CLIENT_TRUST_STORE_PATH("clientTrustStorePath"),
 		CLIENT_TRUST_STORE_PASSWORD("clientTrustStorePassword");
@@ -78,6 +82,7 @@ public class WebAuthentication implements Config, SystemInterface
 	}
 
 	private static final String REALM = "Realm";
+	private static final String REALM_FILE = "realm.properties";
 	TextIO textIO = TextIoFactory.getTextIO();
 	CommandLine cmd;
 	WebServer webServer;
@@ -85,7 +90,8 @@ public class WebAuthentication implements Config, SystemInterface
 	public static Options addOptions(Options options)
 	{
 		options.addOption(Option.CLIENT_CERTIFICATE_HEADER.name, true, "set client certificate header [default: " + NONE + "]");
-		options.addOption(Option.AUTHENTICATION.name, false, "enable basic | client certificate authentication");
+		options.addOption(Option.AUTHENTICATION.name, false, "basic | client certificate authentication (always enabled; this option is accepted for compatibility)");
+		options.addOption(Option.NO_AUTHENTICATION.name, false, "disable SOAP/REST authentication (insecure; not for production)");
 		options.addOption(Option.CLIENT_TRUST_STORE_TYPE.name, true, "set client truststore type [default: " + DefaultValue.KEYSTORE_TYPE.value + "]");
 		options.addOption(Option.CLIENT_TRUST_STORE_PATH.name, true, "set client truststore path [default: " + NONE + "]");
 		options.addOption(Option.CLIENT_TRUST_STORE_PASSWORD.name, true, "set client truststore password [default: " + NONE + "]");
@@ -98,19 +104,22 @@ public class WebAuthentication implements Config, SystemInterface
 		result.addVirtualHosts(new String[]{"@" + webServer.getWebConnectorName()});
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(webServer.getPath(cmd));
-		if (cmd.hasOption(Option.AUTHENTICATION.name))
+		// Authentication on the SOAP/REST endpoints is mandatory (like the EbMS Admin): the server refuses to run
+		// an unauthenticated management/data plane. It is only relaxed with the explicit --noAuthentication flag.
+		if (cmd.hasOption(Option.NO_AUTHENTICATION.name))
 		{
-			if (!webServer.isClientAuthenticationEnabled())
-			{
-				println("Configuring Web Server basic authentication (PBKDF2):");
-				val credential = createRealm();
-				result.setSecurityHandler(getSecurityHandler(credential));
-			}
-			else
-			{
-				result.addFilter(createClientCertificateManagerFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
-				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
-			}
+			println("WARNING: SOAP/REST authentication is DISABLED (--noAuthentication). Do not use in production.");
+		}
+		else if (!webServer.isClientAuthenticationEnabled())
+		{
+			println("Configuring Web Server basic authentication (PBKDF2):");
+			val credential = createRealm();
+			result.setSecurityHandler(getSecurityHandler(credential));
+		}
+		else
+		{
+			result.addFilter(createClientCertificateManagerFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+			result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 		}
 		result.addServlet(CXFServlet.class, webServer.getSoapPath() + "/*");
 		result.setErrorHandler(createErrorHandler());
@@ -118,11 +127,21 @@ public class WebAuthentication implements Config, SystemInterface
 		return result;
 	}
 
-	private RealmEntry createRealm()
+	private RealmEntry createRealm() throws IOException
 	{
+		// Persist the PBKDF2 credential to realm.properties so restarts (e.g. the docker demo) are non-interactive.
+		val realmFile = new File(REALM_FILE);
+		if (realmFile.exists())
+		{
+			println("Using basic-auth realm from " + realmFile.getAbsolutePath());
+			val line = Files.readString(realmFile.toPath(), StandardCharsets.UTF_8).trim();
+			val separator = line.indexOf(' ');
+			return new RealmEntry(line.substring(0, separator), Pbkdf2Credential.decode(line.substring(separator + 1)));
+		}
 		val username = textIO.newStringInputReader().withDefaultValue("admin").read("enter username");
 		val credential = readCredential();
-		println("Configured basic-auth user '" + username + "' with a PBKDF2 (salted) credential.");
+		println("Writing basic-auth realm to " + realmFile.getAbsolutePath() + " (PBKDF2, salted):");
+		Files.writeString(realmFile.toPath(), username + " " + credential.toString(), StandardCharsets.UTF_8);
 		return new RealmEntry(username, credential);
 	}
 

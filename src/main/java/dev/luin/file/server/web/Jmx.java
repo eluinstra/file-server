@@ -85,8 +85,8 @@ public class Jmx implements Config, SystemInterface
 		val result = new HashMap<String, Object>();
 		if (cmd.hasOption(Option.JMX_ACCESS_FILE.name) && cmd.hasOption(Option.JMX_PASSWORD_FILE.name))
 		{
-			result.put("jmx.remote.x.access.file", cmd.hasOption(Option.JMX_ACCESS_FILE.name));
-			result.put("jmx.remote.x.password.file", cmd.hasOption(Option.JMX_PASSWORD_FILE.name));
+			result.put("jmx.remote.x.access.file", cmd.getOptionValue(Option.JMX_ACCESS_FILE.name));
+			result.put("jmx.remote.x.password.file", cmd.getOptionValue(Option.JMX_PASSWORD_FILE.name));
 		}
 		return result;
 	}
