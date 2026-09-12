@@ -1,0 +1,45 @@
+# file-client 2.2.0 (release) — the client the file-server smoke test runs against.
+#
+# There is no prebuilt eluinstra/file-client:2.2.0 image, so `file-client` is built from
+# the released fat jar + the flyway-database-hsqldb plugin (see Dockerfile.file-client).
+# It runs with `network_mode: host`, so it shares the host's network and reaches the
+# file-server (started by smoke-test.sh on the host) directly at localhost:8443 (mTLS) —
+# the same localhost/CN=localhost setup the root smoke test uses, so no hostname or trust
+# overrides are needed. Its REST API listens on localhost:9002 (chosen to stay clear of
+# the server's 8080/8443/9001 and the client's own HSQLDB port, 9000):
+#
+#   client REST : https://localhost:9002/service/rest/v1   (self-signed TLS)
+#
+# Usage (run from this directory, with the file-server already running on the host):
+#   docker compose up -d          # start file-client 2.2.0 (reaches the host server)
+#   ./smoke-test.sh               # starts the file-server locally, then drives this client
+#   docker compose down
+#
+# NOTE: `network_mode: host` is a no-op / unsupported on Docker Desktop for Windows/WSL2
+# (the smoke test therefore runs on Linux). It is required here: reaching the host via the
+# default `host.docker.internal` (host-gateway) is unreliable when Docker has several
+# networks (it can resolve a stale gateway IP).
+
+services:
+  file-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.file-client
+      # pin the file-client version the smoke test uses to verify the file-server
+      args:
+        FILE_CLIENT_VERSION: "2.2.0"
+        # flyway-database-hsqldb must match the flyway-core pinned inside the 2.2.0 jar
+        FLYWAY_DRIVER_VERSION: "12.9.0"
+    image: file-client:2.2.0
+    # share the host's network: reach the file-server at localhost:8443, listen on 9002
+    network_mode: host
+    # no `ports` (host networking) and no client.ssl.* overrides are needed: the client
+    # reaches the server's CN=localhost certificate via localhost, exactly like the root
+    # smoke test, so its truststore + hostname check work unchanged.
+    healthcheck:
+      # the REST API is TLS with a self-signed certificate; curl -k to skip verification
+      test: ["CMD-SHELL", "curl -ksf https://localhost:9002/service/rest/v1/upload > /dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s

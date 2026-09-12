@@ -1,0 +1,51 @@
+# file-client 2.2.0 (release) as a runnable image for the file-server smoke test
+# (see docker-compose.yml / smoke-test.sh).
+#
+# There is no prebuilt eluinstra/file-client:2.2.0 image on Docker Hub, so this builds
+# the image from the released single-module fat jar
+#   https://github.com/eluinstra/file-client/releases/tag/2.2.0  (asset: file-client-2.2.0.jar)
+# plus the flyway-database-hsqldb plugin. That plugin is "provided" scope, so the shaded
+# jar does NOT bundle it, yet the embedded HSQLDB backend needs it on the classpath at
+# runtime. The release jar pins flyway-core 12.9.0, so the plugin must be the same 12.9.0.
+#
+# The 2.2.0 jar uses a file-based embedded HSQLDB (jdbc.url=jdbc:hsqldb:hsql://localhost:9000/...)
+# started by the -hsqldb flag, and stores files under <workdir>/files (file.baseDir=files),
+# which the app does NOT create itself. Both are set up below (WORKDIR + /app/files).
+#
+# The client runs with `network_mode: host` (see docker-compose.yml) so it reaches the
+# server on the host directly at localhost:8443 (mTLS). That is exactly the same
+# localhost/CN=localhost setup the root smoke test uses, so the client's truststore and
+# hostname check work unchanged (no verifyHostnames override needed). Its web port is 9002
+# (CMD) to stay clear of the server's 8080/8443/9001 and its own HSQLDB port, 9000, which
+# share the host network namespace.
+
+ARG FILE_CLIENT_VERSION=2.2.0
+ARG FLYWAY_DRIVER_VERSION=12.9.0
+
+FROM eclipse-temurin:17-jre-jammy
+
+ARG FILE_CLIENT_VERSION
+ARG FLYWAY_DRIVER_VERSION
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# released fat jar (single module) + the flyway-database-hsqldb plugin (provided scope)
+RUN curl -fsSL -o "file-client.jar" \
+        "https://github.com/eluinstra/file-client/releases/download/${FILE_CLIENT_VERSION}/file-client-${FILE_CLIENT_VERSION}.jar" \
+    && curl -fsSL -o "flyway-database-hsqldb.jar" \
+        "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-hsqldb/${FLYWAY_DRIVER_VERSION}/flyway-database-hsqldb-${FLYWAY_DRIVER_VERSION}.jar"
+
+# file.baseDir=files must pre-exist (the app does not create the base directory)
+RUN mkdir -p /app/files
+
+EXPOSE 9002
+
+# web port 9002 (not 8080) so it does not collide with the host file-server's 8080,
+# since this runs with network_mode: host and shares the host's network namespace
+CMD ["java", "-Djavax.net.ssl.trustStore=", \
+     "-cp", "file-client.jar:flyway-database-hsqldb.jar", \
+     "dev.luin.file.client.StartGB", "-hsqldb", "-port", "9002"]
